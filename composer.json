@@ -22,8 +22,7 @@
   "require": {
     "deep-web-solutions/wp-framework-bootstrapper": "^1.0.0",
     "deep-web-solutions/wp-framework-helpers": "master@dev",
-    "psr/log": "^1.1.3",
-    "symfony/uid": ">=v5.2.3"
+    "psr/log": "^1.1.3"
   },
   "require-dev": {
     "phpmd/phpmd": "*",

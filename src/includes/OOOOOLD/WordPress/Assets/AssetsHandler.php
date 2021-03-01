@@ -118,7 +118,7 @@ class AssetsHandler implements HooksHandlerAwareInterface, RunnableInterface {
 	 *
 	 * @param   HooksHandler $hooks_mediator Instance of the hooks handler.
 	 *
-	 * @see     HooksHandlerUtilityTrait::register_hooks()
+	 * @see     HooksServiceRegisterTrait::register_hooks()
 	 */
 	protected function register_hooks( HooksHandler $hooks_mediator ): void {
 		if ( Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ) {

@@ -125,7 +125,7 @@ class AdminNoticesHandler {
 	 *
 	 * @version 1.0.0
 	 *
-	 * @see     HooksHandlerUtilityTrait::register_hooks()
+	 * @see     HooksServiceRegisterTrait::register_hooks()
 	 *
 	 * @since   1.0.0
 	 */

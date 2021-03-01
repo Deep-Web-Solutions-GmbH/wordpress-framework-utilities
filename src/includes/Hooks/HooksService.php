@@ -1,10 +1,20 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\WordPress\Runnables\Hooks;
+namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
-use DeepWebSolutions\Framework\Utilities\Lifecycle\Runnable\Exceptions\ResetFailure;
-use DeepWebSolutions\Framework\Utilities\Lifecycle\Runnable\Exceptions\RunFailure;
-use DeepWebSolutions\Framework\Utilities\Lifecycle\Runnable\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResettableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
+use Psr\Log\LogLevel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,13 +29,22 @@ defined( 'ABSPATH' ) || exit;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\WordPress\Runnables\Hooks
+ * @package DeepWebSolutions\WP-Framework\Utilities\Hooks
  */
-class HooksHandler implements RunnableInterface {
+class HooksService implements LoggingServiceAwareInterface, PluginAwareInterface, RunnableInterface, ResettableInterface {
+	// region TRAITS
+
+	use LoggingServiceAwareTrait;
+	use PluginAwareTrait;
+	use RunnableTrait;
+	use ResettableTrait;
+
+	// endregion
+
 	// region FIELDS AND CONSTANTS
 
 	/**
-	 * The actions registered with WordPress to fire when the handler runs.
+	 * The actions registered with WordPress to fire when the service runs.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -36,7 +55,7 @@ class HooksHandler implements RunnableInterface {
 	protected array $actions = array();
 
 	/**
-	 * The filters registered with WordPress to fire when the handler runs.
+	 * The filters registered with WordPress to fire when the service runs.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -48,6 +67,52 @@ class HooksHandler implements RunnableInterface {
 
 	// endregion
 
+	// region MAGIC METHODS
+
+	/**
+	 * HooksService constructor.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   PluginInterface     $plugin             Instance of the plugin.
+	 * @param   LoggingService      $logging_service    Instance of the logging service.
+	 */
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service ) {
+		$this->set_plugin( $plugin );
+		$this->set_logging_service( $logging_service );
+	}
+
+	// endregion
+
+	// region GETTERS
+
+	/**
+	 * Returns the list of actions registered with WP by this service instance on run.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  array
+	 */
+	public function get_actions(): array {
+		return $this->actions;
+	}
+
+	/**
+	 * Returns the list of filters registered with WP by this service instance on run.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  array
+	 */
+	public function get_filters(): array {
+		return $this->filters;
+	}
+
+	// endregion
+
 	// region INHERITED FUNCTIONS
 
 	/**
@@ -56,41 +121,84 @@ class HooksHandler implements RunnableInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  RunFailure|null
+	 * @return  RunFailureException|null
 	 */
-	public function run(): ?RunFailure {
-		foreach ( $this->filters as $hook ) {
-			if ( empty( $hook['component'] ) ) {
-				add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
-			} else {
-				add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+	public function run(): ?RunFailureException {
+		if ( is_null( $this->is_ran ) ) {
+			foreach ( $this->filters as $hook ) {
+				if ( empty( $hook['component'] ) ) {
+					add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+				} else {
+					add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+				}
 			}
-		}
-		foreach ( $this->actions as $hook ) {
-			if ( empty( $hook['component'] ) ) {
-				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
-			} else {
-				add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+			foreach ( $this->actions as $hook ) {
+				if ( empty( $hook['component'] ) ) {
+					add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+				} else {
+					add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+				}
 			}
+
+			$this->is_ran     = true;
+			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
+		} else {
+			/* @noinspection PhpIncompatibleReturnTypeInspection */
+			return $this->log_event_and_doing_it_wrong_and_return_exception(
+				__FUNCTION__,
+				'The hooks service has been ran already. Please reset it before running again.',
+				'1.0.0',
+				RunFailureException::class,
+				null,
+				LogLevel::NOTICE,
+				'framework'
+			);
 		}
 
-		$this->reset();
-		return null;
+		return $this->run_result;
 	}
 
 	/**
-	 * Resets the filters and actions buffers.
+	 * Deregisters the filters and actions with WordPress.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  ResetFailure|null
+	 * @return  ResetFailureException|null
 	 */
-	public function reset(): ?ResetFailure {
-		$this->filters = array();
-		$this->actions = array();
+	public function reset(): ?ResetFailureException {
+		if ( is_null( $this->is_reset ) ) {
+			foreach ( $this->filters as $hook ) {
+				if ( empty( $hook['component'] ) ) {
+					remove_filter( $hook['hook'], $hook['callback'], $hook['priority'] );
+				} else {
+					remove_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
+				}
+			}
+			foreach ( $this->actions as $hook ) {
+				if ( empty( $hook['component'] ) ) {
+					remove_action( $hook['hook'], $hook['callback'], $hook['priority'] );
+				} else {
+					remove_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
+				}
+			}
 
-		return null;
+			$this->is_reset     = true;
+			$this->reset_result = $this->is_ran = $this->run_result = null; // phpcs:ignore
+		} else {
+			/* @noinspection PhpIncompatibleReturnTypeInspection */
+			return $this->log_event_and_doing_it_wrong_and_return_exception(
+				__FUNCTION__,
+				'The hooks service has been reset already. Please run it before resetting again.',
+				'1.0.0',
+				ResetFailureException::class,
+				null,
+				LogLevel::NOTICE,
+				'framework'
+			);
+		}
+
+		return $this->reset_result;
 	}
 
 	// endregion
@@ -130,6 +238,16 @@ class HooksHandler implements RunnableInterface {
 	}
 
 	/**
+	 * Removes all actions from the collection to be registered with WordPress.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
+	public function remove_all_actions(): void {
+		$this->actions = array();
+	}
+
+	/**
 	 * Add a new filter to the collection to be registered with WordPress.
 	 *
 	 * @since   1.0.0
@@ -159,6 +277,16 @@ class HooksHandler implements RunnableInterface {
 	 */
 	public function remove_filter( string $hook, ?object $component, string $callback, int $priority = 10, int $accepted_args = 1 ): void {
 		$this->filters = $this->remove( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
+	}
+
+	/**
+	 * Removes all filters from the collection to be registered with WordPress.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
+	public function remove_all_filters(): void {
+		$this->filters = array();
 	}
 
 	// endregion

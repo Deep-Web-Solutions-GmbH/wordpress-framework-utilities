@@ -9,6 +9,8 @@
  * @copyright           2021 Deep Web Solutions GmbH
  * @license             GPL-3.0-or-later
  *
+ * @noinspection PhpMissingReturnTypeInspection
+ *
  * @wordpress-plugin
  * Plugin Name:         DWS WordPress Framework Utilities
  * Description:         A set of related utility classes to kick start WordPress development.
@@ -45,7 +47,7 @@ define( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_VERSION', '1.0.0' );
  *
  * @return  string
  */
-function dws_wp_framework_get_utilities_name(): string {
+function dws_wp_framework_get_utilities_name() {
 	return constant( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_NAME' );
 }
 
@@ -57,7 +59,7 @@ function dws_wp_framework_get_utilities_name(): string {
  *
  * @return  string
  */
-function dws_wp_framework_get_utilities_version(): string {
+function dws_wp_framework_get_utilities_version() {
 	return constant( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_VERSION' );
 }
 
@@ -73,7 +75,7 @@ define( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_MIN_WP', '5.5' );
  *
  * @return  string
  */
-function dws_wp_framework_get_utilities_min_php(): string {
+function dws_wp_framework_get_utilities_min_php() {
 	return constant( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_MIN_PHP' );
 }
 
@@ -85,7 +87,7 @@ function dws_wp_framework_get_utilities_min_php(): string {
  *
  * @return  string
  */
-function dws_wp_framework_get_utilities_min_wp(): string {
+function dws_wp_framework_get_utilities_min_wp() {
 	return constant( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_MIN_WP' );
 }
 
@@ -111,15 +113,20 @@ if ( dws_wp_framework_check_php_wp_requirements_met( dws_wp_framework_get_utilit
 	$dws_utilities_init_function = function() {
 		define(
 			__NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_INIT',
-			defined( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_BOOTSTRAPPER_INIT' ) && DWS_WP_FRAMEWORK_BOOTSTRAPPER_INIT &&
-			defined( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_HELPERS_INIT' ) && DWS_WP_FRAMEWORK_HELPERS_INIT
+			apply_filters(
+				'dws_wp_framework_utilities_init_status',
+				defined( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_BOOTSTRAPPER_INIT' ) && DWS_WP_FRAMEWORK_BOOTSTRAPPER_INIT &&
+				defined( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_HELPERS_INIT' ) && DWS_WP_FRAMEWORK_HELPERS_INIT &&
+				defined( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_FOUNDATIONS_INIT' ) && DWS_WP_FRAMEWORK_FOUNDATIONS_INIT,
+				__NAMESPACE__
+			)
 		);
 	};
 
 	if ( did_action( 'plugins_loaded' ) ) {
 		call_user_func( $dws_utilities_init_function );
 	} else {
-		add_action( 'plugins_loaded', $dws_utilities_init_function, PHP_INT_MIN );
+		add_action( 'plugins_loaded', $dws_utilities_init_function, PHP_INT_MIN + 300 );
 	}
 } else {
 	define( __NAMESPACE__ . '\DWS_WP_FRAMEWORK_UTILITIES_INIT', false );

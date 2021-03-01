@@ -76,19 +76,9 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 		// Allow 3rd-party plugins to filter the template file from their plugin.
 		$filtered_template = apply_filters( $this->get_hook_tag( 'get_template_part' ), $template, $slug, $name, $template_path, $default_path, $args, $constant_name ); // phpcs:ignore
 
-		if ( $filtered_template !== $template ) {
-			if ( ! $this->get_wp_filesystem()->exists( $filtered_template ) ) {
-				$this->log_event_and_doing_it_wrong(
-					__FUNCTION__,
-					/* translators: %s: Path to template file */
-					sprintf( __( '%s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
-					'1.0.0',
-					LogLevel::ERROR,
-					'framework'
-				);
-				return;
-			}
-			$template = $filtered_template;
+		$template = $this->maybe_overwrite_template( $filtered_template, $template );
+		if ( is_null( $template ) ) {
+			return;
 		}
 
 		// Load the found template part.
@@ -140,19 +130,9 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 		// Allow 3rd-party plugins to filter the template file from their plugin.
 		$filtered_template = apply_filters( $this->get_hook_tag( 'get_template' ), $template, $template_name, $template_path, $default_path, $args, $constant_name ); // phpcs:ignore
 
-		if ( $filtered_template !== $template ) {
-			if ( ! $this->get_wp_filesystem()->exists( $filtered_template ) ) {
-				$this->log_event_and_doing_it_wrong(
-					__FUNCTION__,
-					/* translators: %s: Path to template file */
-					sprintf( __( '%s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
-					'1.0.0',
-					LogLevel::ERROR,
-					'framework'
-				);
-				return;
-			}
-			$template = $filtered_template;
+		$template = $this->maybe_overwrite_template( $filtered_template, $template );
+		if ( is_null( $template ) ) {
+			return;
 		}
 
 		// Load the found template.
@@ -210,6 +190,41 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 			: $template;
 
 		return apply_filters( $this->get_hook_tag( 'locate_template' ), $template, $template_name, $template_path, $default_path, $constant_name ); // phpcs:ignore
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Checks if the filtered template path exists, and if so, returns it, otherwise returns null.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $filtered_template  The template path after running a filter on it.
+	 * @param   string  $template           The original template path from before the filter.
+	 *
+	 * @return  string|null
+	 */
+	protected function maybe_overwrite_template( string $filtered_template, string $template ): ?string {
+		if ( $filtered_template !== $template ) {
+			if ( ! $this->get_wp_filesystem()->exists( $filtered_template ) ) {
+				$this->log_event_and_doing_it_wrong(
+					__FUNCTION__,
+					/* translators: %s: Path to template file */
+					sprintf( __( '%s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
+					'1.0.0',
+					LogLevel::ERROR,
+					'framework'
+				);
+				return null;
+			}
+
+			$template = $filtered_template;
+		}
+
+		return $template;
 	}
 
 	// endregion

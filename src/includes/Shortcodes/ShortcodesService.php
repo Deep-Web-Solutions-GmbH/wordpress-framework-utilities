@@ -116,7 +116,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
 				__FUNCTION__,
-				'The shortcodes service has been ran already. Please reset it before running again.',
+				'The shortcodes service has been ran already. Please reset it before running it again.',
 				'1.0.0',
 				RunFailureException::class,
 				null,
@@ -129,7 +129,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	}
 
 	/**
-	 * Deregister the shortcodes with WordPress.
+	 * Un-registers the shortcodes with WordPress.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -148,7 +148,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
 				__FUNCTION__,
-				'The shortcodes service has been reset already. Please run it before resetting again.',
+				'The shortcodes service has been reset already. Please run it before resetting it again.',
 				'1.0.0',
 				ResetFailureException::class,
 				null,

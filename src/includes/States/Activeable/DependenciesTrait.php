@@ -8,7 +8,6 @@ use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtension
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
-use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -29,7 +28,7 @@ trait DependenciesTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @throws  Exception   Thrown when using this function in an unsupported context.
+	 * @throws  NotImplementedException     Thrown when using this function in an unsupported context.
 	 *
 	 * @return  bool
 	 */

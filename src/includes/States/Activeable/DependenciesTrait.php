@@ -2,11 +2,15 @@
 
 namespace DeepWebSolutions\Framework\Utilities\States\Activeable;
 
+use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
+use Exception;
+use Psr\Log\LogLevel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,21 +31,33 @@ trait DependenciesTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
+	 * @throws  Exception   Thrown when using this function in an unsupported context.
+	 *
 	 * @return  bool
 	 */
 	public function is_active_dependencies(): bool {
-		$are_deps_fulfilled = false;
-
 		if ( $this instanceof DependenciesCheckerAwareInterface ) {
 			$are_deps_fulfilled = $this->get_dependencies_checker()->are_dependencies_fulfilled();
 		} elseif ( $this instanceof DependenciesServiceAwareInterface && $this instanceof PluginComponentInterface ) {
 			$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $this->get_instance_id() );
+		} else {
+			if ( $this instanceof LoggingServiceAwareInterface ) {
+				throw $this->get_logging_service()->log_event_and_doing_it_wrong_and_return_exception(
+					__FUNCTION__,
+					'Dependency checking scenario not supported',
+					'1.0.0',
+					NotImplementedException::class,
+					null,
+					LogLevel::ERROR,
+					'framework'
+				);
+			} else {
+				throw new NotImplementedException( 'Dependency checking scenario not supported' );
+			}
 		}
 
-		if ( is_array( $are_deps_fulfilled ) ) {
-			$are_deps_fulfilled = is_null( Arrays::search_recursive( $are_deps_fulfilled, false, true ) );
-		}
-
-		return $are_deps_fulfilled;
+		return is_array( $are_deps_fulfilled )
+			? is_null( Arrays::search_recursive( $are_deps_fulfilled, false, true ) )
+			: $are_deps_fulfilled;
 	}
 }

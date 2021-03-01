@@ -4,6 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\States\Activeable;
 
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
 
@@ -38,15 +39,7 @@ trait DependenciesTrait {
 		}
 
 		if ( is_array( $are_deps_fulfilled ) ) {
-			$found_false = false;
-			foreach ( $are_deps_fulfilled as $results ) {
-				if ( false === $results || ( is_array( $results ) && false !== array_search( false, $results, true ) ) ) {
-					$found_false = true;
-					break;
-				}
-			}
-
-			$are_deps_fulfilled = ( ! $found_false );
+			$are_deps_fulfilled = is_null( Arrays::search_recursive( $are_deps_fulfilled, false, true ) );
 		}
 
 		return $are_deps_fulfilled;

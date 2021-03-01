@@ -61,7 +61,7 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	// region GETTERS
 
 	/**
-	 * Returns the list of actions registered with WP by this service instance on run.
+	 * Returns the list of actions registered with WP by this handler instance on run.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -73,7 +73,7 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	}
 
 	/**
-	 * Returns the list of filters registered with WP by this service instance on run.
+	 * Returns the list of filters registered with WP by this handler instance on run.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0

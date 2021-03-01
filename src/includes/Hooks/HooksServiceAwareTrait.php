@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\\Hooks
+ * @package DeepWebSolutions\WP-Framework\Utilities\Hooks
  */
 trait HooksServiceAwareTrait {
 	// region FIELDS AND CONSTANTS

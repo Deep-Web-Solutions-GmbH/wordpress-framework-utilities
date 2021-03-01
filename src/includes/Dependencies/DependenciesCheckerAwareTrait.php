@@ -40,6 +40,18 @@ trait DependenciesCheckerAwareTrait {
 		return $this->dependencies_checker;
 	}
 
+	/**
+	 * Wrapper around the checker's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  array
+	 */
+	public function get_dependencies(): array {
+		return $this->get_dependencies_checker()->get_dependencies();
+	}
+
 	// endregion
 
 	// region SETTERS
@@ -54,6 +66,34 @@ trait DependenciesCheckerAwareTrait {
 	 */
 	public function set_dependencies_checker( DependenciesCheckerInterface $checker ): void {
 		$this->dependencies_checker = $checker;
+	}
+
+	// endregion
+
+	// region METHODS
+
+	/**
+	 * Wrapper around the checker's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  array
+	 */
+	public function get_missing_dependencies(): array {
+		return $this->get_dependencies_checker()->get_missing_dependencies();
+	}
+
+	/**
+	 * Wrapper around the checker's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  mixed
+	 */
+	public function are_dependencies_fulfilled() {
+		return $this->get_dependencies_checker()->are_dependencies_fulfilled();
 	}
 
 	// endregion

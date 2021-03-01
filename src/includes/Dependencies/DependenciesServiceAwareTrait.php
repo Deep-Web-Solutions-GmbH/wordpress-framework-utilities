@@ -57,4 +57,50 @@ trait DependenciesServiceAwareTrait {
 	}
 
 	// endregion
+
+	// region METHODS
+
+	/**
+	 * Wrapper around the service's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $checker_name   The checker to retrieve the dependencies from.
+	 *
+	 * @return  array
+	 */
+	public function get_dependencies( string $checker_name ): array {
+		return $this->get_dependencies_service()->get_dependencies( $checker_name );
+	}
+
+	/**
+	 * Wrapper around the service's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $checker_name   The checker to retrieve the missing dependencies from.
+	 *
+	 * @return  array
+	 */
+	public function get_missing_dependencies( string $checker_name ): array {
+		return $this->get_dependencies_service()->get_missing_dependencies( $checker_name );
+	}
+
+	/**
+	 * Wrapper around the service's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $checker_name   The checker to retrieve the dependencies status from.
+	 *
+	 * @return  mixed
+	 */
+	public function are_dependencies_fulfilled( string $checker_name ) {
+		return $this->get_dependencies_service()->are_dependencies_fulfilled( $checker_name );
+	}
+
+	// endregion
 }

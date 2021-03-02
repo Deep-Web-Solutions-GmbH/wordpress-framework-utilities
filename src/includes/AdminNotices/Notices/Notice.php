@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -39,24 +39,13 @@ class Notice extends AbstractNotice {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
-	 * @param   string              $store      Store that the notice is stored in.
+	 * @return  OutputFailureException|null
 	 */
-	public function output( PluginInterface $plugin, string $store ): void {
-		if ( ! $this->should_output() ) {
-			return;
-		}
+	public function output(): ?OutputFailureException {
+		$args          = wp_parse_args( $this->args, array( 'html' => false ) );
+		$this->message = boolval( $args['html'] ) ? $this->message : "<p>{$this->message}</p>";
 
-		$args = wp_parse_args( $this->args, array( 'html' => false ) );
-
-		echo sprintf(
-			'<div id="%1$s" data-handle="%1$s" data-store="%2$s" data-plugin-slug="%3$s" class="%4$s">%5$s</div>',
-			esc_attr( $this->get_handle() ),
-			esc_attr( $store ),
-			esc_attr( $plugin->get_plugin_slug() ),
-			esc_attr( implode( ' ', $this->get_classes( $plugin ) ) ),
-			wp_kses_post( $args['html'] ? "<p>{$this->message}</p>" : $this->message )
-		);
+		return parent::output();
 	}
 
 	// endregion

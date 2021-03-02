@@ -2,8 +2,6 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -62,6 +60,22 @@ class DismissibleNotice extends Notice {
 
 	// endregion
 
+	// region METHODS
+
+	/**
+	 * Checks whether the notice should be outputted or not.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  bool    Whether the notice should be outputted or not.
+	 */
+	public function should_output(): bool {
+		return parent::should_output() && ! $this->is_dismissed();
+	}
+
+	// endregion
+
 	// region HELPERS
 
 	/**
@@ -70,12 +84,10 @@ class DismissibleNotice extends Notice {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
-	 *
 	 * @return  string[]
 	 */
-	protected function get_classes( PluginInterface $plugin ): array {
-		return array_merge( parent::get_classes( $plugin ), array( 'is-dismissible' ) );
+	protected function get_classes(): array {
+		return array_merge( parent::get_classes(), array( 'is-dismissible' ) );
 	}
 
 	// endregion

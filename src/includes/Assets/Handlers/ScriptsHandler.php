@@ -127,7 +127,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 			$this->is_ran     = true;
 			$this->run_result = null;
 		} else {
-			return new RunFailureException( 'The scripts handler has already ben run.' );
+			return new RunFailureException( 'The scripts handler has already been run.' );
 		}
 
 		return $this->run_result;

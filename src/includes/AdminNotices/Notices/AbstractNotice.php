@@ -2,6 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Helpers\Security\Validation;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
@@ -138,6 +139,27 @@ abstract class AbstractNotice implements AdminNoticeInterface {
 		return true;
 	}
 
+	/**
+	 * Outputs the notice.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  OutputFailureException|null
+	 */
+	public function output(): ?OutputFailureException {
+		if ( $this->should_output() ) {
+			echo sprintf(
+				'<div id="%1$s" data-handle="%1$s" class="%2$s">%3$s</div>',
+				esc_attr( $this->get_handle() ),
+				esc_attr( implode( ' ', $this->get_classes() ) ),
+				wp_kses_post( $this->message )
+			);
+		}
+
+		return null;
+	}
+
 	// endregion
 
 	// region HELPERS
@@ -148,16 +170,13 @@ abstract class AbstractNotice implements AdminNoticeInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
-	 *
 	 * @return  string[]
 	 */
-	protected function get_classes( PluginInterface $plugin ): array {
+	protected function get_classes(): array {
 		return array(
 			'notice',
 			'notice-' . $this->type,
 			'dws-framework-notice',
-			'dws-framework-notice-' . $plugin->get_plugin_slug(),
 		);
 	}
 

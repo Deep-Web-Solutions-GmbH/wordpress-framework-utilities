@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesHandlerInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactory;
@@ -48,7 +48,7 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   AdminNoticesStoreFactory    $store_factory      Instance of the amind notices store factory.
+	 * @param   AdminNoticesStoreFactory    $store_factory      Instance of the admin notices store factory.
 	 */
 	public function __construct( AdminNoticesStoreFactory $store_factory ) {
 		$this->set_admin_notices_store_factory( $store_factory );
@@ -80,46 +80,30 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 	}
 
 	/**
-	 * Output all  user specific admin notices.
+	 * Output all admin notices handled by the handler instance.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
-	 * @param   array               $params     Any parameters needed to retrieve the notices.
+	 * @return  OutputFailureException|null
 	 */
-	public function output_notices( PluginInterface $plugin, array $params ): void {
+	public function output(): ?OutputFailureException {
 		$stores = $this->get_admin_notices_store_factory()->get_stores();
 		foreach ( $stores as $store ) {
-			foreach ( $this->get_notices( $store->get_type(), $params ) as $notice ) {
-				if ( $this->should_output_notice( $notice ) ) {
-					$this->has_output = true;
-					$notice->output( $plugin, $store->get_type() );
+			foreach ( $this->get_notices( $store->get_type(), array() ) as $notice ) {
+				$result = $notice->output();
+				if ( ! is_null( $result ) ) {
+					return $result;
+				}
 
-					if ( ! $notice->is_persistent() ) {
-						$store->remove_notice( $notice->get_handle(), $params );
-					}
+				$this->has_output = true;
+				if ( ! $notice->is_persistent() ) {
+					$store->remove_notice( $notice->get_handle(), array() );
 				}
 			}
 		}
-	}
 
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * Checks whether a notice is eligible to be outputted.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   AdminNoticeInterface    $notice     The notice to check for eligibility.
-	 *
-	 * @return  bool
-	 */
-	public function should_output_notice( AdminNoticeInterface $notice ): bool {
-		return $notice->should_output();
+		return null;
 	}
 
 	// endregion

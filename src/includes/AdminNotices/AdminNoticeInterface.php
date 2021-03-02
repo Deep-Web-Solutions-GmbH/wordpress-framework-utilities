@@ -2,7 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-interface AdminNoticeInterface {
+interface AdminNoticeInterface extends OutputtableInterface {
 	// region GETTERS
 
 	/**
@@ -59,10 +60,9 @@ interface AdminNoticeInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
-	 * @param   string              $store      Store that the notice is stored in.
+	 * @return  OutputFailureException|null
 	 */
-	public function output( PluginInterface $plugin, string $store ): void;
+	public function output(): ?OutputFailureException;
 
 	// endregion
 }

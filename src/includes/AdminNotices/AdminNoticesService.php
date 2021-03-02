@@ -2,9 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputtableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
@@ -21,13 +21,13 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, PluginAwareInterface, RunnableInterface {
+class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, PluginAwareInterface, OutputtableInterface {
 	// region TRAITS
 
 	use AdminNoticesStoreFactoryAwareTrait;
 	use HooksServiceRegisterTrait;
 	use PluginAwareTrait;
-	use RunnableTrait;
+	use OutputtableTrait;
 
 	// endregion
 
@@ -54,8 +54,8 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 	 * @version 1.0.0
 	 *
 	 * @param   PluginInterface                     $plugin             Instance of the plugin.
-	 * @param   HooksService                        $hooks_service      Instance of the hooks service.
 	 * @param   AdminNoticesStoreFactory            $store_factory      Instance of the admin notices store factory.
+	 * @param   HooksService                        $hooks_service      Instance of the hooks service.
 	 * @param   AdminNoticesHandlerInterface[]      $handlers           Admin notices handlers to output.
 	 */
 	public function __construct( PluginInterface $plugin, AdminNoticesStoreFactory $store_factory, HooksService $hooks_service, array $handlers = array() ) {
@@ -101,6 +101,9 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 
 		foreach ( $handlers as $handler ) {
 			if ( $handler instanceof AdminNoticesHandlerInterface ) {
+				if ( $handler instanceof PluginAwareInterface ) {
+					$handler->set_plugin( $this->get_plugin() );
+				}
 				$this->handlers[ $handler->get_notices_type() ] = $handler;
 			}
 		}
@@ -121,7 +124,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 	 * @param   HooksService    $hooks_service      Instance of the hooks service.
 	 */
 	public function register_hooks( HooksService $hooks_service ): void {
-		$hooks_service->add_action( 'admin_notices', $this, 'run', PHP_INT_MAX );
+		$hooks_service->add_action( 'admin_notices', $this, 'output', PHP_INT_MAX );
 	}
 
 	/**
@@ -130,21 +133,26 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  RunFailureException|null
+	 * @return  OutputFailureException|null
 	 */
-	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_ran ) ) {
-			$this->is_ran     = true;
-			$this->run_result = null;
+	public function output(): ?OutputFailureException {
+		if ( is_null( $this->is_outputted ) ) {
+			$this->output_result = null;
 
 			foreach ( $this->get_handlers() as $handler ) {
-				$handler->output_notices( $this->get_plugin(), array() );
+				$result = $handler->output();
+				if ( ! is_null( $result ) ) {
+					$this->output_result = $result;
+					break;
+				}
 			}
+
+			$this->is_outputted = is_null( $this->output_result );
 		} else {
-			return new RunFailureException( 'The admin notices service has already ben run.' );
+			return new OutputFailureException( 'The admin notices service has already been outputted.' );
 		}
 
-		return $this->run_result;
+		return $this->output_result;
 	}
 
 	// endregion
@@ -161,9 +169,23 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 	 *
 	 * @return  $this
 	 */
-	public function register_handler( AdminNoticesHandlerInterface $handler ): AdminNoticesHandlerInterface {
+	public function register_handler( AdminNoticesHandlerInterface $handler ): AdminNoticesService {
 		$this->handlers[ $handler->get_notices_type() ] = $handler;
 		return $this;
+	}
+
+	/**
+	 * Returns the handler for a specific type of notices.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $notice_type    Class name of an AdminNoticeInterface implementation.
+	 *
+	 * @return  AdminNoticesHandlerInterface|null
+	 */
+	public function get_handler( string $notice_type ): ?AdminNoticesHandlerInterface {
+		return $this->handlers[ $notice_type ] ?? null;
 	}
 
 	/**

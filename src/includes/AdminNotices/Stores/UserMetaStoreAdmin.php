@@ -2,9 +2,6 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Stores;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
@@ -18,10 +15,18 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Stores
  */
-class UserMetaStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInterface {
-	// region TRAITS
+class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
+	// region FIELDS AND CONSTANTS
 
-	use PluginAwareTrait;
+	/**
+	 * The name of the key in the user meta table to store the notices.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @var     string
+	 */
+	protected string $meta_key;
 
 	// endregion
 
@@ -33,10 +38,10 @@ class UserMetaStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInter
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
+	 * @param   string      $meta_key       The name of the key in the user meta table to store the notices.
 	 */
-	public function __construct( PluginInterface $plugin ) {
-		$this->set_plugin( $plugin );
+	public function __construct( string $meta_key ) {
+		$this->meta_key = $meta_key;
 	}
 
 	// endregion
@@ -67,7 +72,7 @@ class UserMetaStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInter
 	 */
 	public function get_notices( array $params ): array {
 		$params = wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
-		return (array) get_user_meta( $params['user_id'], $this->generate_notices_meta_key(), true );
+		return (array) get_user_meta( $params['user_id'], $this->meta_key, true );
 	}
 
 	// endregion
@@ -95,7 +100,7 @@ class UserMetaStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInter
 
 		return update_user_meta(
 			$params['user_id'],
-			$this->generate_notices_meta_key(),
+			$this->meta_key,
 			$existing_notices
 		);
 	}
@@ -119,10 +124,10 @@ class UserMetaStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInter
 			unset( $notices[ $handle ] );
 
 			return empty( $notices )
-				? delete_user_meta( $params['user_id'], $this->generate_notices_meta_key() )
+				? delete_user_meta( $params['user_id'], $this->meta_key )
 				: update_user_meta(
 					$params['user_id'],
-					$this->generate_notices_meta_key(),
+					$this->meta_key,
 					$notices
 				);
 		}
@@ -143,22 +148,6 @@ class UserMetaStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInter
 	public function count_notices( array $params ): int {
 		$params = wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
 		return count( $this->get_notices( $params ) );
-	}
-
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * Generates the key under which the notices are stored in the options table.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	protected function generate_notices_meta_key(): string {
-		return sanitize_key( '_dws_admin_notices_' . $this->get_plugin()->get_plugin_safe_slug() );
 	}
 
 	// endregion

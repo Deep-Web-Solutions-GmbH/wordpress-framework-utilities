@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-interface AdminNoticesHandlerInterface extends AdminNoticesStoreFactoryAwareInterface {
+interface AdminNoticesHandlerInterface extends AdminNoticesStoreFactoryAwareInterface, OutputtableInterface {
 	// region GETTERS
 
 	/**
@@ -39,37 +39,6 @@ interface AdminNoticesHandlerInterface extends AdminNoticesStoreFactoryAwareInte
 	 * @return  AdminNoticeInterface[]
 	 */
 	public function get_notices( string $store, array $params ): array;
-
-	// endregion
-
-	// region METHODS
-
-	/**
-	 * Outputs all eligible notices from all factory-registered stores.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
-	 * @param   array               $params     Any parameters needed to retrieve the notices.
-	 */
-	public function output_notices( PluginInterface $plugin, array $params ): void;
-
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * Checks whether a notice is eligible to be outputted.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   AdminNoticeInterface    $notice     The notice to check for eligibility.
-	 *
-	 * @return  bool
-	 */
-	public function should_output_notice( AdminNoticeInterface $notice ): bool;
 
 	// endregion
 }

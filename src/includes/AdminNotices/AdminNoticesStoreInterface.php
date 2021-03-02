@@ -31,7 +31,7 @@ interface AdminNoticesStoreInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array   $params     Any parameters needed to retrieve the notices.
+	 * @param   array   $params     Any parameters needed to retrieve the notices. Defaults need to pertain to the current user.
 	 *
 	 * @return  AdminNoticeInterface[]
 	 */
@@ -47,7 +47,7 @@ interface AdminNoticesStoreInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array                $params     Any parameters needed to store the notice.
+	 * @param   array                $params     Any parameters needed to store the notice. Defaults need to pertain to the current user.
 	 * @param   AdminNoticeInterface ...$notices Notice(s) to add.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
@@ -61,7 +61,7 @@ interface AdminNoticesStoreInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   string  $handle     Handle of the notice to remove.
-	 * @param   array   $params     Any parameters needed to remove the notice.
+	 * @param   array   $params     Any parameters needed to remove the notice. Defaults need to pertain to the current user.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
 	 */
@@ -73,7 +73,7 @@ interface AdminNoticesStoreInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array   $params     Any parameters needed to count the notices.
+	 * @param   array   $params     Any parameters needed to count the notices. Defaults need to pertain to the current user.
 	 *
 	 * @return  int
 	 */

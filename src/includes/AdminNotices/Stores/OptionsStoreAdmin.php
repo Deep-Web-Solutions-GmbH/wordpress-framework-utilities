@@ -2,9 +2,6 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Stores;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
@@ -18,10 +15,18 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Stores
  */
-class OptionsStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInterface {
-	// region TRAITS
+class OptionsStoreAdmin implements AdminNoticesStoreInterface {
+	// region FIELDS AND CONSTANTS
 
-	use PluginAwareTrait;
+	/**
+	 * The name of the key in the options table to store the notices.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @var     string
+	 */
+	protected string $option_key;
 
 	// endregion
 
@@ -33,10 +38,10 @@ class OptionsStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInterf
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface     $plugin     Instance of the plugin.
+	 * @param   string      $option_key     The name of the key in the options table to store the notices.
 	 */
-	public function __construct( PluginInterface $plugin ) {
-		$this->set_plugin( $plugin );
+	public function __construct( string $option_key ) {
+		$this->option_key = $option_key;
 	}
 
 	// endregion
@@ -68,7 +73,7 @@ class OptionsStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInterf
 	 * @return  AdminNoticeInterface[]
 	 */
 	public function get_notices( array $params = array() ): array {
-		return (array) get_option( $this->generate_notices_option_key(), array() );
+		return (array) get_option( $this->option_key, array() );
 	}
 
 	// endregion
@@ -96,7 +101,7 @@ class OptionsStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInterf
 		}
 
 		return update_option(
-			$this->generate_notices_option_key(),
+			$this->option_key,
 			$existing_notices
 		);
 	}
@@ -121,9 +126,9 @@ class OptionsStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInterf
 			unset( $notices[ $handle ] );
 
 			return empty( $notices )
-				? delete_option( $this->generate_notices_option_key() )
+				? delete_option( $this->option_key )
 				: update_option(
-					$this->generate_notices_option_key(),
+					$this->option_key,
 					$notices
 				);
 		}
@@ -145,22 +150,6 @@ class OptionsStoreAdmin implements PluginAwareInterface, AdminNoticesStoreInterf
 	 */
 	public function count_notices( array $params = array() ): int {
 		return count( $this->get_notices() );
-	}
-
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * Generates the key under which the notices are stored in the options table.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	protected function generate_notices_option_key(): string {
-		return sanitize_key( '_dws_admin_notices_' . $this->get_plugin()->get_plugin_safe_slug() );
 	}
 
 	// endregion

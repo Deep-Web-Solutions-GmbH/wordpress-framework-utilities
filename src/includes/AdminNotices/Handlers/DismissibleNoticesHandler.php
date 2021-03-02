@@ -2,9 +2,10 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers;
 
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 use DeepWebSolutions\Framework\Helpers\WordPress\Assets;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactory;
@@ -35,14 +36,11 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 	/**
 	 * DismissibleNoticesHandler constructor.
 	 *
-	 * @param   PluginInterface             $plugin             Instance of the plugin.
 	 * @param   AdminNoticesStoreFactory    $store_factory      Instance of the admin notices store factory.
 	 * @param   HooksService                $hooks_service      Instance of the hooks service.
 	 */
-	public function __construct( PluginInterface $plugin, AdminNoticesStoreFactory $store_factory, HooksService $hooks_service ) {
+	public function __construct( AdminNoticesStoreFactory $store_factory, HooksService $hooks_service ) {
 		parent::__construct( $store_factory );
-
-		$this->set_plugin( $plugin );
 		$this->register_hooks( $hooks_service );
 	}
 
@@ -77,6 +75,46 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 	public function register_hooks( HooksService $hooks_service ): void {
 		$hooks_service->add_action( 'admin_footer', $this, 'output_admin_notices_dismiss_js' );
 		$hooks_service->add_action( 'wp_ajax_' . $this->get_hook_tag( 'dismiss_notice' ), $this, 'handle_ajax_dismiss' );
+	}
+
+	/**
+	 * Output all admin notices handled by the handler instance.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  OutputFailureException|null
+	 */
+	public function output(): ?OutputFailureException {
+		$stores = $this->get_admin_notices_store_factory()->get_stores();
+		foreach ( $stores as $store ) {
+			foreach ( $this->get_notices( $store->get_type(), array() ) as $notice ) {
+				ob_start();
+
+				$result = $notice->output();
+				if ( ! is_null( $result ) ) {
+					ob_end_clean();
+					return $result;
+				}
+
+				$notice_html = ob_get_clean();
+				$notice_html = Strings::replace_placeholders(
+					array(
+						'dws-framework-notice' => 'dws-framework-notice-' . esc_attr( $this->get_plugin()->get_plugin_slug() ),
+						'class='               => 'data-store="' . esc_attr( $store->get_type() ) . '" class=',
+					),
+					$notice_html
+				);
+				echo $notice_html; // phpcs:ignore
+
+				$this->has_output = true;
+				if ( ! $notice->is_persistent() ) {
+					$store->remove_notice( $notice->get_handle(), array() );
+				}
+			}
+		}
+
+		return null;
 	}
 
 	// endregion
@@ -193,7 +231,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 	 * @param   string      $store      The name of the store to retrieve the dismissed notices from.
 	 * @param   array       $params     Any parameters needed to retrieve the notices.
 	 *
-	 * @return bool
+	 * @return  DismissibleNotice[]
 	 */
 	public function get_dismissed_notices( string $store, array $params = array() ): array {
 		$store   = $this->get_admin_notices_store( $store );
@@ -205,24 +243,6 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 				return ( $notice instanceof DismissibleNotice ) && $notice->is_dismissed();
 			}
 		);
-	}
-
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * Checks whether a notice is eligible to be outputted.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   AdminNoticeInterface    $notice     The notice to check for eligibility.
-	 *
-	 * @return  bool
-	 */
-	public function should_output_notice( AdminNoticeInterface $notice ): bool {
-		return parent::should_output_notice( $notice ) && ! $notice->is_dismissed();
 	}
 
 	// endregion

@@ -67,7 +67,7 @@ trait DependenciesCheckerFactoryAwareTrait {
 	 *
 	 * @return  DependenciesCheckerInterface
 	 */
-	public function get_checker( string $name ): DependenciesCheckerInterface {
+	public function get_dependencies_checker( string $name ): DependenciesCheckerInterface {
 		return $this->get_dependencies_checker_factory()->get_checker( $name );
 	}
 

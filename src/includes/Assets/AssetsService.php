@@ -66,15 +66,31 @@ class AssetsService implements PluginAwareInterface, RunnableInterface {
 
 	// endregion
 
-	// region SETTERS
+	// region GETTERS
 
 	/**
-	 * Sets the list of handlers to check.
+	 * Returns the list of handlers registered to run.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array   $handlers   Collection of handlers to check.
+	 * @return  AssetsHandlerInterface[]
+	 */
+	public function get_handlers(): array {
+		return $this->handlers;
+	}
+
+	// endregion
+
+	// region SETTERS
+
+	/**
+	 * Sets the list of handlers to run.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $handlers   Collection of handlers to run.
 	 *
 	 * @return  $this
 	 */
@@ -120,32 +136,18 @@ class AssetsService implements PluginAwareInterface, RunnableInterface {
 			$this->is_ran     = true;
 			$this->run_result = null;
 
-			foreach ( $this->handlers as $handler ) {
+			foreach ( $this->get_handlers() as $handler ) {
 				$result = $handler->run();
 				if ( ! is_null( $result ) ) {
 					$this->run_result = $result;
 					break;
 				}
 			}
+		} else {
+			return new RunFailureException( 'The assets service has already been run.' );
 		}
 
 		return $this->run_result;
-	}
-
-	// endregion
-
-	// region GETTERS
-
-	/**
-	 * Returns the list of handlers registered to run.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  AssetsHandlerInterface[]
-	 */
-	public function get_handlers(): array {
-		return $this->handlers;
 	}
 
 	// endregion

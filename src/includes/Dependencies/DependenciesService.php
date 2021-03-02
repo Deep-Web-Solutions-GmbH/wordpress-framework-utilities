@@ -54,7 +54,7 @@ class DependenciesService implements DependenciesCheckerFactoryAwareInterface, P
 	 * @return  array
 	 */
 	public function get_dependencies( string $checker_name ): array {
-		return $this->get_checker( $checker_name )->get_dependencies();
+		return $this->get_dependencies_checker( $checker_name )->get_dependencies();
 	}
 
 	/**
@@ -68,7 +68,7 @@ class DependenciesService implements DependenciesCheckerFactoryAwareInterface, P
 	 * @return  array
 	 */
 	public function get_missing_dependencies( string $checker_name ): array {
-		return $this->get_checker( $checker_name )->get_missing_dependencies();
+		return $this->get_dependencies_checker( $checker_name )->get_missing_dependencies();
 	}
 
 	/**
@@ -82,7 +82,7 @@ class DependenciesService implements DependenciesCheckerFactoryAwareInterface, P
 	 * @return  mixed
 	 */
 	public function are_dependencies_fulfilled( string $checker_name ) {
-		return $this->get_checker( $checker_name )->are_dependencies_fulfilled();
+		return $this->get_dependencies_checker( $checker_name )->are_dependencies_fulfilled();
 	}
 
 	// endregion

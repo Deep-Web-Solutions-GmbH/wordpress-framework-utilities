@@ -1,8 +1,9 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Dependencies;
+namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-use DeepWebSolutions\Framework\Utilities\Dependencies\Checkers\NullChecker;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\DynamicStoreAdmin;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\NullStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
@@ -10,13 +11,14 @@ use Psr\Log\LogLevel;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Dependencies checker factory to decouple checkers from their using objects.
+ * Admin notices store factory.
  *
  * @since   1.0.0
  * @version 1.0.0
- * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies
+ * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
+ * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-class DependenciesCheckerFactory {
+class AdminNoticesStoreFactory {
 	// region TRAITS
 
 	use LoggingServiceAwareTrait;
@@ -26,18 +28,18 @@ class DependenciesCheckerFactory {
 	// region FIELDS AND CONSTANTS
 
 	/**
-	 * Collection of instantiated checkers.
+	 * Collection of instantiated stores.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @access  protected
-	 * @var     DependenciesCheckerInterface[]
+	 * @var     AdminNoticesStoreInterface[]
 	 */
-	protected array $checkers = array();
+	protected array $stores = array();
 
 	/**
-	 * Collection of checker-instantiating callables.
+	 * Collection of store-instantiating callables.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -52,7 +54,7 @@ class DependenciesCheckerFactory {
 	// region MAGIC METHODS
 
 	/**
-	 * DependenciesCheckerFactory constructor.
+	 * AdminNoticesStoreFactory constructor.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -61,7 +63,9 @@ class DependenciesCheckerFactory {
 	 */
 	public function __construct( LoggingService $logging_service ) {
 		$this->set_logging_service( $logging_service );
-		$this->checkers['NullChecker'] = new NullChecker();
+
+		$this->stores['null']    = new NullStoreAdmin();
+		$this->stores['dynamic'] = new DynamicStoreAdmin();
 	}
 
 	// endregion
@@ -69,15 +73,15 @@ class DependenciesCheckerFactory {
 	// region GETTERS
 
 	/**
-	 * Returns all instantiated dependencies checkers.
+	 * Returns all instantiated stores.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  DependenciesCheckerInterface[]
+	 * @return  AdminNoticesStoreInterface[]
 	 */
-	public function get_checkers(): array {
-		return $this->checkers;
+	public function get_stores(): array {
+		return $this->stores;
 	}
 
 	/**
@@ -97,12 +101,12 @@ class DependenciesCheckerFactory {
 	// region METHODS
 
 	/**
-	 * Registers a new callback with the checker factory for instantiating a new checker.
+	 * Registers a new callback with the stores factory for instantiating a new store.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string      $name       The name of the checker.
+	 * @param   string      $name       The name of the store.
 	 * @param   callable    $callable   The PHP callback required to instantiate it.
 	 */
 	public function register_callable( string $name, callable $callable ): void {
@@ -110,26 +114,26 @@ class DependenciesCheckerFactory {
 	}
 
 	/**
-	 * Returns a dependencies checker instance.
+	 * Returns a store instance.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $name       The name of the checker. Must match with the name used when registering the callback.
+	 * @param   string  $name       The name of the store. Must match with the name used when registering the callback.
 	 *
-	 * @return  DependenciesCheckerInterface
+	 * @return  AdminNoticesStoreInterface
 	 */
-	public function get_checker( string $name ): DependenciesCheckerInterface {
-		if ( ! isset( $this->checkers[ $name ] ) ) {
-			$this->checkers[ $name ] = $this->checkers['NullChecker'];
+	public function get_store( string $name ): AdminNoticesStoreInterface {
+		if ( ! isset( $this->stores[ $name ] ) ) {
+			$this->stores[ $name ] = $this->stores['null'];
 			if ( is_callable( $this->callables[ $name ] ?? '' ) ) {
-				$checker = call_user_func( $this->callables[ $name ] );
-				if ( $checker instanceof DependenciesCheckerInterface ) {
-					$this->checkers[ $name ] = $checker;
+				$store = call_user_func( $this->callables[ $name ] );
+				if ( $store instanceof AdminNoticesStoreInterface ) {
+					$this->stores[ $name ] = $store;
 				} else {
 					$this->log_event_and_doing_it_wrong(
 						__FUNCTION__,
-						sprintf( 'Failed to instantiate dependencies checker %s', $name ),
+						sprintf( 'Failed to instantiate admin notices store %s', $name ),
 						'1.0.0',
 						LogLevel::WARNING,
 						'framework'
@@ -138,7 +142,7 @@ class DependenciesCheckerFactory {
 			}
 		}
 
-		return $this->checkers[ $name ];
+		return $this->stores[ $name ];
 	}
 
 	// endregion

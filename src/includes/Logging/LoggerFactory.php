@@ -57,6 +57,34 @@ class LoggerFactory {
 
 	// endregion
 
+	// region GETTERS
+
+	/**
+	 * Returns all instantiated loggers.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  LoggerInterface[]
+	 */
+	public function get_loggers(): array {
+		return $this->loggers;
+	}
+
+	/**
+	 * Returns all registered callables.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  callable[]
+	 */
+	public function get_callables(): array {
+		return $this->callables;
+	}
+
+	// endregion
+
 	// region METHODS
 
 	/**
@@ -68,7 +96,7 @@ class LoggerFactory {
 	 * @param   string      $name       The name of the logger.
 	 * @param   callable    $callable   The PHP callback required to instantiate it.
 	 */
-	public function register_factory_callable( string $name, callable $callable ): void {
+	public function register_callable( string $name, callable $callable ): void {
 		$this->callables[ $name ] = $callable;
 	}
 

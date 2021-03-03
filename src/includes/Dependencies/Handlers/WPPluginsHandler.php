@@ -129,11 +129,9 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 			$wp_filesystem = $this->get_wp_filesystem();
 			$version       = '0.0.0';
 
-			if ( $wp_filesystem ) {
+			if ( ! is_null( $wp_filesystem ) ) {
 				$plugin_data = get_file_data( trailingslashit( $wp_filesystem->wp_plugins_dir() ) . $plugin, array( 'Version' => 'Version' ) );
-				if ( isset( $plugin_data['Version'] ) ) {
-					$version = $plugin_data['Version'];
-				}
+				$version     = $plugin_data['Version'] ?? $version;
 			}
 		}
 

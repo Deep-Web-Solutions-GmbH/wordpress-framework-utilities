@@ -81,7 +81,7 @@ abstract class AbstractAssetsHandler implements AssetsHandlerInterface {
 		$suffix = Assets::maybe_get_minified_suffix( $constant_name );
 		if ( ! empty( $suffix ) && strpos( $relative_path, $suffix ) === false ) {
 			$wp_filesystem = $this->get_wp_filesystem();
-			if ( $wp_filesystem ) {
+			if ( ! is_null( $wp_filesystem ) ) {
 				$full_path = Files::generate_full_path( $wp_filesystem->abspath(), $relative_path );
 				$extension = pathinfo( $full_path, PATHINFO_EXTENSION );
 

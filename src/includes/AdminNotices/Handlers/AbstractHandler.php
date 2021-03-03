@@ -7,6 +7,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesHandlerInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactory;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactoryAwareTrait;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -91,7 +92,7 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 		$stores = $this->get_admin_notices_store_factory()->get_stores();
 		foreach ( $stores as $store ) {
 			foreach ( $this->get_notices( $store->get_type(), array() ) as $notice ) {
-				$result = $notice->output();
+				$result = $this->output_notice( $notice, $store );
 				if ( ! is_null( $result ) ) {
 					return $result;
 				}
@@ -104,6 +105,27 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 		}
 
 		return null;
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Allows notice output manipulation by inheriting handlers. By default just calls the output method of the notice.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 *
+	 * @param   AdminNoticeInterface        $notice     Notice to output.
+	 * @param   AdminNoticesStoreInterface  $store      Store holding the notice.
+	 *
+	 * @return  OutputFailureException|null
+	 */
+	protected function output_notice( AdminNoticeInterface $notice, AdminNoticesStoreInterface $store ): ?OutputFailureException {
+		return $notice->output();
 	}
 
 	// endregion

@@ -9,6 +9,7 @@ use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 use DeepWebSolutions\Framework\Helpers\WordPress\Assets;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactory;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
@@ -75,46 +76,6 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 	public function register_hooks( HooksService $hooks_service ): void {
 		$hooks_service->add_action( 'admin_footer', $this, 'output_admin_notices_dismiss_js' );
 		$hooks_service->add_action( 'wp_ajax_' . $this->get_hook_tag( 'dismiss_notice' ), $this, 'handle_ajax_dismiss' );
-	}
-
-	/**
-	 * Output all admin notices handled by the handler instance.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  OutputFailureException|null
-	 */
-	public function output(): ?OutputFailureException {
-		$stores = $this->get_admin_notices_store_factory()->get_stores();
-		foreach ( $stores as $store ) {
-			foreach ( $this->get_notices( $store->get_type(), array() ) as $notice ) {
-				ob_start();
-
-				$result = $notice->output();
-				if ( ! is_null( $result ) ) {
-					ob_end_clean();
-					return $result;
-				}
-
-				$notice_html = ob_get_clean();
-				$notice_html = Strings::replace_placeholders(
-					array(
-						'dws-framework-notice' => 'dws-framework-notice-' . esc_attr( $this->get_plugin()->get_plugin_slug() ),
-						'class='               => 'data-store="' . esc_attr( $store->get_type() ) . '" class=',
-					),
-					$notice_html
-				);
-				echo $notice_html; // phpcs:ignore
-
-				$this->has_output = true;
-				if ( ! $notice->is_persistent() ) {
-					$store->remove_notice( $notice->get_handle(), array() );
-				}
-			}
-		}
-
-		return null;
 	}
 
 	// endregion
@@ -243,6 +204,43 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 				return ( $notice instanceof DismissibleNotice ) && $notice->is_dismissed();
 			}
 		);
+	}
+
+	// endregion
+
+	// region INHERITED HELPERS
+
+	/**
+	 * Manipulate the output of the notice to contain the HTML attributes needed for the AJAX dismiss call.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   AdminNoticeInterface        $notice     Notice to output.
+	 * @param   AdminNoticesStoreInterface  $store      Store holding the notice.
+	 *
+	 * @return  OutputFailureException|null
+	 */
+	protected function output_notice( AdminNoticeInterface $notice, AdminNoticesStoreInterface $store ): ?OutputFailureException {
+		ob_start();
+
+		$result = parent::output_notice( $notice, $store );
+		if ( ! is_null( $result ) ) {
+			ob_end_clean();
+			return $result;
+		}
+
+		$notice_html = ob_get_clean();
+		$notice_html = Strings::replace_placeholders(
+			array(
+				'dws-framework-notice' => 'dws-framework-notice-' . esc_attr( $this->get_plugin()->get_plugin_slug() ),
+				'class='               => 'data-store="' . esc_attr( $store->get_type() ) . '" class=',
+			),
+			$notice_html
+		);
+		echo $notice_html; // phpcs:ignore
+
+		return null;
 	}
 
 	// endregion

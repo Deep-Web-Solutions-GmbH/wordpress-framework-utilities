@@ -10,6 +10,10 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
+use Psr\Log\LogLevel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,11 +25,12 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, PluginAwareInterface, OutputtableInterface {
+class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, OutputtableInterface {
 	// region TRAITS
 
 	use AdminNoticesStoreFactoryAwareTrait;
 	use HooksServiceRegisterTrait;
+	use LoggingServiceAwareTrait;
 	use PluginAwareTrait;
 	use OutputtableTrait;
 
@@ -54,12 +59,14 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 	 * @version 1.0.0
 	 *
 	 * @param   PluginInterface                     $plugin             Instance of the plugin.
+	 * @param   LoggingService                      $logging_service    Instance of the logging service.
 	 * @param   AdminNoticesStoreFactory            $store_factory      Instance of the admin notices store factory.
 	 * @param   HooksService                        $hooks_service      Instance of the hooks service.
 	 * @param   AdminNoticesHandlerInterface[]      $handlers           Admin notices handlers to output.
 	 */
-	public function __construct( PluginInterface $plugin, AdminNoticesStoreFactory $store_factory, HooksService $hooks_service, array $handlers = array() ) {
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service, AdminNoticesStoreFactory $store_factory, HooksService $hooks_service, array $handlers = array() ) {
 		$this->set_plugin( $plugin );
+		$this->set_logging_service( $logging_service );
 		$this->set_admin_notices_store_factory( $store_factory );
 
 		$this->register_hooks( $hooks_service );
@@ -149,7 +156,20 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 
 			$this->is_outputted = is_null( $this->output_result );
 		} else {
-			return new OutputFailureException( 'The admin notices service has already been outputted.' );
+			/* @noinspection PhpIncompatibleReturnTypeInspection */
+			return $this->log_event_and_doing_it_wrong_and_return_exception(
+				__FUNCTION__,
+				'The admin notices service has already been outputted.',
+				'1.0.0',
+				OutputFailureException::class,
+				null,
+				LogLevel::NOTICE,
+				'framework'
+			);
+		}
+
+		if ( $this->output_result instanceof OutputFailureException ) {
+			$this->log_event( LogLevel::ERROR, $this->output_result->getMessage(), 'framework' );
 		}
 
 		return $this->output_result;

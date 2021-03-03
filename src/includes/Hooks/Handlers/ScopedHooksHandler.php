@@ -115,14 +115,14 @@ class ScopedHooksHandler extends HooksHandler implements InitializableInterface 
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_ran ) ) {
+		if ( is_null( $this->is_run ) ) {
 			array_walk( $this->filters['added'], array( $this, 'array_walk_add_filter' ) );
 			$this->filters['removed'] = array_filter( $this->filters['removed'], array( $this, 'array_walk_remove_filter' ) );
 
 			array_walk( $this->actions['added'], array( $this, 'array_walk_add_action' ) );
 			$this->actions['removed'] = array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_action' ) );
 
-			$this->is_ran     = true;
+			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
 		}
 
@@ -146,7 +146,7 @@ class ScopedHooksHandler extends HooksHandler implements InitializableInterface 
 			array_walk( $this->actions['removed'], array( $this, 'array_walk_add_action' ) );
 
 			$this->is_reset     = true;
-			$this->reset_result = $this->is_ran = $this->run_result = null; // phpcs:ignore
+			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
 		}
 
 		return $this->reset_result;

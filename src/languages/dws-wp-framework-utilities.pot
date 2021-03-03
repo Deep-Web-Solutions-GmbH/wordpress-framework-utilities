@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: DWS WordPress Framework - Utilities 1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/deep-web-solutions/wordpress-framework-utilities/issues\n"
-"POT-Creation-Date: 2021-02-16 14:25:14+00:00\n"
+"POT-Creation-Date: 2021-03-03 16:13:42+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,21 +24,7 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:62
-#. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
-#. missing PHP extensions.
-msgid ""
-"<strong>%1$s</strong> requires the %2$s PHP extension to function. Contact "
-"your host or server administrator to install and configure the missing "
-"extension."
-msgid_plural ""
-"<strong>%1$s</strong> requires the following PHP extensions to function: "
-"%2$s. Contact your host or server administrator to install and configure "
-"the missing extensions."
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:97
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:151
 #. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP extensions.
 msgid ""
@@ -52,21 +38,22 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:128
-#. translators: 1. Plugin name or identifiable name, 2. Comma-separated list of
-#. missing PHP functions.
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:163
+#. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
+#. missing PHP extensions.
 msgid ""
-"<strong>%1$s</strong> requires the %2$s PHP function to exist. Contact your "
-"host or server administrator to install and configure the missing function."
+"<strong>%1$s</strong> requires the %2$s PHP extension to function. Contact "
+"your host or server administrator to install and configure the missing "
+"extension."
 msgid_plural ""
-"<strong>%1$s</strong> requires the following PHP functions to exist: %2$s. "
-"Contact your host or server administrator to install and configure the "
-"missing functions."
+"<strong>%1$s</strong> requires the following PHP extensions to function: "
+"%2$s. Contact your host or server administrator to install and configure "
+"the missing extensions."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:163
-#. translators: 1. Plugin name or identifiable name, 2. Comma-separated list of
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:192
+#. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP functions.
 msgid ""
 "<strong>%1$s</strong> may behave unexpectedly because the %2$s PHP function "
@@ -79,53 +66,48 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:193
-#. translators: Plugin name or identifiable name.
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:204
+#. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
+#. missing PHP functions.
 msgid ""
-"<strong>%s</strong> cannot run because the following PHP configuration "
-"settings are expected:"
-msgstr ""
+"<strong>%1$s</strong> requires the %2$s PHP function to exist. Contact your "
+"host or server administrator to install and configure the missing function."
+msgid_plural ""
+"<strong>%1$s</strong> requires the following PHP functions to exist: %2$s. "
+"Contact your host or server administrator to install and configure the "
+"missing functions."
+msgstr[0] ""
+msgstr[1] ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:204
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:254
-#. translators: PHP settings value.
-msgid "%s or higher"
-msgstr ""
-
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:213
-msgid ""
-"Please contact your hosting provider or server administrator to configure "
-"these settings."
-msgstr ""
-
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:243
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:233
 #. translators: Plugin name or identifiable name.
 msgid ""
 "<strong>%s</strong> may behave unexpectedly because the following PHP "
 "configuration settings are expected:"
 msgstr ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:263
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:237
 msgid ""
 "Please contact your hosting provider or server administrator to configure "
 "these settings. The plugin will attempt to run despite this warning."
 msgstr ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:290
-#. translators: 1. Plugin name or identifiable name, 2. Comma-separated list of
-#. missing active plugins.
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:241
+#. translators: Plugin name or identifiable name.
 msgid ""
-"<strong>%1$s</strong> requires the %2$s plugin to be installed and active. "
-"Please install and activate the plugin first."
-msgid_plural ""
-"<strong>%1$s</strong> requires the following plugins to be installed and "
-"active: %2$s. Please install and activate these plugins first."
-msgstr[0] ""
-msgstr[1] ""
+"<strong>%s</strong> cannot run because the following PHP configuration "
+"settings are expected:"
+msgstr ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:325
-#. translators: 1. Plugin name or identifiable name, 2. Comma-separated list of
-#. missing active plugins.
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:245
+msgid ""
+"Please contact your hosting provider or server administrator to configure "
+"these settings."
+msgstr ""
+
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:268
+#. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
+#. missing PHP extensions.
 msgid ""
 "<strong>%1$s</strong> may behave unexpectedly because the %2$s plugin is "
 "either not installed or not active. Please install and activate the plugin "
@@ -137,9 +119,31 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Services/Traits/DependenciesService/DependenciesAdminNotice.php:369
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:280
+#. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
+#. missing PHP extensions.
+msgid ""
+"<strong>%1$s</strong> requires the %2$s plugin to be installed and active. "
+"Please install and activate the plugin first."
+msgid_plural ""
+"<strong>%1$s</strong> requires the following plugins to be installed and "
+"active: %2$s. Please install and activate these plugins first."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:312
+#. translators: PHP settings value.
+msgid "%s or higher"
+msgstr ""
+
+#: includes/States/Activeable/DependenciesAdminNoticesTrait.php:348
 #. translators: %s: Installed version of the dependant plugin
 msgid "You're running version %s"
+msgstr ""
+
+#: includes/Templating/TemplatingService.php:216
+#. translators: %s: Path to template file
+msgid "%s does not exist."
 msgstr ""
 
 #: bootstrap.php:35

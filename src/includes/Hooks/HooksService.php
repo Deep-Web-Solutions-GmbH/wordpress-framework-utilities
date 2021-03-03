@@ -49,13 +49,13 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 	 * @version 1.0.0
 	 *
 	 * @param   PluginInterface     $plugin             Instance of the plugin.
-	 * @param   HooksHandler        $hooks_handler      Instance of the hooks handler.
 	 * @param   LoggingService      $logging_service    Instance of the logging service.
+	 * @param   HooksHandler        $hooks_handler      Instance of the hooks handler.
 	 */
-	public function __construct( PluginInterface $plugin, HooksHandler $hooks_handler, LoggingService $logging_service ) {
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksHandler $hooks_handler ) {
 		$this->set_plugin( $plugin );
-		$this->set_hooks_handler( $hooks_handler );
 		$this->set_logging_service( $logging_service );
+		$this->set_hooks_handler( $hooks_handler );
 	}
 
 	// endregion
@@ -71,9 +71,9 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->get_hooks_handler()->is_ran() ) ) {
+		if ( is_null( $this->get_hooks_handler()->is_run() ) ) {
 			$this->run_result   = $this->get_hooks_handler()->run();
-			$this->is_ran       = is_null( $this->run_result );
+			$this->is_run       = is_null( $this->run_result );
 			$this->reset_result = $this->is_reset = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -86,6 +86,10 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 				LogLevel::NOTICE,
 				'framework'
 			);
+		}
+
+		if ( $this->run_result instanceof RunFailureException ) {
+			$this->log_event( LogLevel::ERROR, $this->run_result->getMessage(), 'framework' );
 		}
 
 		return $this->run_result;
@@ -103,7 +107,7 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 		if ( is_null( $this->get_hooks_handler()->is_reset() ) ) {
 			$this->reset_result = $this->get_hooks_handler()->reset();
 			$this->is_reset     = is_null( $this->reset_result );
-			$this->is_ran       = $this->run_result = null; // phpcs:ignore
+			$this->is_run       = $this->run_result = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
@@ -115,6 +119,10 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 				LogLevel::NOTICE,
 				'framework'
 			);
+		}
+
+		if ( $this->reset_result instanceof ResetFailureException ) {
+			$this->log_event( LogLevel::ERROR, $this->reset_result->getMessage(), 'framework' );
 		}
 
 		return $this->reset_result;

@@ -117,14 +117,14 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_ran ) ) {
+		if ( is_null( $this->is_run ) ) {
 			$this->scripts = Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ? $this->scripts['public'] : $this->scripts['admin'];
 			array_walk( $this->scripts['register'], array( $this, 'array_walk_register_script' ) );
 			array_walk( $this->scripts['enqueue'], array( $this, 'array_walk_enqueue_script' ) );
 			array_walk( $this->scripts_inline, array( $this, 'array_walk_add_inline_script' ) );
 			array_walk( $this->scripts_localization, array( $this, 'array_walk_localize_script' ) );
 
-			$this->is_ran     = true;
+			$this->is_run     = true;
 			$this->run_result = null;
 		} else {
 			return new RunFailureException( 'The scripts handler has already been run.' );

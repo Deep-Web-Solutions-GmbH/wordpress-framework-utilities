@@ -12,6 +12,10 @@ use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
+use Psr\Log\LogLevel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,10 +27,11 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Assets
  */
-class AssetsService implements PluginAwareInterface, RunnableInterface {
+class AssetsService implements LoggingServiceAwareInterface, PluginAwareInterface, RunnableInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
+	use LoggingServiceAwareTrait;
 	use PluginAwareTrait;
 	use RunnableTrait;
 
@@ -55,11 +60,14 @@ class AssetsService implements PluginAwareInterface, RunnableInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   PluginInterface             $plugin             Instance of the plugin.
+	 * @param   LoggingService              $logging_service    Instance of the logging service.
 	 * @param   HooksService                $hooks_service      Instance of the hooks service.
 	 * @param   AssetsHandlerInterface[]    $handlers           Assets handlers to run.
 	 */
-	public function __construct( PluginInterface $plugin, HooksService $hooks_service, array $handlers = array() ) {
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $handlers = array() ) {
 		$this->set_plugin( $plugin );
+		$this->set_logging_service( $logging_service );
+
 		$this->register_hooks( $hooks_service );
 		$this->set_handlers( $handlers );
 	}
@@ -132,8 +140,7 @@ class AssetsService implements PluginAwareInterface, RunnableInterface {
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_ran ) ) {
-			$this->is_ran     = true;
+		if ( is_null( $this->is_run ) ) {
 			$this->run_result = null;
 
 			foreach ( $this->get_handlers() as $handler ) {
@@ -143,8 +150,23 @@ class AssetsService implements PluginAwareInterface, RunnableInterface {
 					break;
 				}
 			}
+
+			$this->is_run = is_null( $this->run_result );
 		} else {
-			return new RunFailureException( 'The assets service has already been run.' );
+			/* @noinspection PhpIncompatibleReturnTypeInspection */
+			return $this->log_event_and_doing_it_wrong_and_return_exception(
+				__FUNCTION__,
+				'The assets service has already been run.',
+				'1.0.0',
+				RunFailureException::class,
+				null,
+				LogLevel::NOTICE,
+				'framework'
+			);
+		}
+
+		if ( $this->run_result instanceof RunFailureException ) {
+			$this->log_event( LogLevel::ERROR, $this->run_result->getMessage(), 'framework' );
 		}
 
 		return $this->run_result;

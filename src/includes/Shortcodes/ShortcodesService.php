@@ -101,7 +101,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_ran ) ) {
+		if ( is_null( $this->is_run ) ) {
 			foreach ( $this->shortcodes as $hook ) {
 				if ( empty( $hook['component'] ) ) {
 					add_shortcode( $hook['tag'], $hook['callback'] );
@@ -110,7 +110,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 				}
 			}
 
-			$this->is_ran     = true;
+			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -123,6 +123,10 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 				LogLevel::NOTICE,
 				'framework'
 			);
+		}
+
+		if ( $this->run_result instanceof RunFailureException ) {
+			$this->log_event( LogLevel::ERROR, $this->run_result->getMessage(), 'framework' );
 		}
 
 		return $this->run_result;
@@ -143,7 +147,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 			}
 
 			$this->is_reset     = true;
-			$this->reset_result = $this->is_ran = $this->run_result = null; // phpcs:ignore
+			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
@@ -157,6 +161,10 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 			);
 		}
 
+		if ( $this->reset_result instanceof ResetFailureException ) {
+			$this->log_event( LogLevel::ERROR, $this->reset_result->getMessage(), 'framework' );
+		}
+
 		return $this->reset_result;
 	}
 
@@ -165,7 +173,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	// region METHODS
 
 	/**
-	 * Add a new shortcode to the collection to be registered with WordPress.
+	 * Adds a new shortcode to the collection to be registered with WordPress.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -175,18 +183,27 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @param   string          $callback       The name of the function definition on the $component.
 	 */
 	public function add_shortcode( string $tag, ?object $component, string $callback ): void {
-		$this->shortcodes = $this->add( $this->shortcodes, $tag, $component, $callback );
+		$this->shortcodes[] = array(
+			'tag'       => $tag,
+			'component' => $component,
+			'callback'  => $callback,
+		);
 	}
 
 	/**
-	 * Remove a shortcode from the collection to be registered with WordPress.
+	 * Removes a shortcode from the collection to be registered with WordPress.
 	 *
 	 * @param   string          $tag            The name of the WordPress shortcode that is being deregistered.
 	 * @param   object|null     $component      A reference to the instance of the object on which the shortcode is defined.
 	 * @param   string          $callback       The name of the function definition on the $component.
 	 */
 	public function remove_shortcode( string $tag, ?object $component, string $callback ): void {
-		$this->shortcodes = $this->remove( $this->shortcodes, $tag, $component, $callback );
+		foreach ( $this->shortcodes as $index => $hook_info ) {
+			if ( $hook_info['tag'] === $tag && $hook_info['component'] === $component && $hook_info['callback'] === $callback ) {
+				unset( $this->shortcodes[ $index ] );
+				break;
+			}
+		}
 	}
 
 	/**
@@ -197,59 +214,6 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	 */
 	public function remove_all_shortcodes(): void {
 		$this->shortcodes = array();
-	}
-
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * A utility function that is used to register the shortcodes into a single collection.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   array           $shortcodes     The collection of shortcodes that is being registered.
-	 * @param   string          $tag            The name of the WordPress shortcode that is being registered.
-	 * @param   object|null     $component      A reference to the instance of the object on which the shortcode is defined.
-	 * @param   string          $callback       The name of the function definition on the $component.
-	 *
-	 * @access  protected
-	 * @return  array      The collection of shortcodes registered with WordPress.
-	 */
-	protected function add( array $shortcodes, string $tag, ?object $component, string $callback ): array {
-		$shortcodes[] = array(
-			'tag'       => $tag,
-			'component' => $component,
-			'callback'  => $callback,
-		);
-
-		return $shortcodes;
-	}
-
-	/**
-	 * A utility function that is used to remove the shortcodes from the single collection.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   array           $shortcodes     The collection of shortcodes that is being unregistered.
-	 * @param   string          $tag            The name of the WordPress shortcode that is being unregistered.
-	 * @param   object|null     $component      A reference to the instance of the object on which the shortcode is defined.
-	 * @param   string          $callback       The name of the function definition on the $component.
-	 *
-	 * @access  protected
-	 * @return  array      The collection of shortcodes registered with WordPress.
-	 */
-	protected function remove( array $shortcodes, string $tag, ?object $component, string $callback ): array {
-		foreach ( $shortcodes as $index => $hook_info ) {
-			if ( $hook_info['tag'] === $tag && $hook_info['component'] === $component && $hook_info['callback'] === $callback ) {
-				unset( $shortcodes[ $index ] );
-				break;
-			}
-		}
-
-		return $shortcodes;
 	}
 
 	// endregion

@@ -58,12 +58,46 @@ class NullStoreAdmin implements AdminNoticesStoreInterface {
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 *
-	 * @param   array                $params     NOT USED BY THIS STORE.
-	 * @param   AdminNoticeInterface ...$notices Notice(s) to add.
+	 * @param   AdminNoticeInterface    $notice     Notice to add.
+	 * @param   array                   $params     NOT USED BY THIS STORE.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
 	 */
-	public function add_notice( array $params, AdminNoticeInterface ...$notices ): bool {
+	public function add_notice( AdminNoticeInterface $notice, array $params = array() ): bool {
+		return false;
+	}
+
+	/**
+	 * Returns null.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 *
+	 * @param   string  $handle     Handle of the notice to retrieve.
+	 * @param   array   $params     NOT USED BY THIS STORE.
+	 *
+	 * @return  AdminNoticeInterface|null
+	 */
+	public function get_notice( string $handle, array $params = array() ): ?AdminNoticeInterface {
+		return null;
+	}
+
+	/**
+	 * Returns false.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 *
+	 * @param   AdminNoticeInterface    $notice         Notice to add or update.
+	 * @param   array                   $params         NOT USED BY THIS STORE.
+	 *
+	 * @return  bool    Whether the operation was successful or not.
+	 */
+	public function update_notice( AdminNoticeInterface $notice, array $params = array() ): bool {
 		return false;
 	}
 

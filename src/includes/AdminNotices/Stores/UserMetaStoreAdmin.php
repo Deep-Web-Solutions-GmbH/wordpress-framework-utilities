@@ -80,29 +80,62 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	// region METHODS
 
 	/**
-	 * Adds one or more notices to the store.
+	 * Adds a notice to the store. If a notice with the same handle exists already, it will fail.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array                $params     Should contain ID of the user for which the notices should be added.
-	 * @param   AdminNoticeInterface ...$notices Notice(s) to add.
+	 * @param   AdminNoticeInterface    $notice     Notice to add.
+	 * @param   array                   $params     Should contain ID of the user for which the notices should be added.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
 	 */
-	public function add_notice( array $params, AdminNoticeInterface ...$notices ): bool {
+	public function add_notice( AdminNoticeInterface $notice, array $params ): bool {
 		$params           = wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
 		$existing_notices = $this->get_notices( $params );
-
-		foreach ( $notices as $notice ) {
-			$existing_notices[ $notice->get_handle() ] = $notice;
+		if ( isset( $existing_notices[ $notice->get_handle() ] ) ) {
+			return false;
 		}
+
+		$existing_notices[ $notice->get_handle() ] = $notice;
 
 		return update_user_meta(
 			$params['user_id'],
 			$this->meta_key,
 			$existing_notices
 		);
+	}
+
+	/**
+	 * Retrieves a notice from the store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $handle     Handle of the notice to retrieve.
+	 * @param   array   $params     Any parameters needed to retrieve the notice. Defaults need to pertain to the current user.
+	 *
+	 * @return  AdminNoticeInterface|null
+	 */
+	public function get_notice( string $handle, array $params ): ?AdminNoticeInterface {
+		return $this->get_notices( $params )[ $handle ] ?? null;
+	}
+
+	/**
+	 * Updates (or adds if it doesn't exist) a notice in the store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   AdminNoticeInterface    $notice         Notice to add or update.
+	 * @param   array                   $params         Any parameters needed to store the notice. Defaults need to pertain to the current user.
+	 *
+	 * @return  bool    Whether the operation was successful or not.
+	 */
+	public function update_notice( AdminNoticeInterface $notice, array $params ): bool {
+		$existing_notices = $this->get_notices( $params );
+		unset( $existing_notices[ $notice->get_handle() ] );
+		return $this->add_notice( $notice, $params );
 	}
 
 	/**
@@ -117,7 +150,7 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  bool    Whether the operation was successful or not.
 	 */
 	public function remove_notice( string $handle, array $params ): bool {
-		$params  = wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
+		$params  = $params = $this->parse_params( $params );
 		$notices = $this->get_notices( $params );
 
 		if ( isset( $notices[ $handle ] ) ) {
@@ -146,8 +179,26 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  int
 	 */
 	public function count_notices( array $params ): int {
-		$params = wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
+		$params = $this->parse_params( $params );
 		return count( $this->get_notices( $params ) );
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Ensures that the default parameters are set.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $params     Parameters to parse.
+	 *
+	 * @return  array
+	 */
+	protected function parse_params( array $params ): array {
+		return wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
 	}
 
 	// endregion

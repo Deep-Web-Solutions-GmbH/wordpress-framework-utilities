@@ -195,7 +195,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 
 		if ( $notice instanceof DismissibleNotice ) {
 			$notice->set_dismissed_status( true );
-			return $store->add_notice( $params, $notice );
+			return $store->update_notice( $notice, $params );
 		}
 
 		return false;
@@ -215,7 +215,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInt
 	 */
 	public function is_dismissed_notice( string $handle, string $store, array $params = array() ): bool {
 		$store  = $this->get_admin_notices_store( $store );
-		$notice = $store->get_notices( $params )[ $handle ] ?? null;
+		$notice = $store->get_notice( $handle, $params );
 
 		return ( $notice instanceof DismissibleNotice )
 			? $notice->is_dismissed()

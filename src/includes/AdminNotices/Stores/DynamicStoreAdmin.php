@@ -65,23 +65,59 @@ class DynamicStoreAdmin implements AdminNoticesStoreInterface {
 	// region METHODS
 
 	/**
-	 * Adds one or more notices to the store.
+	 * Adds a notice to the store. If a notice with the same handle exists already, it will fail.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 *
-	 * @param   array                $params     NOT USED BY THIS STORE.
-	 * @param   AdminNoticeInterface ...$notices Notice(s) to add.
+	 * @param   AdminNoticeInterface    $notice     Notice to add.
+	 * @param   array                   $params     NOT USED BY THIS STORE.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
 	 */
-	public function add_notice( array $params, AdminNoticeInterface ...$notices ): bool {
-		foreach ( $notices as $notice ) {
-			$this->notices[ $notice->get_handle() ] = $notice;
+	public function add_notice( AdminNoticeInterface $notice, array $params = array() ): bool {
+		if ( isset( $this->notices[ $notice->get_handle() ] ) ) {
+			return false;
 		}
 
+		$this->notices[ $notice->get_handle() ] = $notice;
+		return true;
+	}
+
+	/**
+	 * Retrieves a notice from the store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 *
+	 * @param   string  $handle     Handle of the notice to retrieve.
+	 * @param   array   $params     NOT USED BY THIS STORE.
+	 *
+	 * @return  AdminNoticeInterface|null
+	 */
+	public function get_notice( string $handle, array $params = array() ): ?AdminNoticeInterface {
+		return $this->get_notices()[ $handle ] ?? null;
+	}
+
+	/**
+	 * Updates (or adds if it doesn't exist) a notice in the store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 *
+	 * @param   AdminNoticeInterface    $notice         Notice to add or update.
+	 * @param   array                   $params         NOT USED BY THIS STORE.
+	 *
+	 * @return  bool    Whether the operation was successful or not.
+	 */
+	public function update_notice( AdminNoticeInterface $notice, array $params = array() ): bool {
+		$this->notices[ $notice->get_handle() ] = $notice;
 		return true;
 	}
 

@@ -20,10 +20,17 @@ defined( 'ABSPATH' ) || exit;
  * @package DeepWebSolutions\WP-Framework\Foundations\WordPress
  */
 trait DependenciesTrait {
+	// region TRAITS
+
 	use ActiveableExtensionTrait;
 
+	// endregion
+
+	// region METHODS
+
 	/**
-	 * If the using class is IsActiveExtensionTrait, prevent its activation if both optional and required dependencies are not fulfilled.
+	 * If the using class is IsActiveExtensionTrait, prevent its activation if required dependencies are not fulfilled.
+	 * Optional dependencies can be marked by including the word 'optional' in the key of the result.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -41,8 +48,59 @@ trait DependenciesTrait {
 			throw new NotImplementedException( 'Dependency checking scenario not supported' );
 		}
 
-		return is_array( $are_deps_fulfilled )
-			? is_null( Arrays::search_recursive( $are_deps_fulfilled, false, true ) )
-			: $are_deps_fulfilled;
+		if ( is_array( $are_deps_fulfilled ) ) {
+			if ( is_array( reset( $are_deps_fulfilled ) ) ) {
+				foreach ( $are_deps_fulfilled as $dependencies_status ) {
+					$required_status = $this->is_active_required_dependencies( $dependencies_status );
+					if ( false === $required_status ) {
+						$are_deps_fulfilled = false;
+						break;
+					}
+				}
+
+				$are_deps_fulfilled = is_array( $are_deps_fulfilled );
+			} else {
+				$are_deps_fulfilled = $this->is_active_required_dependencies( $are_deps_fulfilled );
+			}
+		}
+
+		return $are_deps_fulfilled;
 	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Returns whether an array of booleans denoting dependencies status evaluates to 'true' as far as required dependencies
+	 * are concerned. Optional dependencies should be marked by including the work 'optional' in the key of the boolean.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   bool[]      $dependencies_status    Array to evaluate.
+	 *
+	 * @return  bool    Whether all required dependencies are true or not.
+	 */
+	protected function is_active_required_dependencies( array $dependencies_status ): bool {
+		$unfulfilled = Arrays::search_values( $dependencies_status, false, false );
+
+		if ( Arrays::has_string_keys( $dependencies_status ) ) {
+			$optional_unfulfilled = Arrays::search_keys(
+				$unfulfilled,
+				true,
+				true,
+				function( string $key ) {
+					return strpos( $key, 'optional' ) !== false;
+				}
+			);
+			$are_deps_fulfilled   = ( count( $unfulfilled ) === count( $optional_unfulfilled ) );
+		} else {
+			$are_deps_fulfilled = is_null( $unfulfilled );
+		}
+
+		return $are_deps_fulfilled;
+	}
+
+	// endregion
 }

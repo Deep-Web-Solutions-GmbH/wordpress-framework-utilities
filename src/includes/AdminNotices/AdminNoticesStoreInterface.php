@@ -42,17 +42,43 @@ interface AdminNoticesStoreInterface {
 	// region METHODS
 
 	/**
-	 * Adds one or more notices to the store.
+	 * Adds a notice to the store. If a notice with the same handle exists already, it will fail.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array                $params     Any parameters needed to store the notice. Defaults need to pertain to the current user.
-	 * @param   AdminNoticeInterface ...$notices Notice(s) to add.
+	 * @param   AdminNoticeInterface    $notice         Notice to add.
+	 * @param   array                   $params         Any parameters needed to store the notice. Defaults need to pertain to the current user.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
 	 */
-	public function add_notice( array $params, AdminNoticeInterface ...$notices ): bool;
+	public function add_notice( AdminNoticeInterface $notice, array $params ): bool;
+
+	/**
+	 * Retrieves a notice from the store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $handle     Handle of the notice to retrieve.
+	 * @param   array   $params     Any parameters needed to retrieve the notice. Defaults need to pertain to the current user.
+	 *
+	 * @return  AdminNoticeInterface|null
+	 */
+	public function get_notice( string $handle, array $params ): ?AdminNoticeInterface;
+
+	/**
+	 * Updates (or adds if it doesn't exist) a notice in the store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   AdminNoticeInterface    $notice         Notice to add or update.
+	 * @param   array                   $params         Any parameters needed to store the notice. Defaults need to pertain to the current user.
+	 *
+	 * @return  bool    Whether the operation was successful or not.
+	 */
+	public function update_notice( AdminNoticeInterface $notice, array $params ): bool;
 
 	/**
 	 * Removes a notice from the store.

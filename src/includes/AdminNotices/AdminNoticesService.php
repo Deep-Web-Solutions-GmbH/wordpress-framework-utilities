@@ -201,7 +201,39 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 	 * @return  bool
 	 */
 	public function add_notice( AdminNoticeInterface $notice, string $store = 'dynamic', array $params = array() ): bool {
-		return $this->get_admin_notices_store( $store )->add_notice( $params, $notice );
+		return $this->get_admin_notices_store( $store )->add_notice( $notice, $params );
+	}
+
+	/**
+	 * Retrieves a notice from the given store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $handle     Handle of the notice to retrieve.
+	 * @param   string  $store      Name of the store to add the notice to.
+	 * @param   array   $params     Any parameters required to insert the notice into the store.
+	 *
+	 * @return  AdminNoticeInterface|null
+	 */
+	public function get_notice( string $handle, string $store = 'dynamic', array $params = array() ): ?AdminNoticeInterface {
+		return $this->get_admin_notices_store( $store )->get_notice( $handle, $params );
+	}
+
+	/**
+	 * Updates (or adds if it doesn't exist) a notice to the given store.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   AdminNoticeInterface    $notice     Notice to add to the store.
+	 * @param   string                  $store      Name of the store to add the notice to.
+	 * @param   array                   $params     Any parameters required to insert the notice into the store.
+	 *
+	 * @return  bool
+	 */
+	public function update_notice( AdminNoticeInterface $notice, string $store = 'dynamic', array $params = array() ): bool {
+		return $this->get_admin_notices_store( $store )->update_notice( $notice, $params );
 	}
 
 	/**
@@ -218,21 +250,6 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Plu
 	 */
 	public function remove_notice( string $handle, string $store = 'dynamic', array $params = array() ): bool {
 		return $this->get_admin_notices_store( $store )->remove_notice( $handle, $params );
-	}
-
-	/**
-	 * Returns the number of notices in a given store.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $store      The name of the store from which to count the notices.
-	 * @param   array   $params     Any parameters needed to count the notices.
-	 *
-	 * @return  int|null
-	 */
-	public function count_notices( string $store = 'dynamic', array $params = array() ): ?int {
-		return $this->get_admin_notices_store( $store )->count_notices( $params );
 	}
 
 	// endregion

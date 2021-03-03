@@ -116,7 +116,7 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
 				__FUNCTION__,
-				'The shortcodes service has been ran already. Please reset it before running it again.',
+				'The shortcodes service has been run already. Please reset it before running it again.',
 				'1.0.0',
 				RunFailureException::class,
 				null,

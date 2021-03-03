@@ -64,7 +64,7 @@ class CronEventsService implements LoggingServiceAwareInterface, PluginAwareInte
 	 *
 	 * @param   PluginInterface                 $plugin             Instance of the plugin.
 	 * @param   LoggingService                  $logging_service    Instance of the logging service.
-	 * @param   HooksService                        $hooks_service      Instance of the hooks service.
+	 * @param   HooksService                    $hooks_service      Instance of the hooks service.
 	 * @param   CronEventsHandlerInterface[]    $handlers           Cron events handlers to run.
 	 */
 	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $handlers ) {
@@ -161,7 +161,7 @@ class CronEventsService implements LoggingServiceAwareInterface, PluginAwareInte
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
 				__FUNCTION__,
-				'The cron events service has already been ran.',
+				'The cron events service has already been run.',
 				'1.0.0',
 				RunFailureException::class,
 				null,

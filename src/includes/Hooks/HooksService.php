@@ -72,8 +72,8 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 	 */
 	public function run(): ?RunFailureException {
 		if ( is_null( $this->get_hooks_handler()->is_ran() ) ) {
-			$this->is_ran       = true;
 			$this->run_result   = $this->get_hooks_handler()->run();
+			$this->is_ran       = is_null( $this->run_result );
 			$this->reset_result = $this->is_reset = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -101,8 +101,8 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 	 */
 	public function reset(): ?ResetFailureException {
 		if ( is_null( $this->get_hooks_handler()->is_reset() ) ) {
-			$this->is_reset     = true;
 			$this->reset_result = $this->get_hooks_handler()->reset();
+			$this->is_reset     = is_null( $this->reset_result );
 			$this->is_ran       = $this->run_result = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */

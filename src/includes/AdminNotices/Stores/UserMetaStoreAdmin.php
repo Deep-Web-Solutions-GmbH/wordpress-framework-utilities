@@ -150,7 +150,7 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  bool    Whether the operation was successful or not.
 	 */
 	public function remove_notice( string $handle, array $params ): bool {
-		$params  = $params = $this->parse_params( $params );
+		$params  = $this->parse_params( $params );
 		$notices = $this->get_notices( $params );
 
 		if ( isset( $notices[ $handle ] ) ) {

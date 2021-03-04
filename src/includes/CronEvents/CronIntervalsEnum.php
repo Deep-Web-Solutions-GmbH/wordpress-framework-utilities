@@ -150,55 +150,60 @@ class CronIntervalsEnum {
 	public static function get_interval_description( string $interval_slug ): ?array {
 		$minutes_display = /* translators: number of minutes */ __( 'Every %s minutes', 'dws-wp-framework-utilities' );
 		$hours_display   = /* translators: number of hours */ __( 'Every %s hours', 'dws-wp-framework-utilities' );
+		$result          = null;
 
 		switch ( $interval_slug ) {
 			case self::MINUTES_5:
-				return array(
+				$result = array(
 					'interval' => 60 * 5,
 					'display'  => sprintf( $minutes_display, 5 ),
 				);
+				break;
 			case self::MINUTES_10:
-				return array(
+				$result = array(
 					'interval' => 60 * 10,
 					'display'  => sprintf( $minutes_display, 10 ),
 				);
+				break;
 			case self::MINUTES_15:
-				return array(
+				$result = array(
 					'interval' => 60 * 15,
 					'display'  => sprintf( $minutes_display, 15 ),
 				);
+				break;
 			case self::MINUTES_30:
-				return array(
+				$result = array(
 					'interval' => 60 * 30,
 					'display'  => sprintf( $minutes_display, 30 ),
 				);
+				break;
 			case self::HOURS_2:
-				return array(
+				$result = array(
 					'interval' => 60 * 60 * 2,
 					'display'  => sprintf( $hours_display, 2 ),
 				);
+				break;
 			case self::HOURS_3:
-				return array(
+				$result = array(
 					'interval' => 60 * 60 * 3,
 					'display'  => sprintf( $hours_display, 3 ),
 				);
+				break;
 			case self::HOURS_4:
-				return array(
+				$result = array(
 					'interval' => 60 * 60 * 4,
 					'display'  => sprintf( $hours_display, 4 ),
 				);
+				break;
 			case self::HOURS_6:
-				return array(
+				$result = array(
 					'interval' => 60 * 60 * 6,
 					'display'  => sprintf( $hours_display, 6 ),
 				);
-			case self::HOURS_1:
-			case self::HOURS_12:
-			case self::HOURS_24:
-			case self::WEEKS_1:
-			default:
-				return null;
+				break;
 		}
+
+		return $result;
 	}
 
 	// endregion

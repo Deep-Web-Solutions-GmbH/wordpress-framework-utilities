@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\Templating;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\WordPress\Helpers\HooksHelpersTrait;
+use DeepWebSolutions\Framework\Foundations\Helpers\HooksHelpersTrait;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;

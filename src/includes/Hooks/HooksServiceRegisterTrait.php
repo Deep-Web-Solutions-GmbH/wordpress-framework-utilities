@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
-use DeepWebSolutions\Framework\Foundations\WordPress\Helpers\HooksHelpersTrait;
+use DeepWebSolutions\Framework\Foundations\Helpers\HooksHelpersTrait;
 
 defined( 'ABSPATH' ) || exit;
 

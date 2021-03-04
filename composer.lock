@@ -71,12 +71,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/deep-web-solutions/wordpress-framework-foundations.git",
-                "reference": "349dadfc8328b9d46a9d606d951f815219b736c4"
+                "reference": "56b69269608bd9e9f9406ae148d1e5424f680c03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/349dadfc8328b9d46a9d606d951f815219b736c4",
-                "reference": "349dadfc8328b9d46a9d606d951f815219b736c4",
+                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/56b69269608bd9e9f9406ae148d1e5424f680c03",
+                "reference": "56b69269608bd9e9f9406ae148d1e5424f680c03",
                 "shasum": ""
             },
             "require": {
@@ -130,7 +130,7 @@
                 "issues": "https://github.com/deep-web-solutions/wordpress-framework-foundations/issues",
                 "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/master"
             },
-            "time": "2021-03-04T11:21:19+00:00"
+            "time": "2021-03-04T14:38:24+00:00"
         },
         {
             "name": "deep-web-solutions/wp-framework-helpers",

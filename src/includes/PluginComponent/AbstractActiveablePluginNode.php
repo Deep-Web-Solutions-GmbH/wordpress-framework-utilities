@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Core\PluginComponents
  */
-abstract class AbstractPluginActiveableNode extends AbstractPluginNode implements ActiveableInterface, DisableableInterface {
+abstract class AbstractActiveablePluginNode extends AbstractPluginNode implements ActiveableInterface, DisableableInterface {
 	// region TRAITS
 
 	use ActiveableTrait { is_active as is_active_trait; }

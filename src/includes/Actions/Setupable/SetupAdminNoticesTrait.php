@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Setupable
  */
-trait AdminNoticesTrait {
+trait SetupAdminNoticesTrait {
 	// region TRAITS
 
 	use AdminNoticesServiceRegisterTrait;

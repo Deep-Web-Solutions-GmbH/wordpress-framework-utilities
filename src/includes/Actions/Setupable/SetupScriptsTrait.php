@@ -5,24 +5,24 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
 use DeepWebSolutions\Framework\Utilities\Assets\AssetsServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Assets\Handlers\StylesHandler;
-use DeepWebSolutions\Framework\Utilities\Assets\Handlers\StylesHandlerRegisterTrait;
+use DeepWebSolutions\Framework\Utilities\Assets\Handlers\ScriptsHandler;
+use DeepWebSolutions\Framework\Utilities\Assets\Handlers\ScriptsHandlerRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Trait for registering styles of using instances.
+ * Trait for registering scripts of using instances.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Setupable
  */
-trait StylesTrait {
+trait SetupScriptsTrait {
 	// region TRAITS
 
-	use StylesHandlerRegisterTrait;
+	use ScriptsHandlerRegisterTrait;
 	use SetupableExtensionTrait;
 
 	// endregion
@@ -30,33 +30,33 @@ trait StylesTrait {
 	// region METHODS
 
 	/**
-	 * Try to automagically call the styles registration method.
+	 * Try to automagically call the scripts registration method.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @return  SetupFailureException|null
 	 */
-	public function setup_styles(): ?SetupFailureException {
+	public function setup_scripts(): ?SetupFailureException {
 		if ( $this instanceof AssetsServiceAwareInterface ) {
 			$service = $this->get_assets_service();
 			$handler = null;
 
 			foreach ( $service->get_handlers() as $assets_handler ) {
-				if ( $assets_handler instanceof StylesHandler ) {
+				if ( $assets_handler instanceof ScriptsHandler ) {
 					$handler = $assets_handler;
 					break;
 				}
 			}
 		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$handler = $this->get_container()->get( StylesHandler::class );
+			$handler = $this->get_container()->get( ScriptsHandler::class );
 		}
 
 		if ( empty( $handler ) ) {
-			return new SetupFailureException( 'Styles registration setup scenario not supported' );
+			return new SetupFailureException( 'Scripts registration setup scenario not supported' );
 		}
 
-		$this->register_styles( $handler );
+		$this->register_scripts( $handler );
 		return null;
 	}
 

@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
-use DeepWebSolutions\Framework\Utilities\States\Activeable\DependenciesAdminNoticesTrait as ActiveableDependenciesAdminNoticesTrait;
+use DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies\DependenciesAdminNoticesTrait as ActiveableDependenciesAdminNoticesTrait;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,11 +16,11 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Setupable
  */
-trait DependenciesAdminNoticesTrait {
+trait SetupDependenciesAdminNoticesTrait {
 	// region TRAITS
 
 	use ActiveableDependenciesAdminNoticesTrait;
-	use AdminNoticesTrait { setup_admin_notices as setup_admin_notices_trait; }
+	use SetupAdminNoticesTrait { setup_admin_notices as setup_admin_notices_trait; }
 	use SetupableExtensionTrait;
 
 	// endregion

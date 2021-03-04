@@ -1,6 +1,6 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\States\Activeable;
+namespace DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
@@ -12,6 +12,7 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\Checkers\HandlerChecker;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\States\Activeable\ActiveDependenciesTrait;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,13 +22,13 @@ defined( 'ABSPATH' ) || exit;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\States\Activeable
+ * @package DeepWebSolutions\WP-Framework\Utilities\States\Activeable\Dependencies
  */
 trait DependenciesAdminNoticesTrait {
 	// region TRAITS
 
 	use AdminNoticesServiceRegisterTrait;
-	use DependenciesTrait;
+	use ActiveDependenciesTrait;
 
 	// endregion
 

@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Foundations\WordPress
  */
-trait DependenciesTrait {
+trait ActiveDependenciesTrait {
 	// region TRAITS
 
 	use ActiveableExtensionTrait;

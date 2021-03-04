@@ -9,6 +9,9 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareTrait;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
@@ -25,10 +28,11 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, OutputtableInterface {
+class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, HooksServiceAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, OutputtableInterface {
 	// region TRAITS
 
 	use AdminNoticesStoreFactoryAwareTrait;
+	use HooksServiceAwareTrait;
 	use HooksServiceRegisterTrait;
 	use LoggingServiceAwareTrait;
 	use PluginAwareTrait;
@@ -68,6 +72,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Log
 		$this->set_plugin( $plugin );
 		$this->set_logging_service( $logging_service );
 		$this->set_admin_notices_store_factory( $store_factory );
+		$this->set_hooks_service( $hooks_service );
 
 		$this->register_hooks( $hooks_service );
 		$this->set_handlers( $handlers );
@@ -190,6 +195,13 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Log
 	 * @return  $this
 	 */
 	public function register_handler( AdminNoticesHandlerInterface $handler ): AdminNoticesService {
+		if ( $handler instanceof PluginAwareInterface ) {
+			$handler->set_plugin( $this->get_plugin() );
+		}
+		if ( $handler instanceof HooksServiceRegisterInterface ) {
+			$handler->register_hooks( $this->get_hooks_service() );
+		}
+
 		$this->handlers[ $handler->get_notices_type() ] = $handler;
 		return $this;
 	}

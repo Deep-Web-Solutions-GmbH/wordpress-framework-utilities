@@ -12,6 +12,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactory;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 
 defined( 'ABSPATH' ) || exit;
@@ -24,26 +25,11 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Handlers
  */
-class DismissibleNoticesHandler extends NoticesHandler implements PluginAwareInterface {
+class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRegisterInterface, PluginAwareInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
 	use PluginAwareTrait;
-
-	// endregion
-
-	// region MAGIC METHODS
-
-	/**
-	 * DismissibleNoticesHandler constructor.
-	 *
-	 * @param   AdminNoticesStoreFactory    $store_factory      Instance of the admin notices store factory.
-	 * @param   HooksService                $hooks_service      Instance of the hooks service.
-	 */
-	public function __construct( AdminNoticesStoreFactory $store_factory, HooksService $hooks_service ) {
-		parent::__construct( $store_factory );
-		$this->register_hooks( $hooks_service );
-	}
 
 	// endregion
 

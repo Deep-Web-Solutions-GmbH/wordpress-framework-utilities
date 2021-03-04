@@ -30,6 +30,8 @@ interface HooksHandlerAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   HooksHandler    $hooks_handler      Hooks handler instance to use from now on.
+	 *
+	 * @return  mixed
 	 */
-	public function set_hooks_handler( HooksHandler $hooks_handler ): void;
+	public function set_hooks_handler( HooksHandler $hooks_handler );
 }

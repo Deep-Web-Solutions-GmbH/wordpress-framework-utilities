@@ -28,6 +28,8 @@ interface LoggerFactoryAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   LoggerFactory     $logger_factory       Logger factory instance to use from now on.
+	 *
+	 * @return  mixed
 	 */
-	public function set_logger_factory( LoggerFactory $logger_factory ): void;
+	public function set_logger_factory( LoggerFactory $logger_factory );
 }

@@ -30,6 +30,8 @@ interface ShortcodesServiceAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   ShortcodesService       $shortcodes_service     Shortcodes service instance to use from now on.
+	 *
+	 * @return  mixed
 	 */
-	public function set_shortcodes_service( ShortcodesService $shortcodes_service ): void;
+	public function set_shortcodes_service( ShortcodesService $shortcodes_service );
 }

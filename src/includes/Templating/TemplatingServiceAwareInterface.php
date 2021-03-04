@@ -28,6 +28,8 @@ interface TemplatingServiceAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   TemplatingService       $templating_service     Templating service instance to use from now on.
+	 *
+	 * @return  mixed
 	 */
-	public function set_templating_service( TemplatingService $templating_service ): void;
+	public function set_templating_service( TemplatingService $templating_service );
 }

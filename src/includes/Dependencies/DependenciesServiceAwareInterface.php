@@ -28,6 +28,8 @@ interface DependenciesServiceAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   DependenciesService       $service      Dependencies service instance to use from now on.
+	 *
+	 * @return  mixed
 	 */
-	public function set_dependencies_service( DependenciesService $service ): void;
+	public function set_dependencies_service( DependenciesService $service );
 }

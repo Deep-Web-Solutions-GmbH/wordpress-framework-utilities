@@ -71,12 +71,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/deep-web-solutions/wordpress-framework-foundations.git",
-                "reference": "15fa085427a5d5aeb861f0ef314fdf1bb7a04ce0"
+                "reference": "349dadfc8328b9d46a9d606d951f815219b736c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/15fa085427a5d5aeb861f0ef314fdf1bb7a04ce0",
-                "reference": "15fa085427a5d5aeb861f0ef314fdf1bb7a04ce0",
+                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/349dadfc8328b9d46a9d606d951f815219b736c4",
+                "reference": "349dadfc8328b9d46a9d606d951f815219b736c4",
                 "shasum": ""
             },
             "require": {
@@ -130,7 +130,7 @@
                 "issues": "https://github.com/deep-web-solutions/wordpress-framework-foundations/issues",
                 "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/master"
             },
-            "time": "2021-03-03T18:37:33+00:00"
+            "time": "2021-03-04T11:21:19+00:00"
         },
         {
             "name": "deep-web-solutions/wp-framework-helpers",
@@ -385,16 +385,16 @@
         },
         {
             "name": "nette/utils",
-            "version": "v3.2.1",
+            "version": "v3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "2bc2f58079c920c2ecbb6935645abf6f2f5f94ba"
+                "reference": "967cfc4f9a1acd5f1058d76715a424c53343c20c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/2bc2f58079c920c2ecbb6935645abf6f2f5f94ba",
-                "reference": "2bc2f58079c920c2ecbb6935645abf6f2f5f94ba",
+                "url": "https://api.github.com/repos/nette/utils/zipball/967cfc4f9a1acd5f1058d76715a424c53343c20c",
+                "reference": "967cfc4f9a1acd5f1058d76715a424c53343c20c",
                 "shasum": ""
             },
             "require": {
@@ -464,9 +464,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v3.2.1"
+                "source": "https://github.com/nette/utils/tree/v3.2.2"
             },
-            "time": "2021-01-11T03:05:59+00:00"
+            "time": "2021-03-03T22:53:25+00:00"
         },
         {
             "name": "object-calisthenics/phpcs-calisthenics-rules",

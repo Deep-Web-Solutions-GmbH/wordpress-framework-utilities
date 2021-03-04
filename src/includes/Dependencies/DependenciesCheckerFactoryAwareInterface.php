@@ -28,6 +28,8 @@ interface DependenciesCheckerFactoryAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   DependenciesCheckerFactory     $checker_factory     Dependencies checker factory instance to use from now on.
+	 *
+	 * @return  mixed
 	 */
-	public function set_dependencies_checker_factory( DependenciesCheckerFactory $checker_factory ): void;
+	public function set_dependencies_checker_factory( DependenciesCheckerFactory $checker_factory );
 }

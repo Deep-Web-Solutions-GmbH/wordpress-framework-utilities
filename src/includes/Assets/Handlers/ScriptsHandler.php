@@ -66,6 +66,22 @@ class ScriptsHandler extends AbstractAssetsHandler {
 
 	// endregion
 
+	// region MAGIC METHODS
+
+	/**
+	 * ScriptsHandler constructor.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $name   Unique name of the handler.
+	 */
+	public function __construct( string $name = 'default-scripts' ) { // phpcs:ignore
+		parent::__construct( $name );
+	}
+
+	// endregion
+
 	// region GETTERS
 
 	/**

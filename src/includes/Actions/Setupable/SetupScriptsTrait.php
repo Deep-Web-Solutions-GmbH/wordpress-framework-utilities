@@ -4,8 +4,8 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
+use DeepWebSolutions\Framework\Utilities\Assets\AssetsService;
 use DeepWebSolutions\Framework\Utilities\Assets\AssetsServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Assets\Handlers\ScriptsHandler;
 use DeepWebSolutions\Framework\Utilities\Assets\Handlers\ScriptsHandlerRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
@@ -39,17 +39,10 @@ trait SetupScriptsTrait {
 	 */
 	public function setup_scripts(): ?SetupFailureException {
 		if ( $this instanceof AssetsServiceAwareInterface ) {
-			$service = $this->get_assets_service();
-			$handler = null;
-
-			foreach ( $service->get_handlers() as $assets_handler ) {
-				if ( $assets_handler instanceof ScriptsHandler ) {
-					$handler = $assets_handler;
-					break;
-				}
-			}
+			$handler = $this->get_assets_service()->get_handler( 'default-scripts' );
 		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$handler = $this->get_container()->get( ScriptsHandler::class );
+			$service = $this->get_container()->get( AssetsService::class );
+			$handler = $service->get_handler( 'default-scripts' );
 		}
 
 		if ( empty( $handler ) ) {

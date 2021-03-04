@@ -10,6 +10,9 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
+use DeepWebSolutions\Framework\Utilities\Assets\Handlers\ScriptsHandler;
+use DeepWebSolutions\Framework\Utilities\Assets\Handlers\StylesHandler;
+use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
@@ -69,7 +72,7 @@ class AssetsService implements LoggingServiceAwareInterface, PluginAwareInterfac
 		$this->set_logging_service( $logging_service );
 
 		$this->register_hooks( $hooks_service );
-		$this->set_handlers( $handlers );
+		$this->set_default_handlers( $handlers );
 	}
 
 	// endregion
@@ -107,7 +110,7 @@ class AssetsService implements LoggingServiceAwareInterface, PluginAwareInterfac
 
 		foreach ( $handlers as $handler ) {
 			if ( $handler instanceof AssetsHandlerInterface ) {
-				$this->handlers[] = $handler;
+				$this->register_handler( $handler );
 			}
 		}
 
@@ -187,8 +190,46 @@ class AssetsService implements LoggingServiceAwareInterface, PluginAwareInterfac
 	 * @return  $this
 	 */
 	public function register_handler( AssetsHandlerInterface $handler ): AssetsService {
-		$this->handlers[] = $handler;
+		$this->handlers[ $handler->get_name() ] = $handler;
 		return $this;
+	}
+
+	/**
+	 * Returns a given handler from the list of registered ones.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $name   Unique name of the handler to retrieve.
+	 *
+	 * @return  AssetsHandlerInterface|null
+	 */
+	public function get_handler( string $name ): ?AssetsHandlerInterface {
+		return $this->get_handlers()[ $name ] ?? null;
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Register the handlers passed on in the constructor together with the default handlers.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $handlers   Handlers passed on in the constructor.
+	 */
+	protected function set_default_handlers( array $handlers ) {
+		$plugin = $this->get_plugin();
+		if ( $plugin instanceof ContainerAwareInterface ) {
+			$container = $plugin->get_container();
+			$handlers += array( $container->get( StylesHandler::class ), $container->get( ScriptsHandler::class ) );
+		} else {
+			$handlers += array( new StylesHandler(), new ScriptsHandler() );
+		}
+
+		$this->set_handlers( $handlers );
 	}
 
 	// endregion

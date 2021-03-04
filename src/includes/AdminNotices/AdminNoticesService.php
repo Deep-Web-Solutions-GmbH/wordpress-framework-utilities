@@ -8,6 +8,9 @@ use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\DismissibleNoticesHandler;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\NoticesHandler;
+use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareTrait;
@@ -72,10 +75,11 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 		$this->set_plugin( $plugin );
 		$this->set_logging_service( $logging_service );
 		$this->set_admin_notices_store_factory( $store_factory );
-		$this->set_hooks_service( $hooks_service );
 
+		$this->set_hooks_service( $hooks_service );
 		$this->register_hooks( $hooks_service );
-		$this->set_handlers( $handlers );
+
+		$this->set_default_handlers( $handlers, $store_factory );
 	}
 
 	// endregion
@@ -113,10 +117,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 
 		foreach ( $handlers as $handler ) {
 			if ( $handler instanceof AdminNoticesHandlerInterface ) {
-				if ( $handler instanceof PluginAwareInterface ) {
-					$handler->set_plugin( $this->get_plugin() );
-				}
-				$this->handlers[ $handler->get_notices_type() ] = $handler;
+				$this->register_handler( $handler );
 			}
 		}
 
@@ -282,6 +283,31 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 	 */
 	public function remove_notice( string $handle, string $store = 'dynamic', array $params = array() ): bool {
 		return $this->get_admin_notices_store( $store )->remove_notice( $handle, $params );
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Register the handlers passed on in the constructor together with the default handlers.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array                       $handlers           Handlers passed on in the constructor.
+	 * @param   AdminNoticesStoreFactory    $store_factory      Admin notices store factory passed on in the constructor.
+	 */
+	protected function set_default_handlers( array $handlers, AdminNoticesStoreFactory $store_factory ) {
+		$plugin = $this->get_plugin();
+		if ( $plugin instanceof ContainerAwareInterface ) {
+			$container = $plugin->get_container();
+			$handlers += array( $container->get( NoticesHandler::class ), $container->get( DismissibleNoticesHandler::class ) );
+		} else {
+			$handlers += array( new NoticesHandler( $store_factory ), new DismissibleNoticesHandler( $store_factory ) );
+		}
+
+		$this->set_handlers( $handlers );
 	}
 
 	// endregion

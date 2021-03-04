@@ -12,7 +12,13 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Helpers\WordPress\Misc;
+use DeepWebSolutions\Framework\Utilities\CronEvents\Handlers\ActionSchedulerHandler;
+use DeepWebSolutions\Framework\Utilities\CronEvents\Handlers\WordPressHandler;
+use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareTrait;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
@@ -29,9 +35,10 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\CronEvents
  */
-class CronEventsService implements LoggingServiceAwareInterface, PluginAwareInterface, RunnableInterface, ResettableInterface {
+class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
+	use HooksServiceAwareTrait;
 	use HooksServiceRegisterTrait;
 	use LoggingServiceAwareTrait;
 	use PluginAwareTrait;
@@ -67,12 +74,14 @@ class CronEventsService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @param   HooksService                    $hooks_service      Instance of the hooks service.
 	 * @param   CronEventsHandlerInterface[]    $handlers           Cron events handlers to run.
 	 */
-	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $handlers ) {
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $handlers = array() ) {
 		$this->set_plugin( $plugin );
 		$this->set_logging_service( $logging_service );
 
+		$this->set_hooks_service( $hooks_service );
 		$this->register_hooks( $hooks_service );
-		$this->set_handlers( $handlers );
+
+		$this->set_default_handlers( $handlers );
 	}
 
 	// endregion
@@ -110,10 +119,7 @@ class CronEventsService implements LoggingServiceAwareInterface, PluginAwareInte
 
 		foreach ( $handlers as $handler ) {
 			if ( $handler instanceof CronEventsHandlerInterface ) {
-				if ( $handler instanceof PluginAwareInterface ) {
-					$handler->set_plugin( $this->get_plugin() );
-				}
-				$this->handlers[ $handler->get_type() ] = $handler;
+				$this->register_handler( $handler );
 			}
 		}
 
@@ -233,6 +239,13 @@ class CronEventsService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  $this
 	 */
 	public function register_handler( CronEventsHandlerInterface $handler ): CronEventsService {
+		if ( $handler instanceof PluginAwareInterface ) {
+			$handler->set_plugin( $this->get_plugin() );
+		}
+		if ( $handler instanceof HooksServiceRegisterInterface ) {
+			$handler->register_hooks( $this->get_hooks_service() );
+		}
+
 		$this->handlers[ $handler->get_type() ] = $handler;
 		return $this;
 	}
@@ -346,6 +359,30 @@ class CronEventsService implements LoggingServiceAwareInterface, PluginAwareInte
 
 		$handler->unschedule_recurring_event( $hook, $timestamp, $args );
 		return true;
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Register the handlers passed on in the constructor together with the default handlers.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $handlers   Handlers passed on in the constructor.
+	 */
+	protected function set_default_handlers( array $handlers ) {
+		$plugin = $this->get_plugin();
+		if ( $plugin instanceof ContainerAwareInterface ) {
+			$container = $plugin->get_container();
+			$handlers += array( $container->get( WordPressHandler::class ), $container->get( ActionSchedulerHandler::class ) );
+		} else {
+			$handlers += array( new WordPressHandler(), new ActionSchedulerHandler() );
+		}
+
+		$this->set_handlers( $handlers );
 	}
 
 	// endregion

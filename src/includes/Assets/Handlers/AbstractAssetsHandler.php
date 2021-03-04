@@ -27,6 +27,52 @@ abstract class AbstractAssetsHandler implements AssetsHandlerInterface {
 
 	// endregion
 
+	// region FIELDS AND CONSTANTS
+
+	/**
+	 * The unique name of the handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @var     string
+	 */
+	protected string $name;
+
+	// endregion
+
+	// region MAGIC METHODS
+
+	/**
+	 * AbstractAssetsHandler constructor.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $name   Unique name of the handler.
+	 */
+	public function __construct( string $name ) {
+		$this->name = $name;
+	}
+
+	// endregion
+
+	// region GETTERS
+
+	/**
+	 * Returns the name of the handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string
+	 */
+	public function get_name(): string {
+		return $this->name;
+	}
+
+	// endregion
+
 	// region INHERITED METHODS
 
 	/**

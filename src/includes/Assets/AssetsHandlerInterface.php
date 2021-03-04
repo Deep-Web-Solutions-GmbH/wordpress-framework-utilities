@@ -15,5 +15,13 @@ defined( 'ABSPATH' ) || exit;
  * @package DeepWebSolutions\WP-Framework\Utilities\Assets
  */
 interface AssetsHandlerInterface extends RunnableInterface {
-	/* empty on purpose */
+	/**
+	 * Should return a unique name for the handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string
+	 */
+	public function get_name(): string;
 }

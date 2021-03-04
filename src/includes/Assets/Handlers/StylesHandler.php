@@ -12,6 +12,8 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Compatibility layer between the framework and WordPress' API for styles.
  *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
@@ -50,6 +52,22 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @var     array
 	 */
 	protected array $styles_inline = array();
+
+	// endregion
+
+	// region MAGIC METHODS
+
+	/**
+	 * StylesHandler constructor.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $name   Unique name of the handler.
+	 */
+	public function __construct( string $name = 'default-styles' ) { // phpcs:ignore
+		parent::__construct( $name );
+	}
 
 	// endregion
 
@@ -94,8 +112,8 @@ class StylesHandler extends AbstractAssetsHandler {
 	public function run(): ?RunFailureException {
 		if ( is_null( $this->is_run ) ) {
 			$this->styles = Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ? $this->styles['public'] : $this->styles['admin'];
-			array_walk( $this->styles[]['register'], array( $this, 'array_walk_register_style' ) );
-			array_walk( $this->styles[]['enqueue'], array( $this, 'array_walk_enqueue_style' ) );
+			array_walk( $this->styles['register'], array( $this, 'array_walk_register_style' ) );
+			array_walk( $this->styles['enqueue'], array( $this, 'array_walk_enqueue_style' ) );
 			array_walk( $this->styles_inline, array( $this, 'array_walk_add_inline_style' ) );
 
 			$this->is_run     = true;

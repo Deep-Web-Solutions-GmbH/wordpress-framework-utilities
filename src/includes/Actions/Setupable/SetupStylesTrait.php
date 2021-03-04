@@ -4,8 +4,8 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
+use DeepWebSolutions\Framework\Utilities\Assets\AssetsService;
 use DeepWebSolutions\Framework\Utilities\Assets\AssetsServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Assets\Handlers\StylesHandler;
 use DeepWebSolutions\Framework\Utilities\Assets\Handlers\StylesHandlerRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
@@ -39,17 +39,10 @@ trait SetupStylesTrait {
 	 */
 	public function setup_styles(): ?SetupFailureException {
 		if ( $this instanceof AssetsServiceAwareInterface ) {
-			$service = $this->get_assets_service();
-			$handler = null;
-
-			foreach ( $service->get_handlers() as $assets_handler ) {
-				if ( $assets_handler instanceof StylesHandler ) {
-					$handler = $assets_handler;
-					break;
-				}
-			}
+			$handler = $this->get_assets_service()->get_handler( 'default-styles' );
 		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$handler = $this->get_container()->get( StylesHandler::class );
+			$service = $this->get_container()->get( AssetsService::class );
+			$handler = $service->get_handler( 'default-styles' );
 		}
 
 		if ( empty( $handler ) ) {

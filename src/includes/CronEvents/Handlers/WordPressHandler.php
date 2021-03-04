@@ -8,6 +8,7 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Utilities\CronEvents\CronIntervalsEnum;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 
 defined( 'ABSPATH' ) || exit;
@@ -19,26 +20,10 @@ defined( 'ABSPATH' ) || exit;
  * @version 1.0.0
  * @package DeepWebSolutions\WP-Framework\Utilities\CronEvents\Handlers
  */
-class WordPressHandler extends AbstractHandler {
+class WordPressHandler extends AbstractHandler implements HooksServiceRegisterInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
-
-	// endregion
-
-	// region MAGIC METHODS
-
-	/**
-	 * WordPressHandler constructor.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   HooksService        $hooks_service      Instance of the hooks service.
-	 */
-	public function __construct( HooksService $hooks_service ) {
-		$this->register_hooks( $hooks_service );
-	}
 
 	// endregion
 

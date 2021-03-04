@@ -65,10 +65,10 @@ class AdminNoticesStoreFactory {
 	public function __construct( LoggingService $logging_service ) {
 		$this->set_logging_service( $logging_service );
 
-		$this->stores['null']    = new NullStoreAdmin();
-		$this->stores['dynamic'] = new DynamicStoreAdmin();
-		$this->stores['options'] = new OptionsStoreAdmin( '_dws_admin_notices_' . $logging_service->get_plugin()->get_plugin_safe_slug() );
-		$this->stores['user']    = new OptionsStoreAdmin( '_dws_admin_notices_' . $logging_service->get_plugin()->get_plugin_safe_slug() );
+		$this->stores['null']      = new NullStoreAdmin();
+		$this->stores['dynamic']   = new DynamicStoreAdmin();
+		$this->stores['options']   = new OptionsStoreAdmin( '_dws_admin_notices_' . $logging_service->get_plugin()->get_plugin_safe_slug() );
+		$this->stores['user-meta'] = new OptionsStoreAdmin( '_dws_admin_notices_' . $logging_service->get_plugin()->get_plugin_safe_slug() );
 	}
 
 	// endregion

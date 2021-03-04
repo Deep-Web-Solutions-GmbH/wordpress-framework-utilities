@@ -52,7 +52,7 @@ trait AdminNoticesStoreFactoryAwareTrait {
 	 *
 	 * @param   AdminNoticesStoreFactory        $store_factory          Admin notices store factory instance to use from now on.
 	 */
-	public function set_admin_notices_store_factory( AdminNoticesStoreFactory $store_factory ): void {
+	public function set_admin_notices_store_factory( AdminNoticesStoreFactory $store_factory ) {
 		$this->notices_store_factory = $store_factory;
 	}
 

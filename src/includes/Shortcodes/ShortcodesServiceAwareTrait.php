@@ -54,7 +54,7 @@ trait ShortcodesServiceAwareTrait {
 	 *
 	 * @param   ShortcodesService       $shortcodes_service         Shortcodes service instance to use from now on.
 	 */
-	public function set_shortcodes_service( ShortcodesService $shortcodes_service ): void {
+	public function set_shortcodes_service( ShortcodesService $shortcodes_service ) {
 		$this->shortcodes_service = $shortcodes_service;
 	}
 

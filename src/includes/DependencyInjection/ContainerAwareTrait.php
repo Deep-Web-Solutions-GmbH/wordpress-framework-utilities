@@ -55,7 +55,7 @@ trait ContainerAwareTrait {
 	 *
 	 * @param   ContainerInterface      $container      Container instance to use from now on.
 	 */
-	public function set_container( ContainerInterface $container ): void {
+	public function set_container( ContainerInterface $container ) {
 		$this->di_container = $container;
 	}
 

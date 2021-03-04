@@ -54,7 +54,7 @@ trait AssetsServiceAwareTrait {
 	 *
 	 * @param   AssetsService   $assets_service     Instance of the assets service.
 	 */
-	public function set_assets_service( AssetsService $assets_service ): void {
+	public function set_assets_service( AssetsService $assets_service ) {
 		$this->assets_service = $assets_service;
 	}
 

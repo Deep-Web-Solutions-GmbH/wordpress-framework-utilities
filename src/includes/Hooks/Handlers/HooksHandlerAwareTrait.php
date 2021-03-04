@@ -54,7 +54,7 @@ trait HooksHandlerAwareTrait {
 	 *
 	 * @param   HooksHandler    $hooks_handler      Hooks handler instance to use from now on.
 	 */
-	public function set_hooks_handler( HooksHandler $hooks_handler ): void {
+	public function set_hooks_handler( HooksHandler $hooks_handler ) {
 		$this->hooks_handler = $hooks_handler;
 	}
 

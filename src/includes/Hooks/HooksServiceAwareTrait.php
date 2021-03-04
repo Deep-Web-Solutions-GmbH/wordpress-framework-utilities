@@ -54,7 +54,7 @@ trait HooksServiceAwareTrait {
 	 *
 	 * @param   HooksService    $hooks_service      Instance of the hooks service.
 	 */
-	public function set_hooks_service( HooksService $hooks_service ): void {
+	public function set_hooks_service( HooksService $hooks_service ) {
 		$this->hooks_service = $hooks_service;
 	}
 

@@ -54,7 +54,7 @@ trait ScopedHooksHandlerAwareTrait {
 	 *
 	 * @param   ScopedHooksHandler      $scoped_hooks_handler       Scoped hooks handler instance to use from now on.
 	 */
-	public function set_scoped_hooks_handler( ScopedHooksHandler $scoped_hooks_handler ): void {
+	public function set_scoped_hooks_handler( ScopedHooksHandler $scoped_hooks_handler ) {
 		$this->scoped_hooks_handler = $scoped_hooks_handler;
 	}
 

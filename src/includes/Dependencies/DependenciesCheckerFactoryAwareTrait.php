@@ -52,7 +52,7 @@ trait DependenciesCheckerFactoryAwareTrait {
 	 *
 	 * @param   DependenciesCheckerFactory      $checker_factory        Dependencies checker factory instance to use from now on.
 	 */
-	public function set_dependencies_checker_factory( DependenciesCheckerFactory $checker_factory ): void {
+	public function set_dependencies_checker_factory( DependenciesCheckerFactory $checker_factory ) {
 		$this->deps_checker_factory = $checker_factory;
 	}
 

@@ -54,7 +54,7 @@ trait LoggerFactoryAwareTrait {
 	 *
 	 * @param   LoggerFactory   $logger_factory     The logger factory instance to use from now on.
 	 */
-	public function set_logger_factory( LoggerFactory $logger_factory ): void {
+	public function set_logger_factory( LoggerFactory $logger_factory ) {
 		$this->logger_factory = $logger_factory;
 	}
 

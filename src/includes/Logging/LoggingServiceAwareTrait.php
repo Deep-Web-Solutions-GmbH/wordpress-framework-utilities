@@ -57,7 +57,7 @@ trait LoggingServiceAwareTrait {
 	 *
 	 * @param   LoggingService      $logging_service     The logging service instance to use from now on.
 	 */
-	public function set_logging_service( LoggingService $logging_service ): void {
+	public function set_logging_service( LoggingService $logging_service ) {
 		$this->logging_service = $logging_service;
 	}
 

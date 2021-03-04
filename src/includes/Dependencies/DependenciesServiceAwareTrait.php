@@ -52,7 +52,7 @@ trait DependenciesServiceAwareTrait {
 	 *
 	 * @param   DependenciesService    $service     Dependencies service instance to use from now on.
 	 */
-	public function set_dependencies_service( DependenciesService $service ): void {
+	public function set_dependencies_service( DependenciesService $service ) {
 		$this->dependencies_service = $service;
 	}
 

@@ -5,6 +5,8 @@ namespace DeepWebSolutions\Framework\Utilities\PluginComponent;
 use DeepWebSolutions\Framework\Foundations\Hierarchy\NodeInterface;
 use DeepWebSolutions\Framework\Foundations\Hierarchy\NodeTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableTrait;
+use DeepWebSolutions\Framework\Foundations\States\Disableable\DisableableTrait;
 use LogicException;
 use Psr\Log\LogLevel;
 
@@ -69,7 +71,7 @@ abstract class AbstractPluginNode extends AbstractPluginComponent implements Nod
 	 *
 	 * @param   PluginInterface|null    $plugin     NOT USED BY THIS IMPLEMENTATION.
 	 */
-	public function set_plugin( ?PluginInterface $plugin = null ): void {
+	public function set_plugin( ?PluginInterface $plugin = null ) {
 		$this->plugin = $this->get_plugin();
 	}
 

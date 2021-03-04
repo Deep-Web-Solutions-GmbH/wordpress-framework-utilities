@@ -54,7 +54,7 @@ trait AdminNoticesServiceAwareTrait {
 	 *
 	 * @param   AdminNoticesService     $notices_service    Admin notices service instance to use from now on.
 	 */
-	public function set_admin_notices_service( AdminNoticesService $notices_service ): void {
+	public function set_admin_notices_service( AdminNoticesService $notices_service ) {
 		$this->admin_notices_service = $notices_service;
 	}
 

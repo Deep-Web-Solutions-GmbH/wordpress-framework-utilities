@@ -56,7 +56,7 @@ trait PHP_DI_ContainerAwareTrait {
 	 *
 	 * @param   ContainerInterface      $container      Container instance to use from now on.
 	 */
-	public function set_container( ContainerInterface $container ): void {
+	public function set_container( ContainerInterface $container ) {
 		if ( ! $container instanceof Container ) {
 			throw new LogicException( 'DI container is of the wrong type.' );
 		}

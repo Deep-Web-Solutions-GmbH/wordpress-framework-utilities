@@ -52,7 +52,7 @@ trait TemplatingServiceAwareTrait {
 	 *
 	 * @param   TemplatingService       $templating_service     Templating service instance to use from now on.
 	 */
-	public function set_templating_service( TemplatingService $templating_service ): void {
+	public function set_templating_service( TemplatingService $templating_service ) {
 		$this->templating_service = $templating_service;
 	}
 

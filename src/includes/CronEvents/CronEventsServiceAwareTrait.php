@@ -52,7 +52,7 @@ trait CronEventsServiceAwareTrait {
 	 *
 	 * @param   CronEventsService       $service        Cron events service instance to use from now on.
 	 */
-	public function set_cron_events_service( CronEventsService $service ): void {
+	public function set_cron_events_service( CronEventsService $service ) {
 		$this->cron_events_service = $service;
 	}
 

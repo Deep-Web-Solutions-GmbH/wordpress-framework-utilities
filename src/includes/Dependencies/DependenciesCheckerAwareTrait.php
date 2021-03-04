@@ -64,7 +64,7 @@ trait DependenciesCheckerAwareTrait {
 	 *
 	 * @param   DependenciesCheckerInterface    $checker        Dependencies checker instance to use from now on.
 	 */
-	public function set_dependencies_checker( DependenciesCheckerInterface $checker ): void {
+	public function set_dependencies_checker( DependenciesCheckerInterface $checker ) {
 		$this->dependencies_checker = $checker;
 	}
 

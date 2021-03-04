@@ -105,7 +105,7 @@ class RESTService implements LoggingServiceAwareInterface, PluginAwareInterface,
 
 		foreach ( $subscribers as $subscriber ) {
 			if ( $subscriber instanceof RESTServiceRegisterInterface ) {
-				$this->subscribers[] = $subscriber;
+				$this->add_subscriber( $subscriber );
 			}
 		}
 

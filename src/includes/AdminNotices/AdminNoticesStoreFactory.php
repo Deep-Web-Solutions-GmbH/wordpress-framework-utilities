@@ -7,6 +7,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\NullStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\OptionsStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\UserMetaStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
@@ -20,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-class AdminNoticesStoreFactory {
+class AdminNoticesStoreFactory implements LoggingServiceAwareInterface {
 	// region TRAITS
 
 	use LoggingServiceAwareTrait;

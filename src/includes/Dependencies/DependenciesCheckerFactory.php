@@ -4,6 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
 use DeepWebSolutions\Framework\Utilities\Dependencies\Checkers\NullChecker;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
+use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
@@ -16,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  * @version 1.0.0
  * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies
  */
-class DependenciesCheckerFactory {
+class DependenciesCheckerFactory implements LoggingServiceAwareInterface {
 	// region TRAITS
 
 	use LoggingServiceAwareTrait;

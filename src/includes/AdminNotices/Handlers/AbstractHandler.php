@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Handlers
  */
-abstract class AbstractHandler implements AdminNoticesHandlerInterface  {
+abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 	// region TRAITS
 
 	use AdminNoticesStoreFactoryAwareTrait;

@@ -88,7 +88,7 @@ trait DependenciesAdminNoticesTrait {
 				$notice_params  = array( 'capability' => 'activate_plugins' );
 
 				$notice = $is_optional_handler
-					? new DismissibleNotice( $notice_handle, $notice_message, $notice_params )
+					? new DismissibleNotice( $notice_handle, $notice_message, $notice_params + array( 'persistent' => true ) )
 					: new Notice( $notice_handle, $notice_message, $notice_params );
 
 				$notices_service->add_notice( $notice, $store );

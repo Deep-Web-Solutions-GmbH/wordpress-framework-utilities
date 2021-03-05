@@ -71,8 +71,8 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  AdminNoticeInterface[]
 	 */
 	public function get_notices( array $params ): array {
-		$params = wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
-		return (array) get_user_meta( $params['user_id'], $this->meta_key, true );
+		$params = $this->parse_params( $params );
+		return get_user_meta( $params['user_id'], $this->meta_key, true ) ?: array(); // phpcs:ignore
 	}
 
 	// endregion
@@ -91,19 +91,9 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  bool    Whether the operation was successful or not.
 	 */
 	public function add_notice( AdminNoticeInterface $notice, array $params ): bool {
-		$params           = wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
-		$existing_notices = $this->get_notices( $params );
-		if ( isset( $existing_notices[ $notice->get_handle() ] ) ) {
-			return false;
-		}
-
-		$existing_notices[ $notice->get_handle() ] = $notice;
-
-		return update_user_meta(
-			$params['user_id'],
-			$this->meta_key,
-			$existing_notices
-		);
+		return is_null( $this->get_notice( $notice->get_handle(), $params ) )
+			? $this->update_notice( $notice, $params )
+			: false;
 	}
 
 	/**
@@ -133,9 +123,16 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  bool    Whether the operation was successful or not.
 	 */
 	public function update_notice( AdminNoticeInterface $notice, array $params ): bool {
+		$params           = $this->parse_params( $params );
 		$existing_notices = $this->get_notices( $params );
-		unset( $existing_notices[ $notice->get_handle() ] );
-		return $this->add_notice( $notice, $params );
+
+		$existing_notices[ $notice->get_handle() ] = $notice;
+
+		return update_user_meta(
+			$params['user_id'],
+			$this->meta_key,
+			$existing_notices
+		);
 	}
 
 	/**

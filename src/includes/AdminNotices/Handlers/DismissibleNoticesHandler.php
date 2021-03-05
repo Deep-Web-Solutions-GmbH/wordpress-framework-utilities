@@ -208,7 +208,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 	 * @return  OutputFailureException|null
 	 */
 	protected function output_notice( AdminNoticeInterface $notice, AdminNoticesStoreInterface $store ): ?OutputFailureException {
-		ob_start();
+	    ob_start();
 
 		$result = parent::output_notice( $notice, $store );
 		if ( ! is_null( $result ) ) {
@@ -219,7 +219,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 		$notice_html = ob_get_clean();
 		$notice_html = Strings::replace_placeholders(
 			array(
-				'dws-framework-notice' => 'dws-framework-notice-' . esc_attr( $this->get_plugin()->get_plugin_slug() ),
+				'dws-framework-notice' => 'dws-framework-notice dws-framework-notice-' . esc_attr( $this->get_plugin()->get_plugin_slug() ),
 				'class='               => 'data-store="' . esc_attr( $store->get_type() ) . '" class=',
 			),
 			$notice_html

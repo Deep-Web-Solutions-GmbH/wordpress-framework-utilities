@@ -5,6 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\DynamicStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\NullStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\OptionsStoreAdmin;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\UserMetaStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
@@ -68,7 +69,7 @@ class AdminNoticesStoreFactory {
 		$this->stores['null']      = new NullStoreAdmin();
 		$this->stores['dynamic']   = new DynamicStoreAdmin();
 		$this->stores['options']   = new OptionsStoreAdmin( '_dws_admin_notices_' . $logging_service->get_plugin()->get_plugin_safe_slug() );
-		$this->stores['user-meta'] = new OptionsStoreAdmin( '_dws_admin_notices_' . $logging_service->get_plugin()->get_plugin_safe_slug() );
+		$this->stores['user-meta'] = new UserMetaStoreAdmin( '_dws_admin_notices_' . $logging_service->get_plugin()->get_plugin_safe_slug() );
 	}
 
 	// endregion

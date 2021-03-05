@@ -73,7 +73,7 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  AdminNoticeInterface[]
 	 */
 	public function get_notices( array $params = array() ): array {
-		return (array) get_option( $this->option_key, array() );
+		return get_option( $this->option_key, array() );
 	}
 
 	// endregion
@@ -94,17 +94,9 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  bool    Whether the operation was successful or not.
 	 */
 	public function add_notice( AdminNoticeInterface $notice, array $params = array() ): bool {
-		$existing_notices = $this->get_notices();
-		if ( isset( $existing_notices[ $notice->get_handle() ] ) ) {
-			return false;
-		}
-
-		$existing_notices[ $notice->get_handle() ] = $notice;
-
-		return update_option(
-			$this->option_key,
-			$existing_notices
-		);
+		return is_null( $this->get_notice( $notice->get_handle() ) )
+			? $this->update_notice( $notice, $params )
+			: false;
 	}
 
 	/**
@@ -139,8 +131,13 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 	 */
 	public function update_notice( AdminNoticeInterface $notice, array $params = array() ): bool {
 		$existing_notices = $this->get_notices();
-		unset( $existing_notices[ $notice->get_handle() ] );
-		return $this->add_notice( $notice );
+
+		$existing_notices[ $notice->get_handle() ] = $notice;
+
+		return update_option(
+			$this->option_key,
+			$existing_notices
+		);
 	}
 
 	/**

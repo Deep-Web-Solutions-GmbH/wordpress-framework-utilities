@@ -75,7 +75,7 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 		return array_filter(
 			$notices,
 			function( AdminNoticeInterface $notice ) {
-				return is_a( $notice, $this->get_notices_type() );
+				return get_class( $notice ) === $this->get_notices_type();
 			}
 		);
 	}

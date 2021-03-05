@@ -47,8 +47,9 @@ trait DependenciesAdminNoticesTrait {
 	public function register_admin_notices( AdminNoticesService $notices_service ): void {
 		if ( $this instanceof DependenciesCheckerAwareInterface ) {
 			$checker = $this->get_dependencies_checker();
-		} elseif ( $this instanceof DependenciesServiceAwareInterface && $this instanceof PluginComponentInterface ) {
-			$checker = $this->get_dependencies_service()->get_dependencies_checker( $this->get_instance_id() );
+		} elseif ( $this instanceof DependenciesServiceAwareInterface ) {
+			$name    = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
+			$checker = $this->get_dependencies_service()->get_dependencies_checker( $name );
 		} else {
 			throw new NotImplementedException( 'Dependencies admin notices scenario not supported' );
 		}

@@ -5,6 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Initializable;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareTrait;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerFactory;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerFactoryAwareInterface;
@@ -26,7 +27,6 @@ trait InitializeDependenciesChecker {
 	// region TRAITS
 
 	use InitializableExtensionTrait;
-	use DependenciesCheckerAwareTrait;
 
 	// endregion
 
@@ -52,9 +52,11 @@ trait InitializeDependenciesChecker {
 		}
 
 		$dependencies_checker = $this->register_dependencies_checker();
-		$checker_name         = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
+		if ( $this instanceof DependenciesCheckerAwareInterface ) {
+			$this->set_dependencies_checker( $dependencies_checker );
+		}
 
-		$this->set_dependencies_checker( $dependencies_checker );
+		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
 		$factory->register_callable(
 			$checker_name,
 			function() use ( $dependencies_checker ) {

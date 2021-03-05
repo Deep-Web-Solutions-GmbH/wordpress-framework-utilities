@@ -2,6 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Describes a dependencies-service-aware instance.
  *

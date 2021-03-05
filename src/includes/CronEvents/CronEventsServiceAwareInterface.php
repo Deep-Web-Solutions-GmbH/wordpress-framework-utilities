@@ -2,6 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Describes a cron-events-service-aware instance.
  *

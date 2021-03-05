@@ -5,11 +5,8 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Initializable;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareTrait;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerFactory;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerFactoryAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
@@ -41,28 +38,18 @@ trait InitializeDependenciesChecker {
 	 * @return  InitializationFailureException|null
 	 */
 	public function initialize_dependencies_checker(): ?InitializationFailureException {
-		if ( $this instanceof DependenciesCheckerFactoryAwareInterface ) {
-			$factory = $this->get_dependencies_checker_factory();
-		} elseif ( $this instanceof DependenciesServiceAwareInterface ) {
-			$factory = $this->get_dependencies_service()->get_dependencies_checker_factory();
+		if ( $this instanceof DependenciesServiceAwareInterface ) {
+			$service = $this->get_dependencies_service();
 		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$factory = $this->get_container()->get( DependenciesCheckerFactory::class );
+			$service = $this->get_container()->get( DependenciesService::class );
 		} else {
 			return new InitializationFailureException( 'Dependencies checker initialization scenario not supported' );
 		}
 
+		$checker_name         = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
 		$dependencies_checker = $this->register_dependencies_checker();
-		if ( $this instanceof DependenciesCheckerAwareInterface ) {
-			$this->set_dependencies_checker( $dependencies_checker );
-		}
 
-		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
-		$factory->register_callable(
-			$checker_name,
-			function() use ( $dependencies_checker ) {
-				return $dependencies_checker;
-			}
-		);
+		$service->register_checker( $checker_name, $dependencies_checker );
 
 		return null;
 	}

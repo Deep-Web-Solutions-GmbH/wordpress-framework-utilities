@@ -9,9 +9,10 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceRegiste
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\Notice;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Checkers\HandlerChecker;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\States\Activeable\ActiveDependenciesTrait;
 
 defined( 'ABSPATH' ) || exit;
@@ -45,11 +46,12 @@ trait DependenciesAdminNoticesTrait {
 	 * @throws  NotImplementedException     Thrown when using this function in an unsupported context.
 	 */
 	public function register_admin_notices( AdminNoticesService $notices_service ): void {
-		if ( $this instanceof DependenciesCheckerAwareInterface ) {
-			$checker = $this->get_dependencies_checker();
-		} elseif ( $this instanceof DependenciesServiceAwareInterface ) {
-			$name    = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
-			$checker = $this->get_dependencies_service()->get_dependencies_checker( $name );
+		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
+
+		if ( $this instanceof DependenciesServiceAwareInterface ) {
+			$checker = $this->get_dependencies_service()->get_checker( $checker_name );
+		} elseif ( $this instanceof ContainerAwareInterface ) {
+			$checker = $this->get_container()->get( DependenciesService::class )->get_checker( $checker_name );
 		} else {
 			throw new NotImplementedException( 'Dependencies admin notices scenario not supported' );
 		}

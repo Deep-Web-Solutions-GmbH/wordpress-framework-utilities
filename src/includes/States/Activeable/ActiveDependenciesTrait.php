@@ -6,8 +6,9 @@ use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -40,10 +41,12 @@ trait ActiveDependenciesTrait {
 	 * @return  bool
 	 */
 	public function is_active_dependencies(): bool {
-		if ( $this instanceof DependenciesCheckerAwareInterface ) {
-			$are_deps_fulfilled = $this->get_dependencies_checker()->are_dependencies_fulfilled();
-		} elseif ( $this instanceof DependenciesServiceAwareInterface && $this instanceof PluginComponentInterface ) {
-			$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $this->get_instance_id() );
+		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
+
+		if ( $this instanceof DependenciesServiceAwareInterface ) {
+			$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $checker_name );
+		} elseif ( $this instanceof ContainerAwareInterface ) {
+			$are_deps_fulfilled = $this->get_container()->get( DependenciesService::class )->are_dependencies_fulfilled( $checker_name );
 		} else {
 			throw new NotImplementedException( 'Dependency checking scenario not supported' );
 		}

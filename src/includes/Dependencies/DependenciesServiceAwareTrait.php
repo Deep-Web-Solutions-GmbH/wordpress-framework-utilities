@@ -2,6 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Basic implementation of the dependencies-service-aware interface.
  *

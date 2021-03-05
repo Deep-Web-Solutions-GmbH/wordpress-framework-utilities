@@ -208,7 +208,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 	 * @return  OutputFailureException|null
 	 */
 	protected function output_notice( AdminNoticeInterface $notice, AdminNoticesStoreInterface $store ): ?OutputFailureException {
-	    ob_start();
+		ob_start();
 
 		$result = parent::output_notice( $notice, $store );
 		if ( ! is_null( $result ) ) {

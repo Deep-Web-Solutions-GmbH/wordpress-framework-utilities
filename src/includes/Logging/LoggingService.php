@@ -5,10 +5,11 @@ namespace DeepWebSolutions\Framework\Utilities\Logging;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggerFactoryAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggerFactoryAwareTrait;
+use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,15 +21,24 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Logging
  */
-class LoggingService implements LoggerFactoryAwareInterface, PluginAwareInterface {
+class LoggingService implements PluginAwareInterface {
 	// region TRAITS
 
-	use LoggerFactoryAwareTrait;
 	use PluginAwareTrait;
 
 	// endregion
 
 	// region FIELDS AND CONSTANTS
+
+	/**
+	 * Loggers that can be used.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @var     LoggerInterface[]
+	 */
+	protected array $loggers;
 
 	/**
 	 * Whether to include sensitive information in the logs or not.
@@ -53,20 +63,32 @@ class LoggingService implements LoggerFactoryAwareInterface, PluginAwareInterfac
 	 *
 	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
 	 *
-	 * @param   PluginInterface $plugin             Instance of the plugin.
-	 * @param   LoggerFactory   $logger_factory     Instance of the logger factory.
-	 * @param   bool            $include_sensitive  Whether the logs should include sensitive information or not.
+	 * @param   PluginInterface     $plugin             Instance of the plugin.
+	 * @param   LoggerInterface[]   $loggers            Collection of PSR-3 loggers that can be used.
+	 * @param   bool                $include_sensitive  Whether the logs should include sensitive information or not.
 	 */
-	public function __construct( PluginInterface $plugin, LoggerFactory $logger_factory, bool $include_sensitive = false ) {
+	public function __construct( PluginInterface $plugin, array $loggers = array(), bool $include_sensitive = false ) {
 		$this->set_plugin( $plugin );
-		$this->set_logger_factory( $logger_factory );
 
+		$this->set_default_loggers( $loggers );
 		$this->include_sensitive = $include_sensitive;
 	}
 
 	// endregion
 
 	// region GETTERS
+
+	/**
+	 * Returns the list of handlers registered to run.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  LoggerInterface[]
+	 */
+	public function get_loggers(): array {
+		return $this->loggers;
+	}
 
 	/**
 	 * Gets whether the logs will include any sensitive information or not.
@@ -82,7 +104,63 @@ class LoggingService implements LoggerFactoryAwareInterface, PluginAwareInterfac
 
 	// endregion
 
+	// region SETTERS
+
+	/**
+	 * Sets the list of loggers that can be used.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $loggers    Collection of loggers.
+	 *
+	 * @return  $this
+	 */
+	public function set_loggers( array $loggers ): LoggingService {
+		$this->loggers = array();
+
+		foreach ( $loggers as $key => $logger ) {
+			if ( $logger instanceof LoggerInterface && is_string( $key ) ) {
+				$this->register_logger( $key, $logger );
+			}
+		}
+
+		return $this;
+	}
+
+	// endregion
+
 	// region METHODS
+
+	/**
+	 * Adds a logger to the list of usable loggers.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string              $name       Internal name of the logger.
+	 * @param   LoggerInterface     $logger     Logger to add.
+	 *
+	 * @return  $this
+	 */
+	public function register_logger( string $name, LoggerInterface $logger ): LoggingService {
+		$this->loggers[ $name ] = $logger;
+		return $this;
+	}
+
+	/**
+	 * Returns a given logger from the list of registered ones.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string      $name       Unique name of the logger to retrieve.
+	 *
+	 * @return  LoggerInterface
+	 */
+	public function get_logger( string $name ): LoggerInterface {
+		return $this->get_loggers()[ $name ] ?? $this->get_loggers()['null'];
+	}
 
 	/**
 	 * Logs an event with the given logger.
@@ -99,7 +177,7 @@ class LoggingService implements LoggerFactoryAwareInterface, PluginAwareInterfac
 	 * @param   array   $context        The context to pass along to the logger.
 	 */
 	public function log_event( string $log_level, string $message, string $logger = 'plugin', bool $is_sensitive = false, array $context = array() ): void {
-		$logger = $this->get_logger_factory()->get_logger( $logger );
+		$logger = $this->get_logger( $logger );
 		if ( ! $is_sensitive || $this->includes_sensitive_messages() ) {
 			$logger->log( $log_level, $message, $context );
 		}
@@ -163,6 +241,30 @@ class LoggingService implements LoggerFactoryAwareInterface, PluginAwareInterfac
 	public function log_event_and_doing_it_wrong_and_return_exception( string $function, string $message, string $since_version, string $exception, Exception $original_exception = null, string $log_level = LogLevel::DEBUG, string $logger = 'plugin', bool $is_sensitive = false, array $context = array() ): Exception {
 		$this->log_event_and_doing_it_wrong( $function, $message, $since_version, $log_level, $logger, $is_sensitive, $context );
 		return new $exception( $message, $original_exception ? $original_exception->getCode() : 0, $original_exception );
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Register the loggers passed on in the constructor together with the default loggers.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $loggers    Loggers passed on in the constructor.
+	 */
+	protected function set_default_loggers( array $loggers ) {
+		$plugin = $this->get_plugin();
+		if ( $plugin instanceof ContainerAwareInterface ) {
+			$container = $plugin->get_container();
+			$loggers  += array( 'null' => $container->get( NullLogger::class ) );
+		} else {
+			$loggers += array( 'null' => new NullLogger() );
+		}
+
+		$this->set_loggers( $loggers );
 	}
 
 	// endregion

@@ -7,7 +7,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesHelper
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Describes an admin notices service utility instance.
+ * Basic implementation of the admin notices service register interface.
  *
  * @since   1.0.0
  * @version 1.0.0

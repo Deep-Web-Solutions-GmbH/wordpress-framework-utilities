@@ -28,8 +28,6 @@ interface AdminNoticesStoreFactoryAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   AdminNoticesStoreFactory        $store_factory          Admin notices store factory instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_admin_notices_store_factory( AdminNoticesStoreFactory $store_factory );
 }

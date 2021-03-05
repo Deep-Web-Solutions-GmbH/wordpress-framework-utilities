@@ -10,6 +10,10 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\DismissibleNoticesHandler;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\NoticesHandler;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\DynamicStoreAdmin;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\NullStoreAdmin;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\OptionsStoreAdmin;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\UserMetaStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
@@ -79,6 +83,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 		$this->set_hooks_service( $hooks_service );
 		$this->register_hooks( $hooks_service );
 
+		$this->set_default_stores( $store_factory );
 		$this->set_default_handlers( $handlers, $store_factory );
 	}
 
@@ -298,7 +303,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 	 * @param   array                       $handlers           Handlers passed on in the constructor.
 	 * @param   AdminNoticesStoreFactory    $store_factory      Admin notices store factory passed on in the constructor.
 	 */
-	protected function set_default_handlers( array $handlers, AdminNoticesStoreFactory $store_factory ) {
+	protected function set_default_handlers( array $handlers, AdminNoticesStoreFactory $store_factory ): void {
 		$plugin = $this->get_plugin();
 		if ( $plugin instanceof ContainerAwareInterface ) {
 			$container = $plugin->get_container();
@@ -308,6 +313,43 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 		}
 
 		$this->set_handlers( $handlers );
+	}
+
+	/**
+	 * Register the stores supported by default with the store factory.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   AdminNoticesStoreFactory    $store_factory      Instance of the store factory.
+	 */
+	protected function set_default_stores( AdminNoticesStoreFactory $store_factory ): void {
+		$plugin = $this->get_plugin();
+		if ( $plugin instanceof ContainerAwareInterface ) {
+			$container = $plugin->get_container();
+			$stores    = array(
+				'null'      => $container->get( NullStoreAdmin::class ),
+				'dynamic'   => $container->get( DynamicStoreAdmin::class ),
+				'options'   => $container->get( OptionsStoreAdmin::class ),
+				'user-meta' => $container->get( UserMetaStoreAdmin::class ),
+			);
+		} else {
+			$stores = array(
+				'null'      => new NullStoreAdmin(),
+				'dynamic'   => new DynamicStoreAdmin(),
+				'options'   => new OptionsStoreAdmin( '_dws_admin_notices_' . $plugin->get_plugin_safe_slug() ),
+				'user-meta' => new UserMetaStoreAdmin( '_dws_admin_notices_' . $plugin->get_plugin_safe_slug() ),
+			);
+		}
+
+		foreach ( $stores as $name => $store ) {
+			$store_factory->register_callable(
+				$name,
+				function() use ( $store ) {
+					return $store;
+				}
+			);
+		}
 	}
 
 	// endregion

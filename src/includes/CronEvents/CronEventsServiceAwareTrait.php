@@ -3,7 +3,7 @@
 namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 
 /**
- * Describes a cron-events-service-aware instance.
+ * Basic implementation of the cron-events-service-aware interface.
  *
  * @since   1.0.0
  * @version 1.0.0

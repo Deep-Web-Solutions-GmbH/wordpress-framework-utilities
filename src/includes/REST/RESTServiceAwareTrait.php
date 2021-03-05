@@ -5,14 +5,31 @@ namespace DeepWebSolutions\Framework\Utilities\REST;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Describes a REST-service-aware instance.
+ * Basic implementation of the REST-service-aware interface.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\REST
  */
-interface RESTServiceAwareInterface {
+trait RESTServiceAwareTrait {
+	// region FIELDS AND CONSTANTS
+
+	/**
+	 * Instance of the REST service.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @access  protected
+	 * @var     RESTService
+	 */
+	protected RESTService $rest_service;
+
+	// endregion
+
+	// region GETTERS
+
 	/**
 	 * Gets the current REST service instance set on the object.
 	 *
@@ -21,7 +38,13 @@ interface RESTServiceAwareInterface {
 	 *
 	 * @return  RESTService
 	 */
-	public function get_rest_service(): RESTService;
+	public function get_rest_service(): RESTService {
+		return $this->rest_service;
+	}
+
+	// endregion
+
+	// region SETTERS
 
 	/**
 	 * Sets a REST service instance on the object.
@@ -31,5 +54,9 @@ interface RESTServiceAwareInterface {
 	 *
 	 * @param   RESTService     $rest_service   REST service instance to use from now on.
 	 */
-	public function set_rest_service( RESTService $rest_service );
+	public function set_rest_service( RESTService $rest_service ) {
+		$this->rest_service = $rest_service;
+	}
+
+	// endregion
 }

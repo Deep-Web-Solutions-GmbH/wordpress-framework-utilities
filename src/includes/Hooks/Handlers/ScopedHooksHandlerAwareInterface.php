@@ -30,8 +30,6 @@ interface ScopedHooksHandlerAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   ScopedHooksHandler      $scoped_hooks_handler       Scoped hooks handler instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_scoped_hooks_handler( ScopedHooksHandler $scoped_hooks_handler );
 }

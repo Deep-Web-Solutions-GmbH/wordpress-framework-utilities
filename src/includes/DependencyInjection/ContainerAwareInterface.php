@@ -29,8 +29,6 @@ interface ContainerAwareInterface {
 	 * Sets a container on the instance.
 	 *
 	 * @param   ContainerInterface      $container      Container instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_container( ContainerInterface $container );
 }

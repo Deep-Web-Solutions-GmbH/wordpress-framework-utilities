@@ -30,8 +30,6 @@ interface HooksServiceAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   HooksService    $hooks_service      Hooks service instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_hooks_service( HooksService $hooks_service );
 }

@@ -30,8 +30,6 @@ interface AssetsServiceAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   AssetsService       $assets_service     Assets service instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_assets_service( AssetsService $assets_service );
 }

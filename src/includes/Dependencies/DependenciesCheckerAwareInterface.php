@@ -28,8 +28,6 @@ interface DependenciesCheckerAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   DependenciesCheckerInterface    $checker        Dependencies checker instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_dependencies_checker( DependenciesCheckerInterface $checker );
 }

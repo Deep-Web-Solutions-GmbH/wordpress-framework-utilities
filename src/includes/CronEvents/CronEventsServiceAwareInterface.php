@@ -28,8 +28,6 @@ interface CronEventsServiceAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   CronEventsService       $service        Cron events service instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_cron_events_service( CronEventsService $service );
 }

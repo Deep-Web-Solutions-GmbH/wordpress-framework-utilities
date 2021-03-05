@@ -28,8 +28,6 @@ interface LoggingServiceAwareInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   LoggingService      $logging_service    Logging service instance to use from now on.
-	 *
-	 * @return  mixed
 	 */
 	public function set_logging_service( LoggingService $logging_service );
 }

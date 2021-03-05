@@ -5,8 +5,6 @@ namespace DeepWebSolutions\Framework\Utilities\PluginComponent;
 use DeepWebSolutions\Framework\Foundations\Hierarchy\NodeInterface;
 use DeepWebSolutions\Framework\Foundations\Hierarchy\NodeTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableTrait;
-use DeepWebSolutions\Framework\Foundations\States\Disableable\DisableableTrait;
 use LogicException;
 use Psr\Log\LogLevel;
 
@@ -24,8 +22,6 @@ abstract class AbstractPluginNode extends AbstractPluginComponent implements Nod
 	// region TRAITS
 
 	use NodeTrait;
-	use ActiveableTrait { is_active as is_active_trait; }
-	use DisableableTrait { is_disabled as is_disabled_trait; }
 
 	// endregion
 
@@ -73,48 +69,6 @@ abstract class AbstractPluginNode extends AbstractPluginComponent implements Nod
 	 */
 	public function set_plugin( ?PluginInterface $plugin = null ) {
 		$this->plugin = $this->get_plugin();
-	}
-
-	/**
-	 * Checks whether the current node is active, and also all of its ancestors.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @see     ActiveableInterface::is_active()
-	 * @see     ActiveableTrait::is_active()
-	 *
-	 * @return  bool
-	 */
-	public function is_active(): bool {
-		if ( is_null( $this->is_active ) ) {
-			$this->is_active = ( $this->has_parent() && $this->get_parent()->is_active() )
-				? true
-				: $this->is_active_trait();
-		}
-
-		return $this->is_active;
-	}
-
-	/**
-	 * Checks whether the current node is disabled, and also all of its ancestors.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @see     DisableableInterface::is_disabled()
-	 * @see     DisableableTrait::is_disabled()
-	 *
-	 * @return  bool
-	 */
-	public function is_disabled(): bool {
-		if ( is_null( $this->is_disabled ) ) {
-			$this->is_disabled = ( $this->has_parent() && $this->get_parent()->is_disabled() )
-				? true
-				: $this->is_disabled_trait();
-		}
-
-		return $this->is_disabled;
 	}
 
 	// endregion

@@ -40,9 +40,7 @@ abstract class AbstractActiveablePluginNode extends AbstractPluginNode implement
 	 */
 	public function is_active(): bool {
 		if ( is_null( $this->is_active ) ) {
-			$this->is_active = ( $this->has_parent() && $this->get_parent()->is_active() )
-				? true
-				: $this->is_active_trait();
+			$this->is_active = ( ! $this->has_parent() || $this->get_parent()->is_active() ) && $this->is_active_trait();
 		}
 
 		return $this->is_active;
@@ -61,9 +59,7 @@ abstract class AbstractActiveablePluginNode extends AbstractPluginNode implement
 	 */
 	public function is_disabled(): bool {
 		if ( is_null( $this->is_disabled ) ) {
-			$this->is_disabled = ( $this->has_parent() && $this->get_parent()->is_disabled() )
-				? true
-				: $this->is_disabled_trait();
+			$this->is_disabled = ( $this->has_parent() && $this->get_parent()->is_disabled() ) || $this->is_disabled_trait();
 		}
 
 		return $this->is_disabled;

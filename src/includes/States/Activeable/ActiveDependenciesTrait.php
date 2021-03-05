@@ -94,7 +94,7 @@ trait ActiveDependenciesTrait {
 					return strpos( $key, 'optional' ) !== false;
 				}
 			);
-			$are_deps_fulfilled   = ( count( $unfulfilled ) === count( $optional_unfulfilled ) );
+			$are_deps_fulfilled   = ( count( $unfulfilled ) === count( $optional_unfulfilled ?? array() ) );
 		} else {
 			$are_deps_fulfilled = is_null( $unfulfilled );
 		}

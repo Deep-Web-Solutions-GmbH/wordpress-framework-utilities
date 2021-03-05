@@ -90,7 +90,7 @@ class HandlerChecker implements DependenciesCheckerInterface {
 
 		foreach ( $handlers as $handler ) {
 			if ( $handler instanceof DependenciesHandlerInterface ) {
-				$this->handlers[] = $handler;
+				$this->register_handler( $handler );
 			}
 		}
 

@@ -11,7 +11,6 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\DismissibleNoticesHandler;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\NoticesHandler;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\DynamicStoreAdmin;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\NullStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\OptionsStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\UserMetaStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
@@ -328,14 +327,12 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 		if ( $plugin instanceof ContainerAwareInterface ) {
 			$container = $plugin->get_container();
 			$stores    = array(
-				'null'      => $container->get( NullStoreAdmin::class ),
 				'dynamic'   => $container->get( DynamicStoreAdmin::class ),
 				'options'   => $container->get( OptionsStoreAdmin::class ),
 				'user-meta' => $container->get( UserMetaStoreAdmin::class ),
 			);
 		} else {
 			$stores = array(
-				'null'      => new NullStoreAdmin(),
 				'dynamic'   => new DynamicStoreAdmin(),
 				'options'   => new OptionsStoreAdmin( '_dws_admin_notices_' . $plugin->get_plugin_safe_slug() ),
 				'user-meta' => new UserMetaStoreAdmin( '_dws_admin_notices_' . $plugin->get_plugin_safe_slug() ),

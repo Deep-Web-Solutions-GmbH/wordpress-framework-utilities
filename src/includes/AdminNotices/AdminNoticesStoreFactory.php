@@ -125,7 +125,6 @@ class AdminNoticesStoreFactory implements LoggingServiceAwareInterface {
 	 */
 	public function get_store( string $name ): AdminNoticesStoreInterface {
 		if ( ! isset( $this->stores[ $name ] ) ) {
-			$this->stores[ $name ] = $this->stores['null'];
 			if ( is_callable( $this->callables[ $name ] ?? '' ) ) {
 				$store = call_user_func( $this->callables[ $name ] );
 				if ( $store instanceof AdminNoticesStoreInterface ) {

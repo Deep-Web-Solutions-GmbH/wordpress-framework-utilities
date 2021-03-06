@@ -114,7 +114,7 @@ class LoggingService implements PluginAwareInterface {
 	 *
 	 * @param   array   $loggers    Collection of loggers.
 	 *
-	 * @return  $this
+	 * @return  LoggingService
 	 */
 	public function set_loggers( array $loggers ): LoggingService {
 		$this->loggers = array();
@@ -141,9 +141,13 @@ class LoggingService implements PluginAwareInterface {
 	 * @param   string              $name       Internal name of the logger.
 	 * @param   LoggerInterface     $logger     Logger to add.
 	 *
-	 * @return  $this
+	 * @return  LoggingService
 	 */
 	public function register_logger( string $name, LoggerInterface $logger ): LoggingService {
+		if ( $logger instanceof PluginAwareInterface ) {
+			$logger->set_plugin( $this->get_plugin() );
+		}
+
 		$this->loggers[ $name ] = $logger;
 		return $this;
 	}

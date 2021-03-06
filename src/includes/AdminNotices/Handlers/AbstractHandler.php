@@ -41,22 +41,6 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 
 	// endregion
 
-	// region MAGIC METHODS
-
-	/**
-	 * AbstractHandler constructor.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   AdminNoticesStoreFactory    $store_factory      Instance of the admin notices store factory.
-	 */
-	public function __construct( AdminNoticesStoreFactory $store_factory ) {
-		$this->set_admin_notices_store_factory( $store_factory );
-	}
-
-	// endregion
-
 	// region INHERITED METHODS
 
 	/**

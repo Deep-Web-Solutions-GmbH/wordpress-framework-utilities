@@ -83,7 +83,7 @@ class HandlerChecker implements DependenciesCheckerInterface {
 	 *
 	 * @param   array   $handlers   Collection of handlers to check.
 	 *
-	 * @return  $this
+	 * @return  HandlerChecker
 	 */
 	public function set_handlers( array $handlers ): HandlerChecker {
 		$this->handlers = array();
@@ -109,7 +109,7 @@ class HandlerChecker implements DependenciesCheckerInterface {
 	 *
 	 * @param   DependenciesHandlerInterface    $handler    Handler to add.
 	 *
-	 * @return  $this
+	 * @return  HandlerChecker
 	 */
 	public function register_handler( DependenciesHandlerInterface $handler ): HandlerChecker {
 		$this->handlers[] = $handler;

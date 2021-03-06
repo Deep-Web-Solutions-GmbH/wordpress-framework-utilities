@@ -98,7 +98,7 @@ class RESTService implements LoggingServiceAwareInterface, PluginAwareInterface,
 	 *
 	 * @param   array   $subscribers   Collection of handlers to run.
 	 *
-	 * @return  $this
+	 * @return  RESTService
 	 */
 	public function set_subscribers( array $subscribers ): RESTService {
 		$this->subscribers = array();
@@ -176,7 +176,7 @@ class RESTService implements LoggingServiceAwareInterface, PluginAwareInterface,
 	 *
 	 * @param   RESTServiceRegisterInterface        $subscriber     Subscriber to add.
 	 *
-	 * @return  $this
+	 * @return  RESTService
 	 */
 	public function add_subscriber( RESTServiceRegisterInterface $subscriber ): RESTService {
 		$this->subscribers[] = $subscriber;

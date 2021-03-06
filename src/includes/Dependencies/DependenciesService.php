@@ -86,7 +86,7 @@ class DependenciesService implements LoggingServiceAwareInterface, PluginAwareIn
 	 *
 	 * @param   array   $checkers   Collection of dependencies checkers.
 	 *
-	 * @return  $this
+	 * @return  DependenciesService
 	 */
 	public function set_checkers( array $checkers ): DependenciesService {
 		$this->checkers = array();
@@ -113,9 +113,16 @@ class DependenciesService implements LoggingServiceAwareInterface, PluginAwareIn
 	 * @param   string                          $name       Unique name of the checker.
 	 * @param   DependenciesCheckerInterface    $checker    Checker to add.
 	 *
-	 * @return  $this
+	 * @return  DependenciesService
 	 */
 	public function register_checker( string $name, DependenciesCheckerInterface $checker ): DependenciesService {
+		if ( $checker instanceof PluginAwareInterface ) {
+			$checker->set_plugin( $this->get_plugin() );
+		}
+		if ( $checker instanceof LoggingServiceAwareInterface ) {
+			$checker->set_logging_service( $this->get_logging_service() );
+		}
+
 		$this->checkers[ $name ] = $checker;
 		return $this;
 	}

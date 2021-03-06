@@ -2,10 +2,6 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\DynamicStoreAdmin;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\NullStoreAdmin;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\OptionsStoreAdmin;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\UserMetaStoreAdmin;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
@@ -99,6 +95,19 @@ class AdminNoticesStoreFactory implements LoggingServiceAwareInterface {
 	// endregion
 
 	// region METHODS
+
+	/**
+	 * Registers an already instantiated store with the factory.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string                      $name   The name of the store.
+	 * @param   AdminNoticesStoreInterface  $store  The store instance.
+	 */
+	public function register_store( string $name, AdminNoticesStoreInterface $store ): void {
+		$this->stores[ $name ] = $store;
+	}
 
 	/**
 	 * Registers a new callback with the stores factory for instantiating a new store.

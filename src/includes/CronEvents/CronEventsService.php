@@ -112,7 +112,7 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 *
 	 * @param   array   $handlers   Collection of handlers to run.
 	 *
-	 * @return  $this
+	 * @return  CronEventsService
 	 */
 	public function set_handlers( array $handlers ): CronEventsService {
 		$this->handlers = array();
@@ -236,11 +236,14 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 *
 	 * @param   CronEventsHandlerInterface      $handler    Handler to add.
 	 *
-	 * @return  $this
+	 * @return  CronEventsService
 	 */
 	public function register_handler( CronEventsHandlerInterface $handler ): CronEventsService {
 		if ( $handler instanceof PluginAwareInterface ) {
 			$handler->set_plugin( $this->get_plugin() );
+		}
+		if ( $handler instanceof LoggingServiceAwareInterface ) {
+			$handler->set_logging_service( $this->get_logging_service() );
 		}
 		if ( $handler instanceof HooksServiceRegisterInterface ) {
 			$handler->register_hooks( $this->get_hooks_service() );

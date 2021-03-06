@@ -114,7 +114,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 	 *
 	 * @param   array   $handlers   Collection of handlers to output.
 	 *
-	 * @return  $this
+	 * @return  AdminNoticesService
 	 */
 	public function set_handlers( array $handlers ): AdminNoticesService {
 		$this->handlers = array();
@@ -197,11 +197,17 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 	 *
 	 * @param   AdminNoticesHandlerInterface    $handler    Handler to add.
 	 *
-	 * @return  $this
+	 * @return  AdminNoticesService
 	 */
 	public function register_handler( AdminNoticesHandlerInterface $handler ): AdminNoticesService {
 		if ( $handler instanceof PluginAwareInterface ) {
 			$handler->set_plugin( $this->get_plugin() );
+		}
+		if ( $handler instanceof LoggingServiceAwareInterface ) {
+			$handler->set_logging_service( $this->get_logging_service() );
+		}
+		if ( $handler instanceof AdminNoticesStoreFactoryAwareInterface ) {
+			$handler->set_admin_notices_store_factory( $this->get_admin_notices_store_factory() );
 		}
 		if ( $handler instanceof HooksServiceRegisterInterface ) {
 			$handler->register_hooks( $this->get_hooks_service() );
@@ -340,12 +346,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 		}
 
 		foreach ( $stores as $name => $store ) {
-			$store_factory->register_callable(
-				$name,
-				function() use ( $store ) {
-					return $store;
-				}
-			);
+			$store_factory->register_store( $name, $store );
 		}
 	}
 

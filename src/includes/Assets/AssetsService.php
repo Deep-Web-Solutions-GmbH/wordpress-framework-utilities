@@ -103,7 +103,7 @@ class AssetsService implements LoggingServiceAwareInterface, PluginAwareInterfac
 	 *
 	 * @param   array   $handlers   Collection of handlers to run.
 	 *
-	 * @return  $this
+	 * @return  AssetsService
 	 */
 	public function set_handlers( array $handlers ): AssetsService {
 		$this->handlers = array();
@@ -187,9 +187,16 @@ class AssetsService implements LoggingServiceAwareInterface, PluginAwareInterfac
 	 *
 	 * @param   AssetsHandlerInterface    $handler    Handler to add.
 	 *
-	 * @return  $this
+	 * @return  AssetsService
 	 */
 	public function register_handler( AssetsHandlerInterface $handler ): AssetsService {
+		if ( $handler instanceof PluginAwareInterface ) {
+			$handler->set_plugin( $this->get_plugin() );
+		}
+		if ( $handler instanceof LoggingServiceAwareInterface ) {
+			$handler->set_logging_service( $this->get_logging_service() );
+		}
+
 		$this->handlers[ $handler->get_name() ] = $handler;
 		return $this;
 	}

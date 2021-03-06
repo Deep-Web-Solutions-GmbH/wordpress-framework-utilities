@@ -2,6 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Validation;
 
+use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotSupportedException;
 
 defined( 'ABSPATH' ) || exit;
@@ -63,6 +64,35 @@ trait ValidationServiceAwareTrait {
 	// endregion
 
 	// region METHODS
+
+	/**
+	 * Wrapper around the service's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $key    The key inside the container.
+	 *
+	 * @noinspection PhpMissingReturnTypeInspection
+	 * @return  InexistentPropertyException|mixed
+	 */
+	public function get_default_value( string $key ) {
+		return $this->get_validation_service()->get_default_value( $key );
+	}
+
+	/**
+	 * Wrapper around the service's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $key    The key inside the container.
+	 *
+	 * @return  InexistentPropertyException|array
+	 */
+	public function get_supported_options( string $key ) {
+		return $this->get_validation_service()->get_supported_options( $key );
+	}
 
 	/**
 	 * Wrapper around the service's own method.

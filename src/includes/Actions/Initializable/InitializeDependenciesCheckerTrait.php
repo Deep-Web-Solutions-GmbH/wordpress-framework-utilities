@@ -13,14 +13,14 @@ use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInter
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Trait for registering admin notices of using instances.
+ * Trait for initializing a dependencies checker on the using instance.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Initializable
  */
-trait InitializeDependenciesChecker {
+trait InitializeDependenciesCheckerTrait {
 	// region TRAITS
 
 	use InitializableExtensionTrait;
@@ -30,7 +30,7 @@ trait InitializeDependenciesChecker {
 	// region METHODS
 
 	/**
-	 * Try to automagically register a checker with the dependencies checker factory.
+	 * Try to automagically register an default instance checker with the dependencies service.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -50,7 +50,6 @@ trait InitializeDependenciesChecker {
 		$dependencies_checker = $this->register_dependencies_checker();
 
 		$service->register_checker( $checker_name, $dependencies_checker );
-
 		return null;
 	}
 

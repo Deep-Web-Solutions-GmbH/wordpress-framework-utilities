@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-interface AdminNoticesHandlerInterface extends AdminNoticesStoreFactoryAwareInterface, OutputtableInterface {
+interface AdminNoticesHandlerInterface extends AdminNoticesStoresContainerAwareInterface, OutputtableInterface {
 	// region GETTERS
 
 	/**

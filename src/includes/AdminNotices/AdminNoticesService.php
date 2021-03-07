@@ -34,10 +34,10 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, HooksServiceAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, OutputtableInterface {
+class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, HooksServiceAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, OutputtableInterface {
 	// region TRAITS
 
-	use AdminNoticesStoreFactoryAwareTrait;
+	use AdminNoticesStoresContainerAwareTrait;
 	use HooksServiceAwareTrait;
 	use HooksServiceRegisterTrait;
 	use LoggingServiceAwareTrait;
@@ -68,22 +68,22 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface                     $plugin             Instance of the plugin.
-	 * @param   LoggingService                      $logging_service    Instance of the logging service.
-	 * @param   AdminNoticesStoreFactory            $store_factory      Instance of the admin notices store factory.
-	 * @param   HooksService                        $hooks_service      Instance of the hooks service.
-	 * @param   AdminNoticesHandlerInterface[]      $handlers           Admin notices handlers to output.
+	 * @param   PluginInterface                 $plugin             Instance of the plugin.
+	 * @param   LoggingService                  $logging_service    Instance of the logging service.
+	 * @param   AdminNoticesStoresContainer     $store_container    Instance of the admin notices store factory.
+	 * @param   HooksService                    $hooks_service      Instance of the hooks service.
+	 * @param   AdminNoticesHandlerInterface[]  $handlers           Admin notices handlers to output.
 	 */
-	public function __construct( PluginInterface $plugin, LoggingService $logging_service, AdminNoticesStoreFactory $store_factory, HooksService $hooks_service, array $handlers = array() ) {
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service, AdminNoticesStoresContainer $store_container, HooksService $hooks_service, array $handlers = array() ) {
 		$this->set_plugin( $plugin );
 		$this->set_logging_service( $logging_service );
-		$this->set_admin_notices_store_factory( $store_factory );
+		$this->set_admin_notices_store_factory( $store_container );
 
 		$this->set_hooks_service( $hooks_service );
 		$this->register_hooks( $hooks_service );
 
-		$this->set_default_stores( $store_factory );
-		$this->set_default_handlers( $handlers, $store_factory );
+		$this->set_default_stores( $store_container );
+		$this->set_default_handlers( $handlers );
 	}
 
 	// endregion
@@ -206,7 +206,7 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 		if ( $handler instanceof LoggingServiceAwareInterface ) {
 			$handler->set_logging_service( $this->get_logging_service() );
 		}
-		if ( $handler instanceof AdminNoticesStoreFactoryAwareInterface ) {
+		if ( $handler instanceof AdminNoticesStoresContainerAwareInterface ) {
 			$handler->set_admin_notices_store_factory( $this->get_admin_notices_store_factory() );
 		}
 		if ( $handler instanceof HooksServiceRegisterInterface ) {
@@ -305,45 +305,34 @@ class AdminNoticesService implements AdminNoticesStoreFactoryAwareInterface, Hoo
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array                       $handlers           Handlers passed on in the constructor.
-	 * @param   AdminNoticesStoreFactory    $store_factory      Admin notices store factory passed on in the constructor.
+	 * @param   array   $handlers   Handlers passed on in the constructor.
 	 */
-	protected function set_default_handlers( array $handlers, AdminNoticesStoreFactory $store_factory ): void {
+	protected function set_default_handlers( array $handlers ): void {
 		$plugin = $this->get_plugin();
 		if ( $plugin instanceof ContainerAwareInterface ) {
 			$container = $plugin->get_container();
 			$handlers += array( $container->get( NoticesHandler::class ), $container->get( DismissibleNoticesHandler::class ) );
 		} else {
-			$handlers += array( new NoticesHandler( $store_factory ), new DismissibleNoticesHandler( $store_factory ) );
+			$handlers += array( new NoticesHandler(), new DismissibleNoticesHandler() );
 		}
 
 		$this->set_handlers( $handlers );
 	}
 
 	/**
-	 * Register the stores supported by default with the store factory.
+	 * Register the stores supported by default with the store container.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   AdminNoticesStoreFactory    $store_factory      Instance of the store factory.
+	 * @param   AdminNoticesStoresContainer     $store_factory  Instance of the store factory.
 	 */
-	protected function set_default_stores( AdminNoticesStoreFactory $store_factory ): void {
-		$plugin = $this->get_plugin();
-		if ( $plugin instanceof ContainerAwareInterface ) {
-			$container = $plugin->get_container();
-			$stores    = array(
-				'dynamic'   => $container->get( DynamicStoreAdmin::class ),
-				'options'   => $container->get( OptionsStoreAdmin::class ),
-				'user-meta' => $container->get( UserMetaStoreAdmin::class ),
-			);
-		} else {
-			$stores = array(
-				'dynamic'   => new DynamicStoreAdmin(),
-				'options'   => new OptionsStoreAdmin( '_dws_admin_notices_' . $plugin->get_plugin_safe_slug() ),
-				'user-meta' => new UserMetaStoreAdmin( '_dws_admin_notices_' . $plugin->get_plugin_safe_slug() ),
-			);
-		}
+	protected function set_default_stores( AdminNoticesStoresContainer $store_factory ): void {
+		$stores = array(
+			'dynamic'   => new DynamicStoreAdmin(),
+			'options'   => new OptionsStoreAdmin( '_dws_admin_notices_' . $this->get_plugin()->get_plugin_safe_slug() ),
+			'user-meta' => new UserMetaStoreAdmin( '_dws_admin_notices_' . $this->get_plugin()->get_plugin_safe_slug() ),
+		);
 
 		foreach ( $stores as $name => $store ) {
 			$store_factory->register_store( $name, $store );

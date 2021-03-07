@@ -3,14 +3,14 @@
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 /**
- * Basic implementation of the admin-notices-store-factory-aware interface.
+ * Basic implementation of the admin-notices-stores-container-aware interface.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-trait AdminNoticesStoreFactoryAwareTrait {
+trait AdminNoticesStoresContainerAwareTrait {
 	// region FIELDS AND CONSTANTS
 
 	/**
@@ -20,9 +20,9 @@ trait AdminNoticesStoreFactoryAwareTrait {
 	 * @version 1.0.0
 	 *
 	 * @access  protected
-	 * @var     AdminNoticesStoreFactory
+	 * @var     AdminNoticesStoresContainer
 	 */
-	protected AdminNoticesStoreFactory $notices_store_factory;
+	protected AdminNoticesStoresContainer $notices_store_factory;
 
 	// endregion
 
@@ -34,9 +34,9 @@ trait AdminNoticesStoreFactoryAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  AdminNoticesStoreFactory
+	 * @return  AdminNoticesStoresContainer
 	 */
-	public function get_admin_notices_store_factory(): AdminNoticesStoreFactory {
+	public function get_admin_notices_store_factory(): AdminNoticesStoresContainer {
 		return $this->notices_store_factory;
 	}
 
@@ -50,9 +50,9 @@ trait AdminNoticesStoreFactoryAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   AdminNoticesStoreFactory        $store_factory          Admin notices store factory instance to use from now on.
+	 * @param   AdminNoticesStoresContainer $store_factory Admin notices store factory instance to use from now on.
 	 */
-	public function set_admin_notices_store_factory( AdminNoticesStoreFactory $store_factory ) {
+	public function set_admin_notices_store_factory( AdminNoticesStoresContainer $store_factory ) {
 		$this->notices_store_factory = $store_factory;
 	}
 

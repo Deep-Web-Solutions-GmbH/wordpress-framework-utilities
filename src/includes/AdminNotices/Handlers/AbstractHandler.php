@@ -5,8 +5,8 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers;
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesHandlerInterface;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactory;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactoryAwareTrait;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoresContainer;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoresContainerAwareTrait;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
 defined( 'ABSPATH' ) || exit;
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 	// region TRAITS
 
-	use AdminNoticesStoreFactoryAwareTrait;
+	use AdminNoticesStoresContainerAwareTrait;
 
 	// endregion
 

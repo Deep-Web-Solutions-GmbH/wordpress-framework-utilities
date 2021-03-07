@@ -8,7 +8,7 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 use DeepWebSolutions\Framework\Helpers\WordPress\Assets;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreFactory;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoresContainer;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;

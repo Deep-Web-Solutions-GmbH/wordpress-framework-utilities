@@ -6,24 +6,24 @@ use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableEx
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
 use DeepWebSolutions\Framework\Foundations\Hierarchy\ChildInterface;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Validation\ValidationService;
-use DeepWebSolutions\Framework\Utilities\Validation\ValidationServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Validation\ValidationServiceAwareTrait;
+use DeepWebSolutions\Framework\Utilities\Shortcodes\ShortcodesService;
+use DeepWebSolutions\Framework\Utilities\Shortcodes\ShortcodesServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Shortcodes\ShortcodesServiceAwareTrait;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Trait for setting the validation service on the using instance.
+ * Trait for setting the shortcodes service on the using instance.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Initializable
  */
-trait InitializeValidationServiceTrait {
+trait InitializeShortcodesServiceTrait {
 	// region TRAITS
 
-	use ValidationServiceAwareTrait;
+	use ShortcodesServiceAwareTrait;
 	use InitializableExtensionTrait;
 
 	// endregion
@@ -31,24 +31,24 @@ trait InitializeValidationServiceTrait {
 	// region METHODS
 
 	/**
-	 * Try to automagically set a validation service on the instance.
+	 * Try to automagically set a shortcodes service on the instance.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @return  InitializationFailureException|null
 	 */
-	public function initialize_validation_service(): ?InitializationFailureException {
-		if ( $this instanceof ChildInterface && $this->get_parent() instanceof ValidationServiceAwareInterface ) {
+	public function initialize_shortcodes_service(): ?InitializationFailureException {
+		if ( $this instanceof ChildInterface && $this->get_parent() instanceof ShortcodesServiceAwareInterface ) {
 			/* @noinspection PhpUndefinedMethodInspection */
-			$service = $this->get_parent()->get_validation_service();
+			$service = $this->get_parent()->get_shortcodes_service();
 		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$service = $this->get_container()->get( ValidationService::class );
+			$service = $this->get_container()->get( ShortcodesService::class );
 		} else {
-			return new InitializationFailureException( 'Validation service initialization scenario not supported' );
+			return new InitializationFailureException( 'Shortcodes service initialization scenario not supported' );
 		}
 
-		$this->set_validation_service( $service );
+		$this->set_shortcodes_service( $service );
 		return null;
 	}
 

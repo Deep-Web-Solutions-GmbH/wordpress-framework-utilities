@@ -47,7 +47,7 @@ trait InitializeDependenciesCheckerTrait {
 		}
 
 		$checker_name         = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
-		$dependencies_checker = $this->register_dependencies_checker();
+		$dependencies_checker = $this->get_dependencies_checker();
 
 		$service->register_checker( $checker_name, $dependencies_checker );
 		return null;
@@ -61,7 +61,7 @@ trait InitializeDependenciesCheckerTrait {
 	 *
 	 * @return  DependenciesCheckerInterface
 	 */
-	abstract protected function register_dependencies_checker(): DependenciesCheckerInterface;
+	abstract public function get_dependencies_checker(): DependenciesCheckerInterface;
 
 	// endregion
 }

@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for initializing a dependencies checker on the using instance.
@@ -46,7 +46,7 @@ trait InitializeDependenciesCheckerTrait {
 			return new InitializationFailureException( 'Dependencies checker initialization scenario not supported' );
 		}
 
-		$checker_name         = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
+		$checker_name         = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : \get_class( $this );
 		$dependencies_checker = $this->get_dependencies_checker();
 
 		$service->register_checker( $checker_name, $dependencies_checker );

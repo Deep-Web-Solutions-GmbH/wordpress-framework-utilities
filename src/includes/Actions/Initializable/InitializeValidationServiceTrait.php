@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\Validation\ValidationService;
 use DeepWebSolutions\Framework\Utilities\Validation\ValidationServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Validation\ValidationServiceAwareTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for setting the validation service on the using instance.

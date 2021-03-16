@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Logs messages at all PSR-3 levels. GDPR-appropriate + full logger choice flexibility.
@@ -120,7 +120,7 @@ class LoggingService implements PluginAwareInterface {
 		$this->loggers = array();
 
 		foreach ( $loggers as $key => $logger ) {
-			if ( $logger instanceof LoggerInterface && is_string( $key ) ) {
+			if ( $logger instanceof LoggerInterface && \is_string( $key ) ) {
 				$this->register_logger( $key, $logger );
 			}
 		}

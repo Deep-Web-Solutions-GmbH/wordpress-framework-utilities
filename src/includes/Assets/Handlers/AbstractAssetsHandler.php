@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
 use DeepWebSolutions\Framework\Helpers\WordPress\Assets;
 use DeepWebSolutions\Framework\Utilities\Assets\AssetsHandlerInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Encapsulates the most often-needed logic of an assets handler.
@@ -127,11 +127,11 @@ abstract class AbstractAssetsHandler implements AssetsHandlerInterface {
 		$suffix = Assets::maybe_get_minified_suffix( $constant_name );
 		if ( ! empty( $suffix ) && strpos( $relative_path, $suffix ) === false ) {
 			$wp_filesystem = $this->get_wp_filesystem();
-			if ( ! is_null( $wp_filesystem ) ) {
+			if ( ! \is_null( $wp_filesystem ) ) {
 				$full_path = Files::generate_full_path( $wp_filesystem->abspath(), $relative_path );
-				$extension = pathinfo( $full_path, PATHINFO_EXTENSION );
+				$extension = \pathinfo( $full_path, PATHINFO_EXTENSION );
 
-				$minified_rel_path  = str_replace( ".{$extension}", "{$suffix}.{$extension}", $relative_path );
+				$minified_rel_path  = \str_replace( ".{$extension}", "{$suffix}.{$extension}", $relative_path );
 				$minified_full_path = Files::generate_full_path( $wp_filesystem->abspath(), $minified_rel_path );
 
 				if ( $wp_filesystem->is_file( $minified_full_path ) ) {
@@ -159,7 +159,7 @@ abstract class AbstractAssetsHandler implements AssetsHandlerInterface {
 		$wp_filesystem = $this->get_wp_filesystem();
 		$version       = $wp_filesystem ? $wp_filesystem->mtime( $absolute_path ) : false;
 
-		return ( empty( $version ) ) ? $fallback_version : strval( $version );
+		return ( empty( $version ) ) ? $fallback_version : \strval( $version );
 	}
 
 	// endregion

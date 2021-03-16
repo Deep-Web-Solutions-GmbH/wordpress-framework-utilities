@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the admin-notices-service-aware interface.

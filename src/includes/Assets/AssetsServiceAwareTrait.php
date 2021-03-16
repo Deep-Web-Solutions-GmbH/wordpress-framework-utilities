@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Assets;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the assets-service-aware interface.

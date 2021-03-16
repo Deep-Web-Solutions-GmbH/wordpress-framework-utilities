@@ -2,7 +2,7 @@
 
 **Contributors:** Antonius Hegyes, Deep Web Solutions GmbH  
 **Requires at least:** 5.5  
-**Tested up to:** 5.6  
+**Tested up to:** 5.7  
 **Requires PHP:** 7.4  
 **Stable tag:** 1.0.0  
 **License:** GPLv3 or later  
@@ -22,6 +22,9 @@ A set of related utility classes to kick-start WordPress development.
 The package is designed to be installed via Composer. It may work as a stand-alone but that is not officially supported.
 The package's name is `deep-web-solutions/wp-framework-utilities`.
 
+If the package will be used outside a composer-based installation, e.g. inside a regular WP plugin, you should install
+using the `--ignore-platform-reqs` option. If you don't do that, the bundled `DWS WordPress Framework - Bootstrapper` package
+will only be able to perform checks for the WordPress version because composer will throw an error in case of an incompatible PHP version.
 
 ## Contributing 
 

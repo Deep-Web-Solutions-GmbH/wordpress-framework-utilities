@@ -6,7 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResettableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsHandlerInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Encapsulates the most often needed functionality of a cron events handler.

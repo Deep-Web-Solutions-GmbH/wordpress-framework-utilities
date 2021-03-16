@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\InitializableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Modified version of the Hooks handler that differs by keeping the hooks registered only within a certain scope
@@ -88,14 +88,14 @@ class ScopedHooksHandler extends HooksHandler implements InitializableInterface 
 		$this->remove_all_actions();
 		$this->remove_all_filters();
 
-		if ( is_string( $this->start['hook'] ) && ! empty( $this->start['hook'] ) ) {
+		if ( \is_string( $this->start['hook'] ) && ! empty( $this->start['hook'] ) ) {
 			if ( 'action' === $this->start['type'] ) {
 				$this->array_walk_add_action( $this->start );
 			} else {
 				$this->array_walk_add_filter( $this->start );
 			}
 		}
-		if ( is_string( $this->end['hook'] ) && ! empty( $this->end['hook'] ) ) {
+		if ( \is_string( $this->end['hook'] ) && ! empty( $this->end['hook'] ) ) {
 			if ( 'action' === $this->end['type'] ) {
 				$this->array_walk_add_action( $this->end );
 			} else {
@@ -115,12 +115,12 @@ class ScopedHooksHandler extends HooksHandler implements InitializableInterface 
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
-			array_walk( $this->filters['added'], array( $this, 'array_walk_add_filter' ) );
-			$this->filters['removed'] = array_filter( $this->filters['removed'], array( $this, 'array_walk_remove_filter' ) );
+		if ( \is_null( $this->is_run ) ) {
+			\array_walk( $this->filters['added'], array( $this, 'array_walk_add_filter' ) );
+			$this->filters['removed'] = \array_filter( $this->filters['removed'], array( $this, 'array_walk_remove_filter' ) );
 
-			array_walk( $this->actions['added'], array( $this, 'array_walk_add_action' ) );
-			$this->actions['removed'] = array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_action' ) );
+			\array_walk( $this->actions['added'], array( $this, 'array_walk_add_action' ) );
+			$this->actions['removed'] = \array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_action' ) );
 
 			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
@@ -138,12 +138,12 @@ class ScopedHooksHandler extends HooksHandler implements InitializableInterface 
 	 * @return  ResetFailureException|null
 	 */
 	public function reset(): ?ResetFailureException {
-		if ( is_null( $this->is_reset ) ) {
-			array_walk( $this->filters['added'], array( $this, 'array_walk_remove_filter' ) );
-			array_walk( $this->filters['removed'], array( $this, 'array_walk_add_filter' ) );
+		if ( \is_null( $this->is_reset ) ) {
+			\array_walk( $this->filters['added'], array( $this, 'array_walk_remove_filter' ) );
+			\array_walk( $this->filters['removed'], array( $this, 'array_walk_add_filter' ) );
 
-			array_walk( $this->actions['added'], array( $this, 'array_walk_remove_action' ) );
-			array_walk( $this->actions['removed'], array( $this, 'array_walk_add_action' ) );
+			\array_walk( $this->actions['added'], array( $this, 'array_walk_remove_action' ) );
+			\array_walk( $this->actions['removed'], array( $this, 'array_walk_add_action' ) );
 
 			$this->is_reset     = true;
 			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
@@ -320,16 +320,16 @@ class ScopedHooksHandler extends HooksHandler implements InitializableInterface 
 	 * @param   array   $end    The hook on which the actions and filters should be un-registered.
 	 */
 	protected function parse_scope( array $start, array $end ): void {
-		$this->start = array_merge(
-			wp_parse_args( $start, $this->get_scope_hook_defaults() ),
+		$this->start = \array_merge(
+			\wp_parse_args( $start, $this->get_scope_hook_defaults() ),
 			array(
 				'component'     => $this,
 				'callback'      => 'run',
 				'accepted_args' => 0,
 			)
 		);
-		$this->end   = array_merge(
-			wp_parse_args( $end, $this->get_scope_hook_defaults() ),
+		$this->end   = \array_merge(
+			\wp_parse_args( $end, $this->get_scope_hook_defaults() ),
 			array(
 				'component'     => $this,
 				'callback'      => 'reset',

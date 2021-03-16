@@ -4,8 +4,9 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
 
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
+use DeepWebSolutions\Framework\Helpers\Security\Validation;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Checks whether a list of WP Plugins is present or not.
@@ -82,7 +83,7 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 	 * @return  array|null
 	 */
 	protected function parse_dependency( $dependency ): ?array {
-		return is_array( $dependency ) && Arrays::has_string_keys( $dependency )
+		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency )
 			? $dependency
 			: null;
 	}
@@ -99,12 +100,12 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 	 * @return  bool
 	 */
 	protected function is_plugin_active( string $plugin, array $plugin_config ): bool {
-		if ( isset( $plugin_config['active_checker'] ) && is_callable( $plugin_config['active_checker'] ) ) {
-			$is_active = boolval( call_user_func( $plugin_config['active_checker'] ) );
+		if ( isset( $plugin_config['active_checker'] ) && \is_callable( $plugin_config['active_checker'] ) ) {
+			$is_active = Validation::validate_boolean( \call_user_func( $plugin_config['active_checker'] ), false );
 		} else {
-			$is_active = in_array( $plugin, apply_filters( 'active_plugins', get_option( 'active_plugins' ) ), true ); // phpcs:ignore
-			if ( is_multisite() && ! $is_active ) {
-				$is_active = isset( get_site_option( 'active_sitewide_plugins', array() )[ $plugin ] );
+			$is_active = \in_array( $plugin, \apply_filters( 'active_plugins', \get_option( 'active_plugins' ) ), true ); // phpcs:ignore
+			if ( \is_multisite() && ! $is_active ) {
+				$is_active = isset( \get_site_option( 'active_sitewide_plugins', array() )[ $plugin ] );
 			}
 		}
 
@@ -123,14 +124,14 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 	 * @return  string
 	 */
 	protected function get_active_plugin_version( string $plugin, array $plugin_config ): string {
-		if ( isset( $plugin_config['version_checker'] ) && is_callable( $plugin_config['version_checker'] ) ) {
-			$version = call_user_func( $plugin_config['version_checker'] );
+		if ( isset( $plugin_config['version_checker'] ) && \is_callable( $plugin_config['version_checker'] ) ) {
+			$version = \call_user_func( $plugin_config['version_checker'] );
 		} else {
 			$wp_filesystem = $this->get_wp_filesystem();
 			$version       = '0.0.0';
 
-			if ( ! is_null( $wp_filesystem ) ) {
-				$plugin_data = get_file_data( trailingslashit( $wp_filesystem->wp_plugins_dir() ) . $plugin, array( 'Version' => 'Version' ) );
+			if ( ! \is_null( $wp_filesystem ) ) {
+				$plugin_data = \get_file_data( \trailingslashit( $wp_filesystem->wp_plugins_dir() ) . $plugin, array( 'Version' => 'Version' ) );
 				$version     = $plugin_data['Version'] ?? $version;
 			}
 		}

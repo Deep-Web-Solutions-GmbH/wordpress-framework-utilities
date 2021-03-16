@@ -18,7 +18,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Holds a container of default values and valid options (for values in a collection) and holds validation wrappers
@@ -84,7 +84,7 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 * @return  array
 	 */
 	public function get_known_default_values(): array {
-		return array_keys( $this->get_container_value( 'defaults' ) );
+		return \array_keys( $this->get_container_value( 'defaults' ) );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 * @return  array
 	 */
 	public function get_known_supported_options(): array {
-		return array_keys( $this->get_container_value( 'options' ) );
+		return \array_keys( $this->get_container_value( 'options' ) );
 	}
 
 	// endregion
@@ -145,8 +145,8 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 			case ValidationTypesEnum::OPTION:
 				return $this->validate_supported_value( $value, $params['options_key'] ?? '', $default_key );
 			case ValidationTypesEnum::CUSTOM:
-				if ( isset( $params['callable'] ) && is_callable( $params['callable'] ) ) {
-					return call_user_func_array( $params['callable'], array( $value, $default_key ) + ( $params['args'] ?? array() ) );
+				if ( isset( $params['callable'] ) && \is_callable( $params['callable'] ) ) {
+					return \call_user_func_array( $params['callable'], array( $value, $default_key ) + ( $params['args'] ?? array() ) );
 				} else {
 					throw new NotSupportedException( 'Custom validation requires a valid callable' );
 				}
@@ -240,7 +240,7 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 		$supported_values = $this->get_supported_options_or_throw( $options_key );
 
 		if ( Arrays::has_string_keys( $supported_values ) ) {
-			$supported_values = array_keys( $supported_values );
+			$supported_values = \array_keys( $supported_values );
 		}
 
 		return Validation::validate_allowed_value( $value, $supported_values, $default );
@@ -259,16 +259,16 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 * @return  InexistentPropertyException|mixed
 	 */
 	protected function get_container_value( string $key ) {
-		$boom = explode( '/', $key );
-		$key  = array_shift( $boom );
+		$boom = \explode( '/', $key );
+		$key  = \array_shift( $boom );
 
 		$value = $this->get_container_entry( $key );
-		if ( is_null( $value ) ) {
+		if ( \is_null( $value ) ) {
 			return new InexistentPropertyException();
 		}
 
 		foreach ( $boom as $key ) {
-			if ( isset( $value[ $key ] ) ) {
+			if ( isset( $value[ $key ] ) || array_key_exists( $key, $value ) ) {
 				$value = $value[ $key ];
 			} else {
 				return new InexistentPropertyException();
@@ -288,6 +288,7 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 *
 	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the containers.
 	 *
+	 * @noinspection PhpMissingReturnTypeInspection
 	 * @return  mixed
 	 */
 	protected function get_default_value_or_throw( string $key ) {

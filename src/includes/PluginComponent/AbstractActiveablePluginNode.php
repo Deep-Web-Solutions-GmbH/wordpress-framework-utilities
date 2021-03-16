@@ -7,7 +7,7 @@ use DeepWebSolutions\Framework\Foundations\States\ActiveableInterface;
 use DeepWebSolutions\Framework\Foundations\States\Disableable\DisableableTrait;
 use DeepWebSolutions\Framework\Foundations\States\DisableableInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Template for encapsulating some of the most often required abilities of a tree-like, activeable plugin component.
@@ -39,7 +39,7 @@ abstract class AbstractActiveablePluginNode extends AbstractPluginNode implement
 	 * @return  bool
 	 */
 	public function is_active(): bool {
-		if ( is_null( $this->is_active ) ) {
+		if ( \is_null( $this->is_active ) ) {
 			$this->is_active = ( ! $this->has_parent() || $this->get_parent()->is_active() ) && $this->is_active_trait();
 		}
 
@@ -58,7 +58,7 @@ abstract class AbstractActiveablePluginNode extends AbstractPluginNode implement
 	 * @return  bool
 	 */
 	public function is_disabled(): bool {
-		if ( is_null( $this->is_disabled ) ) {
+		if ( \is_null( $this->is_disabled ) ) {
 			$this->is_disabled = ( $this->has_parent() && $this->get_parent()->is_disabled() ) || $this->is_disabled_trait();
 		}
 

@@ -25,7 +25,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for crons.
@@ -151,18 +151,18 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
+		if ( \is_null( $this->is_run ) ) {
 			$this->run_result = null;
 
 			foreach ( $this->get_handlers() as $handler ) {
 				$result = $handler->run();
-				if ( ! is_null( $result ) ) {
+				if ( ! \is_null( $result ) ) {
 					$this->run_result = $result;
 					break;
 				}
 			}
 
-			$this->is_run = is_nulL( $this->run_result );
+			$this->is_run = \is_null( $this->run_result );
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
@@ -192,18 +192,18 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 * @return  ResetFailureException|null
 	 */
 	public function reset(): ?ResetFailureException {
-		if ( is_null( $this->is_reset ) ) {
+		if ( \is_null( $this->is_reset ) ) {
 			$this->reset_result = null;
 
 			foreach ( $this->get_handlers() as $handler ) {
 				$result = $handler->reset();
-				if ( ! is_null( $result ) ) {
+				if ( ! \is_null( $result ) ) {
 					$this->reset_result = $result;
 					break;
 				}
 			}
 
-			$this->is_reset = is_null( $this->reset_result );
+			$this->is_reset = \is_null( $this->reset_result );
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(
@@ -281,10 +281,10 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 * @return  bool
 	 */
 	public function schedule_single_event( string $handler, string $hook, ?int $timestamp = null, array $args = array() ): bool {
-		$timestamp = is_null( $timestamp ) ? Misc::get_midnight_unix_timestamp() : $timestamp;
+		$timestamp = \is_null( $timestamp ) ? Misc::get_midnight_unix_timestamp() : $timestamp;
 
 		$handler = $this->get_handler( $handler );
-		if ( is_null( $handler ) ) {
+		if ( \is_null( $handler ) ) {
 			return false;
 		}
 
@@ -307,7 +307,7 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 */
 	public function unschedule_single_event( string $handler, string $hook, int $timestamp, array $args = array() ): bool {
 		$handler = $this->get_handler( $handler );
-		if ( is_null( $handler ) ) {
+		if ( \is_null( $handler ) ) {
 			return false;
 		}
 
@@ -330,10 +330,10 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 * @return  bool
 	 */
 	public function schedule_recurring_event( string $handler, string $hook, $recurrence = CronIntervalsEnum::HOURS_24, ?int $timestamp = null, array $args = array() ): bool {
-		$timestamp = is_null( $timestamp ) ? Misc::get_midnight_unix_timestamp() : $timestamp;
+		$timestamp = \is_null( $timestamp ) ? Misc::get_midnight_unix_timestamp() : $timestamp;
 
 		$handler = $this->get_handler( $handler );
-		if ( is_null( $handler ) ) {
+		if ( \is_null( $handler ) ) {
 			return false;
 		}
 
@@ -356,7 +356,7 @@ class CronEventsService implements HooksServiceAwareInterface, LoggingServiceAwa
 	 */
 	public function unschedule_recurring_event( string $handler, string $hook, int $timestamp, array $args = array() ): bool {
 		$handler = $this->get_handler( $handler );
-		if ( is_null( $handler ) ) {
+		if ( \is_null( $handler ) ) {
 			return false;
 		}
 

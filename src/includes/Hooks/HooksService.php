@@ -19,7 +19,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * A wrapper around a singleton hooks handler instance.
@@ -71,9 +71,9 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->get_hooks_handler()->is_run() ) ) {
+		if ( \is_null( $this->get_hooks_handler()->is_run() ) ) {
 			$this->run_result   = $this->get_hooks_handler()->run();
-			$this->is_run       = is_null( $this->run_result );
+			$this->is_run       = \is_null( $this->run_result );
 			$this->reset_result = $this->is_reset = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -104,9 +104,9 @@ class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInt
 	 * @return  ResetFailureException|null
 	 */
 	public function reset(): ?ResetFailureException {
-		if ( is_null( $this->get_hooks_handler()->is_reset() ) ) {
+		if ( \is_null( $this->get_hooks_handler()->is_reset() ) ) {
 			$this->reset_result = $this->get_hooks_handler()->reset();
-			$this->is_reset     = is_null( $this->reset_result );
+			$this->is_reset     = \is_null( $this->reset_result );
 			$this->is_run       = $this->run_result = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */

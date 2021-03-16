@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 
 use DeepWebSolutions\Framework\Foundations\Helpers\HooksHelpersTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the cron events service register interface.

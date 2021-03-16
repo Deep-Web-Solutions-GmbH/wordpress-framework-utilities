@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a dependencies checker instance.

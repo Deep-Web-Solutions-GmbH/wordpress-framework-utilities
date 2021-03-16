@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers;
 
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\Notice;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Handles simple notices.

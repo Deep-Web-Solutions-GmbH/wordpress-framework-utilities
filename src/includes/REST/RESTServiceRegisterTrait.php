@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\REST;
 
 use DeepWebSolutions\Framework\Utilities\REST\Helpers\RESTHelpersTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the REST service register interface.

@@ -7,7 +7,7 @@ use DeepWebSolutions\Framework\Helpers\FileSystem\Files;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for styles.
@@ -110,11 +110,11 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
+		if ( \is_null( $this->is_run ) ) {
 			$this->styles = Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ? $this->styles['public'] : $this->styles['admin'];
-			array_walk( $this->styles['register'], array( $this, 'array_walk_register_style' ) );
-			array_walk( $this->styles['enqueue'], array( $this, 'array_walk_enqueue_style' ) );
-			array_walk( $this->styles_inline, array( $this, 'array_walk_add_inline_style' ) );
+			\array_walk( $this->styles['register'], array( $this, 'array_walk_register_style' ) );
+			\array_walk( $this->styles['enqueue'], array( $this, 'array_walk_enqueue_style' ) );
+			\array_walk( $this->styles_inline, array( $this, 'array_walk_add_inline_style' ) );
 
 			$this->is_run     = true;
 			$this->run_result = null;
@@ -313,7 +313,7 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @return  bool    Whether registration was successful or not.
 	 */
 	protected function array_walk_register_style( array $style ): bool {
-		return wp_register_style(
+		return \wp_register_style(
 			$style['handle'],
 			$style['src'],
 			$style['deps'],
@@ -331,7 +331,7 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   array   $style  Style to register.
 	 */
 	protected function array_walk_enqueue_style( array $style ): void {
-		wp_enqueue_style(
+		\wp_enqueue_style(
 			$style['handle'],
 			$style['src'],
 			$style['deps'],
@@ -351,7 +351,7 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @return  bool
 	 */
 	protected function array_walk_add_inline_style( array $style ): bool {
-		return wp_add_inline_style(
+		return \wp_add_inline_style(
 			$style['handle'],
 			$style['data']
 		);

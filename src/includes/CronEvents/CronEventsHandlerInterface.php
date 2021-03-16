@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a handler of CRON events.

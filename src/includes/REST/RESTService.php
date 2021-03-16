@@ -15,7 +15,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' REST API.
@@ -137,7 +137,7 @@ class RESTService implements LoggingServiceAwareInterface, PluginAwareInterface,
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
+		if ( \is_null( $this->is_run ) ) {
 			foreach ( $this->get_subscribers() as $subscriber ) {
 				$subscriber->register_rest_config( $this );
 			}

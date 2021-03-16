@@ -13,7 +13,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Retrieves PHP template files either as HTML string or by loading them into the execution flow.
@@ -74,19 +74,19 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 			: $this->locate_template( "{$slug}.php", $template_path, $default_path, $constant_name );
 
 		// Allow 3rd-party plugins to filter the template file from their plugin.
-		$filtered_template = apply_filters( $this->get_hook_tag( 'get_template_part' ), $template, $slug, $name, $template_path, $default_path, $args, $constant_name ); // phpcs:ignore
+		$filtered_template = \apply_filters( $this->get_hook_tag( 'get_template_part' ), $template, $slug, $name, $template_path, $default_path, $args, $constant_name ); // phpcs:ignore
 
 		$template = $this->maybe_overwrite_template( $filtered_template, $template );
-		if ( is_null( $template ) ) {
+		if ( \is_null( $template ) ) {
 			return;
 		}
 
 		// Load the found template part.
-		do_action( $this->get_hook_tag( 'before_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'before_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 
-		load_template( $template, false, $args );
+		\load_template( $template, false, $args );
 
-		do_action( $this->get_hook_tag( 'after_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'after_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 	}
 
 	/**
@@ -105,9 +105,9 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  string
 	 */
 	public function get_template_part_html( string $slug, string $name, string $template_path, string $default_path, array $args = array(), string $constant_name = 'TEMPLATE_DEBUG' ): string {
-		ob_start();
+		\ob_start();
 		$this->load_template_part( $slug, $name, $template_path, $default_path, $args, $constant_name );
-		return ob_get_clean();
+		return \ob_get_clean();
 	}
 
 	/**
@@ -128,19 +128,19 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 		$template = self::locate_template( $template_name, $template_path, $default_path, $constant_name );
 
 		// Allow 3rd-party plugins to filter the template file from their plugin.
-		$filtered_template = apply_filters( $this->get_hook_tag( 'get_template' ), $template, $template_name, $template_path, $default_path, $args, $constant_name ); // phpcs:ignore
+		$filtered_template = \apply_filters( $this->get_hook_tag( 'get_template' ), $template, $template_name, $template_path, $default_path, $args, $constant_name ); // phpcs:ignore
 
 		$template = $this->maybe_overwrite_template( $filtered_template, $template );
-		if ( is_null( $template ) ) {
+		if ( \is_null( $template ) ) {
 			return;
 		}
 
 		// Load the found template.
-		do_action( $this->get_hook_tag( 'before_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'before_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 
-		load_template( $template, false, $args );
+		\load_template( $template, false, $args );
 
-		do_action( $this->get_hook_tag( 'after_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'after_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 	}
 
 	/**
@@ -158,9 +158,9 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  string
 	 */
 	public function get_template_html( string $template_name, string $template_path, string $default_path, array $args = array(), string $constant_name = 'TEMPLATE_DEBUG' ): string {
-		ob_start();
+		\ob_start();
 		$this->load_template( $template_name, $template_path, $default_path, $args, $constant_name );
-		return ob_get_clean();
+		return \ob_get_clean();
 	}
 
 	/**
@@ -180,16 +180,16 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 	public function locate_template( string $template_name, string $template_path, string $default_path, string $constant_name = 'TEMPLATE_DEBUG' ): string {
 		$template = Request::has_debug( $constant_name ) ? '' : locate_template(
 			array(
-				trailingslashit( $template_path ) . $template_name,
+				\trailingslashit( $template_path ) . $template_name,
 				$template_name,
 			)
 		);
 
 		$template = empty( $template )
-			? trailingslashit( $default_path ) . $template_name
+			? \trailingslashit( $default_path ) . $template_name
 			: $template;
 
-		return apply_filters( $this->get_hook_tag( 'locate_template' ), $template, $template_name, $template_path, $default_path, $constant_name ); // phpcs:ignore
+		return \apply_filters( $this->get_hook_tag( 'locate_template' ), $template, $template_name, $template_path, $default_path, $constant_name ); // phpcs:ignore
 	}
 
 	// endregion
@@ -213,7 +213,7 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 				$this->log_event_and_doing_it_wrong(
 					__FUNCTION__,
 					/* translators: %s: Path to template file */
-					sprintf( __( '%s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
+					\sprintf( __( '%s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
 					'1.0.0',
 					LogLevel::ERROR,
 					'framework'

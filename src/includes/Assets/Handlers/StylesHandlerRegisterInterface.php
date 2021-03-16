@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Assets\Handlers;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a styles handler utility instance.

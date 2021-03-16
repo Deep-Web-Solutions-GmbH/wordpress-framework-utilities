@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\DynamicStoreAdmin;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Admin notices store container.

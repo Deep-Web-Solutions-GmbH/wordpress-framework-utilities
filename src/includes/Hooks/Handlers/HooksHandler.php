@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for filters and actions.
@@ -97,9 +97,9 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
-			array_walk( $this->filters, array( $this, 'array_walk_add_filter' ) );
-			array_walk( $this->actions, array( $this, 'array_walk_add_action' ) );
+		if ( \is_null( $this->is_run ) ) {
+			\array_walk( $this->filters, array( $this, 'array_walk_add_filter' ) );
+			\array_walk( $this->actions, array( $this, 'array_walk_add_action' ) );
 
 			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
@@ -117,9 +117,9 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	 * @return  ResetFailureException|null
 	 */
 	public function reset(): ?ResetFailureException {
-		if ( is_null( $this->is_reset ) ) {
-			array_walk( $this->filters, array( $this, 'array_walk_remove_filter' ) );
-			array_walk( $this->actions, array( $this, 'array_walk_remove_action' ) );
+		if ( \is_null( $this->is_reset ) ) {
+			\array_walk( $this->filters, array( $this, 'array_walk_remove_filter' ) );
+			\array_walk( $this->actions, array( $this, 'array_walk_remove_action' ) );
 
 			$this->is_reset     = true;
 			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
@@ -286,9 +286,9 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	 */
 	protected function array_walk_add_filter( array $hook ): bool {
 		if ( empty( $hook['component'] ) ) {
-			return add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+			return \add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
 		} else {
-			return add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+			return \add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
 	}
 
@@ -304,9 +304,9 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	 */
 	protected function array_walk_remove_filter( array $hook ): bool {
 		if ( empty( $hook['component'] ) ) {
-			return remove_filter( $hook['hook'], $hook['callback'], $hook['priority'] );
+			return \remove_filter( $hook['hook'], $hook['callback'], $hook['priority'] );
 		} else {
-			return remove_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
+			return \remove_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
 		}
 	}
 
@@ -322,9 +322,9 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	 */
 	protected function array_walk_add_action( array $hook ): bool {
 		if ( empty( $hook['component'] ) ) {
-			return add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+			return \add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
 		} else {
-			return add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
+			return \add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
 	}
 
@@ -340,9 +340,9 @@ class HooksHandler implements RunnableInterface, ResettableInterface {
 	 */
 	protected function array_walk_remove_action( array $hook ): bool {
 		if ( empty( $hook['component'] ) ) {
-			return remove_action( $hook['hook'], $hook['callback'], $hook['priority'] );
+			return \remove_action( $hook['hook'], $hook['callback'], $hook['priority'] );
 		} else {
-			return remove_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
+			return \remove_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
 		}
 	}
 

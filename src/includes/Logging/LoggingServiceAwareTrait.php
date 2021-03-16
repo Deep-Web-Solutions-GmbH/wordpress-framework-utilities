@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\Logging;
 use Exception;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for working with the logging service.

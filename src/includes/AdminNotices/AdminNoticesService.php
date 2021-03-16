@@ -24,7 +24,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for admin notices.
@@ -153,18 +153,18 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 	 * @return  OutputFailureException|null
 	 */
 	public function output(): ?OutputFailureException {
-		if ( is_null( $this->is_outputted ) ) {
+		if ( \is_null( $this->is_outputted ) ) {
 			$this->output_result = null;
 
 			foreach ( $this->get_handlers() as $handler ) {
 				$result = $handler->output();
-				if ( ! is_null( $result ) ) {
+				if ( ! \is_null( $result ) ) {
 					$this->output_result = $result;
 					break;
 				}
 			}
 
-			$this->is_outputted = is_null( $this->output_result );
+			$this->is_outputted = \is_null( $this->output_result );
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(

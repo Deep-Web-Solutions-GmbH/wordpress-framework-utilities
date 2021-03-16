@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\REST;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a REST-service-aware instance.

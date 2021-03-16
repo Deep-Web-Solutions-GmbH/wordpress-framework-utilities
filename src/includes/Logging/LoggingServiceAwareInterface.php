@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Logging;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a logging-service-aware instance.

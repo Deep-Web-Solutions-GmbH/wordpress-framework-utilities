@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\Validation;
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotSupportedException;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the validation-service-aware interface.

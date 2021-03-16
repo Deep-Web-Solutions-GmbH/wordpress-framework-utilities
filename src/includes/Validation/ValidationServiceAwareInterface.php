@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Validation;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a validation-service-aware instance.

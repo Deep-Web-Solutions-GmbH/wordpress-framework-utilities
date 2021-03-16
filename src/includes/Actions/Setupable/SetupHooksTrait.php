@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for registering hooks of using instances.

@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsServiceAwareInterf
 use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsServiceRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for registering cron events of using instances.

@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Checks whether a list of PHP settings is compatible with the current environment or not.
@@ -48,7 +48,7 @@ class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
 	public function get_missing_dependencies(): array {
 		$missing = array();
 
-		if ( function_exists( 'ini_get' ) ) {
+		if ( \function_exists( 'ini_get' ) ) {
 			foreach ( $this->get_dependencies() as $php_setting => $expected_value ) {
 				$environment_value = ini_get( $php_setting );
 				if ( empty( $environment_value ) ) {
@@ -93,7 +93,7 @@ class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
 	 * @return  array|null
 	 */
 	protected function parse_dependency( $dependency ): ?array {
-		return is_array( $dependency ) && Arrays::has_string_keys( $dependency )
+		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency )
 			? $dependency
 			: null;
 	}

@@ -15,7 +15,7 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareIn
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\States\Activeable\ActiveDependenciesTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for working with the dependencies service and outputting potential error notices on the admin side.
@@ -46,7 +46,7 @@ trait DependenciesAdminNoticesTrait {
 	 * @throws  NotImplementedException     Thrown when using this function in an unsupported context.
 	 */
 	public function register_admin_notices( AdminNoticesService $notices_service ): void {
-		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
+		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : \get_class( $this );
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
 			$checker = $this->get_dependencies_service()->get_checker( $checker_name );
@@ -150,28 +150,28 @@ trait DependenciesAdminNoticesTrait {
 	 */
 	protected function compose_missing_php_extensions_message( array $php_extensions, bool $is_optional = false ): string {
 		if ( $is_optional ) {
-			return sprintf(
+			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
 				_n(
 					'<strong>%1$s</strong> may behave unexpectedly because the %2$s PHP extension is missing. Contact your host or server administrator to install and configure the missing extension.',
 					'<strong>%1$s</strong> may behave unexpectedly because the following PHP extensions are missing: %2$s. Contact your host or server administrator to install and configure the missing extensions.',
-					count( $php_extensions ),
+					\count( $php_extensions ),
 					'dws-wp-framework-utilities'
 				),
-				esc_html( $this->get_registrant_name() ),
-				'<strong>' . implode( ', ', $php_extensions ) . '</strong>'
+				\esc_html( $this->get_registrant_name() ),
+				'<strong>' . \implode( ', ', $php_extensions ) . '</strong>'
 			);
 		} else {
-			return sprintf(
+			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
 				_n(
 					'<strong>%1$s</strong> requires the %2$s PHP extension to function. Contact your host or server administrator to install and configure the missing extension.',
 					'<strong>%1$s</strong> requires the following PHP extensions to function: %2$s. Contact your host or server administrator to install and configure the missing extensions.',
-					count( $php_extensions ),
+					\count( $php_extensions ),
 					'dws-wp-framework-utilities'
 				),
-				esc_html( $this->get_registrant_name() ),
-				'<strong>' . implode( ', ', $php_extensions ) . '</strong>'
+				\esc_html( $this->get_registrant_name() ),
+				'<strong>' . \implode( ', ', $php_extensions ) . '</strong>'
 			);
 		}
 	}
@@ -191,28 +191,28 @@ trait DependenciesAdminNoticesTrait {
 	 */
 	protected function compose_missing_php_functions_message( array $php_functions, bool $is_optional = false ): string {
 		if ( $is_optional ) {
-			return sprintf(
+			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP functions. */
 				_n(
 					'<strong>%1$s</strong> may behave unexpectedly because the %2$s PHP function is missing. Contact your host or server administrator to install and configure the missing function.',
 					'<strong>%1$s</strong> may behave unexpectedly because the following PHP functions are missing: %2$s. Contact your host or server administrator to install and configure the missing functions.',
-					count( $php_functions ),
+					\count( $php_functions ),
 					'dws-wp-framework-utilities'
 				),
-				esc_html( $this->get_registrant_name() ),
-				'<strong>' . implode( ', ', $php_functions ) . '</strong>'
+				\esc_html( $this->get_registrant_name() ),
+				'<strong>' . \implode( ', ', $php_functions ) . '</strong>'
 			);
 		} else {
-			return sprintf(
+			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP functions. */
 				_n(
 					'<strong>%1$s</strong> requires the %2$s PHP function to exist. Contact your host or server administrator to install and configure the missing function.',
 					'<strong>%1$s</strong> requires the following PHP functions to exist: %2$s. Contact your host or server administrator to install and configure the missing functions.',
-					count( $php_functions ),
+					\count( $php_functions ),
 					'dws-wp-framework-utilities'
 				),
-				esc_html( $this->get_registrant_name() ),
-				'<strong>' . implode( ', ', $php_functions ) . '</strong>'
+				\esc_html( $this->get_registrant_name() ),
+				'<strong>' . \implode( ', ', $php_functions ) . '</strong>'
 			);
 		}
 	}
@@ -232,18 +232,18 @@ trait DependenciesAdminNoticesTrait {
 	 */
 	protected function compose_incompatible_php_settings_message( array $php_settings, bool $is_optional = false ): string {
 		if ( $is_optional ) {
-			$message = sprintf(
+			$message = \sprintf(
 				/* translators: Plugin name or identifiable name. */
 				__( '<strong>%s</strong> may behave unexpectedly because the following PHP configuration settings are expected:', 'dws-wp-framework-utilities' ),
-				esc_html( $this->get_registrant_name() )
+				\esc_html( $this->get_registrant_name() )
 			) . '<ul>';
 			$message .= $this->format_incompatible_settings_list( $php_settings );
 			$message .= '</ul>' . __( 'Please contact your hosting provider or server administrator to configure these settings. The plugin will attempt to run despite this warning.', 'dws-wp-framework-utilities' );
 		} else {
-			$message = sprintf(
+			$message = \sprintf(
 				/* translators: Plugin name or identifiable name. */
 				__( '<strong>%s</strong> cannot run because the following PHP configuration settings are expected:', 'dws-wp-framework-utilities' ),
-				esc_html( $this->get_registrant_name() )
+				\esc_html( $this->get_registrant_name() )
 			) . '<ul>';
 			$message .= $this->format_incompatible_settings_list( $php_settings );
 			$message .= '</ul>' . __( 'Please contact your hosting provider or server administrator to configure these settings.', 'dws-wp-framework-utilities' );
@@ -267,27 +267,27 @@ trait DependenciesAdminNoticesTrait {
 	 */
 	protected function compose_missing_plugins_message( array $plugins, bool $is_optional = false ): string {
 		if ( $is_optional ) {
-			return sprintf(
+			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
 				_n(
 					'<strong>%1$s</strong> may behave unexpectedly because the %2$s plugin is either not installed or not active. Please install and activate the plugin first.',
 					'<strong>%1$s</strong> may behave unexpectedly because the following plugins are either not installed or active: %2$s. Please install and activate these plugins first.',
-					count( $plugins ),
+					\count( $plugins ),
 					'dws-wp-framework-utilities'
 				),
-				esc_html( $this->get_registrant_name() ),
+				\esc_html( $this->get_registrant_name() ),
 				'<strong>' . $this->format_missing_plugins_list( $plugins ) . '</strong>'
 			);
 		} else {
-			return sprintf(
+			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
 				_n(
 					'<strong>%1$s</strong> requires the %2$s plugin to be installed and active. Please install and activate the plugin first.',
 					'<strong>%1$s</strong> requires the following plugins to be installed and active: %2$s. Please install and activate these plugins first.',
-					count( $plugins ),
+					\count( $plugins ),
 					'dws-wp-framework-utilities'
 				),
-				esc_html( $this->get_registrant_name() ),
+				\esc_html( $this->get_registrant_name() ),
 				'<strong>' . $this->format_missing_plugins_list( $plugins ) . '</strong>'
 			);
 		}
@@ -311,7 +311,7 @@ trait DependenciesAdminNoticesTrait {
 			if ( ! empty( $values['type'] ) ) {
 				switch ( $values['type'] ) {
 					case 'min':
-						$setting_message = sprintf(
+						$setting_message = \sprintf(
 							/* translators: PHP settings value. */
 							__( '%s or higher', 'dws-wp-framework-utilities' ),
 							$setting_message
@@ -347,18 +347,18 @@ trait DependenciesAdminNoticesTrait {
 			}
 
 			if ( isset( $missing_plugin['version'] ) ) {
-				$formatted_version = sprintf(
+				$formatted_version = \sprintf(
 					/* translators: %s: Installed version of the dependant plugin */
 					__( 'You\'re running version %s', 'dws-wp-framework-utilities' ),
 					$missing_plugin['version']
 				);
-				$plugin_name .= ' <em>(' . esc_html( $formatted_version ) . ')</em>';
+				$plugin_name .= ' <em>(' . \esc_html( $formatted_version ) . ')</em>';
 			}
 
 			$plugin_names[] = $plugin_name;
 		}
 
-		return join( ', ', $plugin_names );
+		return \join( ', ', $plugin_names );
 	}
 
 	// endregion

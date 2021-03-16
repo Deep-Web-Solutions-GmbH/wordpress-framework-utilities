@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\Shortcodes\ShortcodesService;
 use DeepWebSolutions\Framework\Utilities\Shortcodes\ShortcodesServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Shortcodes\ShortcodesServiceRegisterTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for registering shortcodes of using instances.

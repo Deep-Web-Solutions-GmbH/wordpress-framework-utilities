@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\CronEvents\CronIntervalsEnum;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Handles the registration of cron events with the Action Scheduler's API.
@@ -49,10 +49,10 @@ class ActionSchedulerHandler extends AbstractHandler implements PluginAwareInter
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
+		if ( \is_null( $this->is_run ) ) {
 			$this->run_result = null;
 
-			$events = array_merge( $this->single_events, $this->recurring_events );
+			$events = \array_merge( $this->single_events, $this->recurring_events );
 			foreach ( $events as $event ) {
 				if ( as_next_scheduled_action( $event['hook'], $event['args'] ) ) {
 					continue;
@@ -65,12 +65,12 @@ class ActionSchedulerHandler extends AbstractHandler implements PluginAwareInter
 				}
 
 				if ( 0 === $result ) {
-					$this->run_result = new RunFailureException( sprintf( 'Failed to schedule event %s', wp_json_encode( $event ) ) );
+					$this->run_result = new RunFailureException( \sprintf( 'Failed to schedule event %s', wp_json_encode( $event ) ) );
 					break;
 				}
 			}
 
-			$this->is_run       = is_null( $this->run_result );
+			$this->is_run       = \is_null( $this->run_result );
 			$this->reset_result = $this->is_reset = null; // phpcs:ignore
 		} else {
 			return new RunFailureException( 'Handler has already been run. Please reset it before running it again.' );
@@ -88,20 +88,20 @@ class ActionSchedulerHandler extends AbstractHandler implements PluginAwareInter
 	 * @return  ResetFailureException|null
 	 */
 	public function reset(): ?ResetFailureException {
-		if ( is_null( $this->is_reset ) ) {
+		if ( \is_null( $this->is_reset ) ) {
 			$this->reset_result = null;
 
-			$events = array_merge( $this->single_events, $this->recurring_events );
+			$events = \array_merge( $this->single_events, $this->recurring_events );
 			foreach ( $events as $event ) {
 				$result = as_unschedule_action( $event['hook'], $event['args'], $this->get_plugin()->get_plugin_slug() );
 
 				if ( false === $result ) {
-					$this->reset_result = new ResetFailureException( sprintf( 'Failed to unschedule event %s', wp_json_encode( $event ) ) );
+					$this->reset_result = new ResetFailureException( \sprintf( 'Failed to unschedule event %s', wp_json_encode( $event ) ) );
 					break;
 				}
 			}
 
-			$this->is_reset   = is_null( $this->reset_result );
+			$this->is_reset   = \is_null( $this->reset_result );
 			$this->run_result = $this->is_run = null; // phpcs:ignore
 		} else {
 			return new ResetFailureException( 'Handler has already been reset. Please run it before resetting again.' );

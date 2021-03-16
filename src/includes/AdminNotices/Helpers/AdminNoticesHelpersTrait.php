@@ -8,7 +8,7 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the admin-notices-helpers-aware interface.
@@ -34,16 +34,16 @@ trait AdminNoticesHelpersTrait {
 	public function get_admin_notice_handle( string $name = '', array $extra = array(), string $root = 'dws-framework-utilities' ): string {
 		if ( $this instanceof PluginComponentInterface ) {
 			$root = ( 'dws-framework-utilities' === $root ) ? '' : $root;
-			$root = join( '_', array( $this->get_plugin()->get_plugin_slug(), $root ?: $this->get_instance_name() ) ); // phpcs:ignore
+			$root = \join( '_', array( $this->get_plugin()->get_plugin_slug(), $root ?: $this->get_instance_name() ) ); // phpcs:ignore
 		} elseif ( $this instanceof PluginAwareInterface ) {
 			$root = $this->get_plugin()->get_plugin_slug();
 		}
 
 		return Strings::to_safe_string(
-			join(
+			\join(
 				'_',
-				array_filter(
-					array_merge(
+				\array_filter(
+					\array_merge(
 						array( $root, $name ),
 						$extra
 					)
@@ -69,7 +69,7 @@ trait AdminNoticesHelpersTrait {
 	 */
 	protected function get_registrant_name(): string {
 		if ( $this instanceof PluginComponentInterface ) {
-			$name = sprintf( '%s: %s', $this->get_plugin()->get_plugin_name(), $this->get_instance_name() );
+			$name = \sprintf( '%s: %s', $this->get_plugin()->get_plugin_name(), $this->get_instance_name() );
 		} elseif ( $this instanceof PluginInterface ) {
 			$name = $this->get_plugin_name();
 		} elseif ( $this instanceof PluginAwareInterface ) {

@@ -7,7 +7,7 @@ use DeepWebSolutions\Framework\Helpers\FileSystem\Files;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for scripts.
@@ -133,12 +133,12 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
+		if ( \is_null( $this->is_run ) ) {
 			$this->scripts = Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ? $this->scripts['public'] : $this->scripts['admin'];
-			array_walk( $this->scripts['register'], array( $this, 'array_walk_register_script' ) );
-			array_walk( $this->scripts['enqueue'], array( $this, 'array_walk_enqueue_script' ) );
-			array_walk( $this->scripts_inline, array( $this, 'array_walk_add_inline_script' ) );
-			array_walk( $this->scripts_localization, array( $this, 'array_walk_localize_script' ) );
+			\array_walk( $this->scripts['register'], array( $this, 'array_walk_register_script' ) );
+			\array_walk( $this->scripts['enqueue'], array( $this, 'array_walk_enqueue_script' ) );
+			\array_walk( $this->scripts_inline, array( $this, 'array_walk_add_inline_script' ) );
+			\array_walk( $this->scripts_localization, array( $this, 'array_walk_localize_script' ) );
 
 			$this->is_run     = true;
 			$this->run_result = null;
@@ -365,7 +365,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  bool    Whether registration was successful or not.
 	 */
 	protected function array_walk_register_script( array $script ): bool {
-		return wp_register_script(
+		return \wp_register_script(
 			$script['handle'],
 			$script['src'],
 			$script['deps'],
@@ -383,7 +383,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   array   $script     Script to register.
 	 */
 	protected function array_walk_enqueue_script( array $script ): void {
-		wp_enqueue_script(
+		\wp_enqueue_script(
 			$script['handle'],
 			$script['src'],
 			$script['deps'],
@@ -403,7 +403,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  bool
 	 */
 	protected function array_walk_add_inline_script( array $script ): bool {
-		return wp_add_inline_script(
+		return \wp_add_inline_script(
 			$script['handle'],
 			$script['data'],
 			$script['position']
@@ -421,7 +421,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  bool    Whether registration was successful or not.
 	 */
 	protected function array_walk_localize_script( array $localization ): bool {
-		return wp_localize_script(
+		return \wp_localize_script(
 			$localization['handle'],
 			$localization['object_name'],
 			$localization['object']

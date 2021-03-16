@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes an object that has helpers for working with admin notices.

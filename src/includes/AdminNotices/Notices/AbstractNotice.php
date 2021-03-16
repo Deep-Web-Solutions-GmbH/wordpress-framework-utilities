@@ -8,7 +8,7 @@ use DeepWebSolutions\Framework\Helpers\Security\Validation;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Encapsulates the most often needed functionality of a notice.
@@ -88,8 +88,8 @@ abstract class AbstractNotice implements AdminNoticeInterface {
 	 * @param   array   $args       Other relevant arguments.
 	 */
 	public function __construct( string $handle, string $message, array $args = array() ) {
-		$this->handle        = sanitize_key( $handle );
-		$this->message       = wp_kses_post( $message );
+		$this->handle        = \sanitize_key( $handle );
+		$this->message       = \wp_kses_post( $message );
 		$this->type          = $args['type'] ?? AdminNoticeTypesEnum::ERROR;
 		$this->is_persistent = Validation::validate_boolean( $args['persistent'] ?? false, false );
 		$this->args          = $args;
@@ -149,11 +149,11 @@ abstract class AbstractNotice implements AdminNoticeInterface {
 	 */
 	public function output(): ?OutputFailureException {
 		if ( $this->should_output() ) {
-			echo sprintf(
+			echo \sprintf(
 				'<div id="%1$s" data-handle="%1$s" class="%2$s">%3$s</div>',
-				esc_attr( $this->get_handle() ),
-				esc_attr( implode( ' ', $this->get_classes() ) ),
-				wp_kses_post( $this->message )
+				\esc_attr( $this->get_handle() ),
+				\esc_attr( \implode( ' ', $this->get_classes() ) ),
+				\wp_kses_post( $this->message )
 			);
 		}
 

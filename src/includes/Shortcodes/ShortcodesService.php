@@ -16,7 +16,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for shortcodes.
@@ -101,12 +101,12 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
+		if ( \is_null( $this->is_run ) ) {
 			foreach ( $this->shortcodes as $hook ) {
 				if ( empty( $hook['component'] ) ) {
-					add_shortcode( $hook['tag'], $hook['callback'] );
+					\add_shortcode( $hook['tag'], $hook['callback'] );
 				} else {
-					add_shortcode( $hook['tag'], array( $hook['component'], $hook['callback'] ) );
+					\add_shortcode( $hook['tag'], array( $hook['component'], $hook['callback'] ) );
 				}
 			}
 
@@ -141,9 +141,9 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  ResetFailureException|null
 	 */
 	public function reset(): ?ResetFailureException {
-		if ( is_null( $this->is_reset ) ) {
+		if ( \is_null( $this->is_reset ) ) {
 			foreach ( $this->shortcodes as $shortcode ) {
-				remove_shortcode( $shortcode );
+				\remove_shortcode( $shortcode );
 			}
 
 			$this->is_reset     = true;

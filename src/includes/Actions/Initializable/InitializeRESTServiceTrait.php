@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInter
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceAwareTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for setting the REST service on the using instance.

@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
 
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesHandlerInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the dependencies handler interface.
@@ -102,10 +102,10 @@ abstract class AbstractDependenciesHandler implements DependenciesHandlerInterfa
 	public function register_dependency( $dependency ): bool {
 		$dependency = $this->parse_dependency( $dependency );
 
-		if ( is_null( $dependency ) ) {
+		if ( \is_null( $dependency ) ) {
 			return false;
 		} else {
-			$this->dependencies = array_merge( $this->dependencies, $dependency );
+			$this->dependencies = \array_merge( $this->dependencies, $dependency );
 			return true;
 		}
 	}

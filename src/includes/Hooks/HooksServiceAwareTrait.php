@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the hooks-service-aware interface.

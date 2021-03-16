@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes an admin notice.

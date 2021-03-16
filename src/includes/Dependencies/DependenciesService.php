@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Checks the status of a set of dependencies.
@@ -92,7 +92,7 @@ class DependenciesService implements LoggingServiceAwareInterface, PluginAwareIn
 		$this->checkers = array();
 
 		foreach ( $checkers as $name => $checker ) {
-			if ( $checker instanceof DependenciesCheckerInterface && is_string( $name ) ) {
+			if ( $checker instanceof DependenciesCheckerInterface && \is_string( $name ) ) {
 				$this->register_checker( $name, $checker );
 			}
 		}

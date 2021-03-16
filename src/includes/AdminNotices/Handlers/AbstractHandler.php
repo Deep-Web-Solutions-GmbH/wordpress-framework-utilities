@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoresContaine
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoresContainerAwareTrait;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Encapsulates the most often needed functionality of a notices handler.
@@ -56,10 +56,10 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 	 */
 	public function get_notices( string $store, array $params ): array {
 		$notices = $this->get_admin_notices_store( $store )->get_notices( $params );
-		return array_filter(
+		return \array_filter(
 			$notices,
 			function( AdminNoticeInterface $notice ) {
-				return get_class( $notice ) === $this->get_notices_type();
+				return \get_class( $notice ) === $this->get_notices_type();
 			}
 		);
 	}
@@ -77,7 +77,7 @@ abstract class AbstractHandler implements AdminNoticesHandlerInterface {
 		foreach ( $stores as $store ) {
 			foreach ( $this->get_notices( $store->get_type(), array() ) as $notice ) {
 				$result = $this->output_notice( $notice, $store );
-				if ( ! is_null( $result ) ) {
+				if ( ! \is_null( $result ) ) {
 					return $result;
 				}
 

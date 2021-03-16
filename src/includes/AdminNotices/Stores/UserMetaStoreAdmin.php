@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Stores;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Store for admin notices stored in the user's meta table.
@@ -72,7 +72,7 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 */
 	public function get_notices( array $params ): array {
 		$params = $this->parse_params( $params );
-		return get_user_meta( $params['user_id'], $this->meta_key, true ) ?: array(); // phpcs:ignore
+		return \get_user_meta( $params['user_id'], $this->meta_key, true ) ?: array(); // phpcs:ignore
 	}
 
 	// endregion
@@ -91,7 +91,7 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  bool    Whether the operation was successful or not.
 	 */
 	public function add_notice( AdminNoticeInterface $notice, array $params ): bool {
-		return is_null( $this->get_notice( $notice->get_handle(), $params ) )
+		return \is_null( $this->get_notice( $notice->get_handle(), $params ) )
 			? $this->update_notice( $notice, $params )
 			: false;
 	}
@@ -128,7 +128,7 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 
 		$existing_notices[ $notice->get_handle() ] = $notice;
 
-		return update_user_meta(
+		return \update_user_meta(
 			$params['user_id'],
 			$this->meta_key,
 			$existing_notices
@@ -154,8 +154,8 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 			unset( $notices[ $handle ] );
 
 			return empty( $notices )
-				? delete_user_meta( $params['user_id'], $this->meta_key )
-				: update_user_meta(
+				? \delete_user_meta( $params['user_id'], $this->meta_key )
+				: \update_user_meta(
 					$params['user_id'],
 					$this->meta_key,
 					$notices
@@ -177,7 +177,7 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 */
 	public function count_notices( array $params ): int {
 		$params = $this->parse_params( $params );
-		return count( $this->get_notices( $params ) );
+		return \count( $this->get_notices( $params ) );
 	}
 
 	// endregion
@@ -195,7 +195,7 @@ class UserMetaStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  array
 	 */
 	protected function parse_params( array $params ): array {
-		return wp_parse_args( $params, array( 'user_id' => get_current_user_id() ) );
+		return \wp_parse_args( $params, array( 'user_id' => \get_current_user_id() ) );
 	}
 
 	// endregion

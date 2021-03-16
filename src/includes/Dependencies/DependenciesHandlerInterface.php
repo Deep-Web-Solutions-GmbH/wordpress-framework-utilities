@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes an object that checks whether a list of dependencies is present or not.

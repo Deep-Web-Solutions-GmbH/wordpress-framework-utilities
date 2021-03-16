@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Assets\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Helpers\AssetsHelpersTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the scripts-handler-register interface.

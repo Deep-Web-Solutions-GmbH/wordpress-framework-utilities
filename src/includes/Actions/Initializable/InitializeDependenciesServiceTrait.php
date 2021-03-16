@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareIn
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareTrait;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for setting the dependencies service on the using instance.

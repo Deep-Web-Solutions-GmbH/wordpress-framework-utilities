@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Abstract trait for dependent activation of instances with dependencies.
@@ -41,7 +41,7 @@ trait ActiveDependenciesTrait {
 	 * @return  bool
 	 */
 	public function is_active_dependencies(): bool {
-		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : get_class( $this );
+		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : \get_class( $this );
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
 			$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $checker_name );
@@ -51,8 +51,8 @@ trait ActiveDependenciesTrait {
 			throw new NotImplementedException( 'Dependency checking scenario not supported' );
 		}
 
-		if ( is_array( $are_deps_fulfilled ) ) {
-			if ( is_array( reset( $are_deps_fulfilled ) ) ) {
+		if ( \is_array( $are_deps_fulfilled ) ) {
+			if ( \is_array( \reset( $are_deps_fulfilled ) ) ) {
 				foreach ( $are_deps_fulfilled as $dependencies_status ) {
 					$required_status = $this->is_active_required_dependencies( $dependencies_status );
 					if ( false === $required_status ) {
@@ -61,7 +61,7 @@ trait ActiveDependenciesTrait {
 					}
 				}
 
-				$are_deps_fulfilled = is_array( $are_deps_fulfilled );
+				$are_deps_fulfilled = \is_array( $are_deps_fulfilled );
 			} else {
 				$are_deps_fulfilled = $this->is_active_required_dependencies( $are_deps_fulfilled );
 			}
@@ -97,9 +97,9 @@ trait ActiveDependenciesTrait {
 					return strpos( $key, 'optional' ) !== false;
 				}
 			);
-			$are_deps_fulfilled   = ( count( $unfulfilled ) === count( $optional_unfulfilled ?? array() ) );
+			$are_deps_fulfilled   = ( \count( $unfulfilled ) === \count( $optional_unfulfilled ?? array() ) );
 		} else {
-			$are_deps_fulfilled = is_null( $unfulfilled );
+			$are_deps_fulfilled = \is_null( $unfulfilled );
 		}
 
 		return $are_deps_fulfilled;

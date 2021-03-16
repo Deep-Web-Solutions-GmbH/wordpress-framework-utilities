@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Templating;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a templating-service-aware instance.

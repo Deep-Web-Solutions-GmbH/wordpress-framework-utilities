@@ -2,6 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
+\defined( 'ABSPATH' ) || exit;
+
 /**
  * Describes an admin-notices-stores-container-aware instance.
  *

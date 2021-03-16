@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\DependencyInjection;
 
 use Psr\Container\ContainerInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Defines an instance aware of a DI container.

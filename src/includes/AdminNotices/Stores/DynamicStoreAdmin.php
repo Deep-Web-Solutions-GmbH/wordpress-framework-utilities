@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Stores;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Store for dynamically registered admin notices at runtime.
@@ -156,7 +156,7 @@ class DynamicStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  int
 	 */
 	public function count_notices( array $params = array() ): int {
-		return count( $this->get_notices() );
+		return \count( $this->get_notices() );
 	}
 
 	// endregion

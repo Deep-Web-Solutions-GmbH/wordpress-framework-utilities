@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Assets;
 
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes an object that registers and/or enqueues assets.

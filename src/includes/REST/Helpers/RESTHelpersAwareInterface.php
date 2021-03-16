@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\REST\Helpers;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes an object that has helpers for working with the REST API.

@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a way to store, retrieve and output admin notices.

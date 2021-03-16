@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Definition of a dismissible notice.
@@ -87,7 +87,7 @@ class DismissibleNotice extends Notice {
 	 * @return  string[]
 	 */
 	protected function get_classes(): array {
-		return array_merge( parent::get_classes(), array( 'is-dismissible' ) );
+		return \array_merge( parent::get_classes(), array( 'is-dismissible' ) );
 	}
 
 	// endregion

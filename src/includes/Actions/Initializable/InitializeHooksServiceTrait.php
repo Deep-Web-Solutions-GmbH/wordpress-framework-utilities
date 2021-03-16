@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for setting the hooks service on the using instance.

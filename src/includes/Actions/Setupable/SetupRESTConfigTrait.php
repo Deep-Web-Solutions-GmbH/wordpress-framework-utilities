@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\REST\RESTServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceRegisterTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for registering the REST config of using instances.
@@ -48,7 +48,7 @@ trait SetupRESTConfigTrait {
 		}
 
 		if ( ! $this instanceof RESTServiceRegisterInterface ) {
-			return new SetupFailureException( sprintf( 'Cannot add REST service subscriber that is not an instance of %s', RESTServiceRegisterInterface::class ) );
+			return new SetupFailureException( \sprintf( 'Cannot add REST service subscriber that is not an instance of %s', RESTServiceRegisterInterface::class ) );
 		}
 
 		$service->add_subscriber( $this );

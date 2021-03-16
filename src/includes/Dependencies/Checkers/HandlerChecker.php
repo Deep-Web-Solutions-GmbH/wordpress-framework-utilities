@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Checkers;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesHandlerInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Checks the status of a set of dependencies.
@@ -163,7 +163,7 @@ class HandlerChecker implements DependenciesCheckerInterface {
 			$handler_name = $handler->get_name();
 
 			$result[ $handler_type ]                  = $result[ $handler_type ] ?? array();
-			$result[ $handler_type ][ $handler_name ] = method_exists( $handler, $method ) ? call_user_func( array( $handler, $method ) ) : null;
+			$result[ $handler_type ][ $handler_name ] = \method_exists( $handler, $method ) ? \call_user_func( array( $handler, $method ) ) : null;
 		}
 
 		return $result;

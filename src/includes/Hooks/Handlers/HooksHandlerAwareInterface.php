@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Hooks\Handlers;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a hooks-handler-aware instance.

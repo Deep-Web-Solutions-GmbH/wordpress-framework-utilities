@@ -6,7 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionT
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
 use DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies\DependenciesAdminNoticesTrait as ActiveableDependenciesAdminNoticesTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for registering admin notices of missing dependencies of using instances.

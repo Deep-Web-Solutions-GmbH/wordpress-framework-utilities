@@ -3,8 +3,10 @@
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
+use DeepWebSolutions\Framework\Helpers\Security\Validation;
+use DeepWebSolutions\Framework\Helpers\WordPress\Users;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Definition of a regular notice.
@@ -26,8 +28,8 @@ class Notice extends AbstractNotice {
 	 * @return  bool    Whether the notice should be outputted or not.
 	 */
 	public function should_output(): bool {
-		if ( isset( $this->args['capability'] ) && is_string( $this->args['capability'] ) ) {
-			return current_user_can( $this->args['capability'] );
+		if ( isset( $this->args['capability'] ) && \is_string( $this->args['capability'] ) ) {
+			return Users::has_capabilities( (array) $this->args['capability'] );
 		}
 
 		return true;
@@ -42,8 +44,8 @@ class Notice extends AbstractNotice {
 	 * @return  OutputFailureException|null
 	 */
 	public function output(): ?OutputFailureException {
-		$args          = wp_parse_args( $this->args, array( 'html' => false ) );
-		$this->message = boolval( $args['html'] ) ? $this->message : "<p>{$this->message}</p>";
+		$args          = \wp_parse_args( $this->args, array( 'html' => false ) );
+		$this->message = Validation::validate_boolean( $args['html'], false ) ? $this->message : "<p>{$this->message}</p>";
 
 		return parent::output();
 	}

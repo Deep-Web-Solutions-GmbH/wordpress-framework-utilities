@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceAwareIn
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for registering admin notices of using instances.

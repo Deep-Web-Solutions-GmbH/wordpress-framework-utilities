@@ -7,6 +7,7 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 use DeepWebSolutions\Framework\Helpers\WordPress\Assets;
+use DeepWebSolutions\Framework\Helpers\WordPress\Hooks\HooksHelpersAwareInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoresContainer;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
@@ -15,7 +16,7 @@ use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Handles dismissible notices.
@@ -25,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Handlers
  */
-class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRegisterInterface, PluginAwareInterface {
+class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAwareInterface, HooksServiceRegisterInterface, PluginAwareInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
@@ -79,21 +80,21 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 			return;
 		}
 
-		ob_start();
+		\ob_start();
 
 		?>
 
 		( function( $ ) {
-			$( '.dws-framework-notice-<?php echo esc_js( $this->get_plugin()->get_plugin_slug() ); ?>' ).on( 'click.wp-dismiss-notice', '.notice-dismiss', function( e ) {
+			$( '.dws-framework-notice-<?php echo \esc_js( $this->get_plugin()->get_plugin_slug() ); ?>' ).on( 'click.wp-dismiss-notice', '.notice-dismiss', function( e ) {
 				var notice = $( this ).closest( '.dws-framework-notice' );
 				$.ajax( {
 					url: ajaxurl,
 					method: 'POST',
 						data: {
-						action: '<?php echo esc_js( $this->get_hook_tag( 'dismiss_notice' ) ); ?>',
+						action: '<?php echo \esc_js( $this->get_hook_tag( 'dismiss_notice' ) ); ?>',
 						handle: $( notice ).data( 'handle' ),
 						store: $( notice ).data( 'store' ),
-						_wpnonce: '<?php echo esc_js( wp_create_nonce( $this->get_plugin()->get_plugin_slug() . '-dws-dismiss-notice' ) ); ?>'
+						_wpnonce: '<?php echo \esc_js( \wp_create_nonce( $this->get_plugin()->get_plugin_slug() . '-dws-dismiss-notice' ) ); ?>'
 					}
 				} );
 			} );
@@ -101,7 +102,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 
 		<?php
 
-		echo Assets::wrap_string_in_script_tags( ob_get_clean() ); // phpcs:ignore
+		echo Assets::wrap_string_in_script_tags( \ob_get_clean() ); // phpcs:ignore
 	}
 
 	/**
@@ -111,9 +112,9 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 	 * @version 1.0.0
 	 */
 	public function handle_ajax_dismiss(): void {
-		if ( is_user_logged_in() && check_ajax_referer( $this->get_plugin()->get_plugin_slug() . '-dws-dismiss-notice' ) ) {
-			$handle = sanitize_key( $_POST['handle'] ?? '' );
-			$store  = sanitize_key( $_POST['store'] ?? '' );
+		if ( \is_user_logged_in() && \check_ajax_referer( $this->get_plugin()->get_plugin_slug() . '-dws-dismiss-notice' ) ) {
+			$handle = \sanitize_key( $_POST['handle'] ?? '' );
+			$store  = \sanitize_key( $_POST['store'] ?? '' );
 			$this->dismiss_notice( $handle, $store );
 		}
 
@@ -184,7 +185,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 		$store   = $this->get_admin_notices_store( $store );
 		$notices = $store->get_notices( $params );
 
-		return array_filter(
+		return \array_filter(
 			$notices,
 			function( AdminNoticeInterface $notice ) {
 				return ( $notice instanceof DismissibleNotice ) && $notice->is_dismissed();
@@ -208,19 +209,19 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksServiceRe
 	 * @return  OutputFailureException|null
 	 */
 	protected function output_notice( AdminNoticeInterface $notice, AdminNoticesStoreInterface $store ): ?OutputFailureException {
-		ob_start();
+		\ob_start();
 
 		$result = parent::output_notice( $notice, $store );
-		if ( ! is_null( $result ) ) {
-			ob_end_clean();
+		if ( ! \is_null( $result ) ) {
+			\ob_end_clean();
 			return $result;
 		}
 
-		$notice_html = ob_get_clean();
+		$notice_html = \ob_get_clean();
 		$notice_html = Strings::replace_placeholders(
 			array(
-				'dws-framework-notice' => 'dws-framework-notice dws-framework-notice-' . esc_attr( $this->get_plugin()->get_plugin_slug() ),
-				'class='               => 'data-store="' . esc_attr( $store->get_type() ) . '" class=',
+				'dws-framework-notice' => 'dws-framework-notice dws-framework-notice-' . \esc_attr( $this->get_plugin()->get_plugin_slug() ),
+				'class='               => 'data-store="' . \esc_attr( $store->get_type() ) . '" class=',
 			),
 			$notice_html
 		);

@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of a shortcodes-service-aware interface.

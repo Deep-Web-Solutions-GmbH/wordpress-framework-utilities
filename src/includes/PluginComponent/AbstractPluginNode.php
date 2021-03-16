@@ -8,7 +8,7 @@ use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use LogicException;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Template for encapsulating some of the most often required abilities of a tree-like plugin component.
@@ -47,7 +47,7 @@ abstract class AbstractPluginNode extends AbstractPluginComponent implements Nod
 		/* @noinspection PhpUnhandledExceptionInspection */
 		throw $this->log_event_and_return_exception(
 			LogLevel::ERROR,
-			sprintf(
+			\sprintf(
 				'Could not find plugin root from within node. Node name: %s',
 				$this->get_instance_name()
 			),
@@ -86,16 +86,16 @@ abstract class AbstractPluginNode extends AbstractPluginComponent implements Nod
 	 * @return  NodeInterface|null
 	 */
 	public function get_closest( string $class ): ?NodeInterface {
-		if ( is_a( $this, $class ) || ! $this->has_parent() ) {
+		if ( \is_a( $this, $class ) || ! $this->has_parent() ) {
 			return null;
 		}
 
 		$current = $this;
 		do {
 			$current = $current->get_parent();
-		} while ( $current->has_parent() && ! is_a( $current, $class ) );
+		} while ( $current->has_parent() && ! \is_a( $current, $class ) );
 
-		return is_a( $current, $class ) ? $current : null;
+		return \is_a( $current, $class ) ? $current : null;
 	}
 
 	// endregion

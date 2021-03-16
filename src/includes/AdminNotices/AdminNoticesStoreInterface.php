@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Describes a way to store and retrieve admin notices.

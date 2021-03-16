@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Utilities\Assets\AssetsServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Assets\Handlers\StylesHandlerRegisterTrait;
 use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for registering styles of using instances.

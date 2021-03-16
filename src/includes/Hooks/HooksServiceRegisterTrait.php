@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
 use DeepWebSolutions\Framework\Foundations\Helpers\HooksHelpersTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the hooks service register interface.

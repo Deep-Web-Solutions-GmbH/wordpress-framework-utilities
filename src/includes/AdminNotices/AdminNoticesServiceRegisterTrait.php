@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesHelpersTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the admin notices service register interface.

@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Stores;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesStoreInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Store for admin notices stored in the options table.
@@ -73,7 +73,7 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  AdminNoticeInterface[]
 	 */
 	public function get_notices( array $params = array() ): array {
-		return get_option( $this->option_key, array() );
+		return \get_option( $this->option_key, array() );
 	}
 
 	// endregion
@@ -94,7 +94,7 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  bool    Whether the operation was successful or not.
 	 */
 	public function add_notice( AdminNoticeInterface $notice, array $params = array() ): bool {
-		return is_null( $this->get_notice( $notice->get_handle() ) )
+		return \is_null( $this->get_notice( $notice->get_handle() ) )
 			? $this->update_notice( $notice, $params )
 			: false;
 	}
@@ -134,7 +134,7 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 
 		$existing_notices[ $notice->get_handle() ] = $notice;
 
-		return update_option(
+		return \update_option(
 			$this->option_key,
 			$existing_notices
 		);
@@ -160,8 +160,8 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 			unset( $notices[ $handle ] );
 
 			return empty( $notices )
-				? delete_option( $this->option_key )
-				: update_option(
+				? \delete_option( $this->option_key )
+				: \update_option(
 					$this->option_key,
 					$notices
 				);
@@ -183,7 +183,7 @@ class OptionsStoreAdmin implements AdminNoticesStoreInterface {
 	 * @return  int
 	 */
 	public function count_notices( array $params = array() ): int {
-		return count( $this->get_notices() );
+		return \count( $this->get_notices() );
 	}
 
 	// endregion

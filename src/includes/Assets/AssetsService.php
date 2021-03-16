@@ -20,7 +20,7 @@ use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for assets.
@@ -143,18 +143,18 @@ class AssetsService implements LoggingServiceAwareInterface, PluginAwareInterfac
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
-		if ( is_null( $this->is_run ) ) {
+		if ( \is_null( $this->is_run ) ) {
 			$this->run_result = null;
 
 			foreach ( $this->get_handlers() as $handler ) {
 				$result = $handler->run();
-				if ( ! is_null( $result ) ) {
+				if ( ! \is_null( $result ) ) {
 					$this->run_result = $result;
 					break;
 				}
 			}
 
-			$this->is_run = is_null( $this->run_result );
+			$this->is_run = \is_null( $this->run_result );
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
 			return $this->log_event_and_doing_it_wrong_and_return_exception(

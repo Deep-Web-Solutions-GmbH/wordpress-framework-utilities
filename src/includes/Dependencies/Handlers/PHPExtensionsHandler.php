@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Checks whether a list of PHP extensions is present or not.
@@ -40,10 +40,10 @@ class PHPExtensionsHandler extends AbstractDependenciesHandler {
 	 * @return  array
 	 */
 	public function get_missing_dependencies(): array {
-		return array_filter(
-			array_map(
+		return \array_filter(
+			\array_map(
 				function( $php_extension ) {
-					return extension_loaded( $php_extension ) ? false : $php_extension;
+					return \extension_loaded( $php_extension ) ? false : $php_extension;
 				},
 				$this->get_dependencies()
 			)
@@ -65,7 +65,7 @@ class PHPExtensionsHandler extends AbstractDependenciesHandler {
 	 * @return  array|null
 	 */
 	protected function parse_dependency( $dependency ): ?array {
-		return is_string( $dependency )
+		return \is_string( $dependency )
 			? array( $dependency )
 			: null;
 	}

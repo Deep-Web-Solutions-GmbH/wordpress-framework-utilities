@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Utilities\Templating\TemplatingService;
 use DeepWebSolutions\Framework\Utilities\Templating\TemplatingServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Templating\TemplatingServiceAwareTrait;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Trait for setting the templating service on the using instance.

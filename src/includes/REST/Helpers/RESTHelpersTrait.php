@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\REST\Helpers;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Basic implementation of the REST-helpers-aware interface.
@@ -28,7 +28,7 @@ trait RESTHelpersTrait {
 	 */
 	public function get_rest_namespace( int $version = 1 ): string {
 		if ( $this instanceof PluginComponentInterface ) {
-			$namespace = join( '/', array( $this->get_plugin()->get_plugin_slug(), sanitize_key( $this->get_instance_name() ) ) );
+			$namespace = \join( '/', array( $this->get_plugin()->get_plugin_slug(), \sanitize_key( $this->get_instance_name() ) ) );
 		} elseif ( $this instanceof PluginAwareInterface ) {
 			$namespace = $this->get_plugin()->get_plugin_slug();
 		} else {

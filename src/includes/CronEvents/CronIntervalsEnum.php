@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 
-defined( 'ABSPATH' ) || exit;
+\defined( 'ABSPATH' ) || exit;
 
 /**
  * Valid values for cron intervals.
@@ -156,49 +156,49 @@ class CronIntervalsEnum {
 			case self::MINUTES_5:
 				$result = array(
 					'interval' => 60 * 5,
-					'display'  => sprintf( $minutes_display, 5 ),
+					'display'  => \sprintf( $minutes_display, 5 ),
 				);
 				break;
 			case self::MINUTES_10:
 				$result = array(
 					'interval' => 60 * 10,
-					'display'  => sprintf( $minutes_display, 10 ),
+					'display'  => \sprintf( $minutes_display, 10 ),
 				);
 				break;
 			case self::MINUTES_15:
 				$result = array(
 					'interval' => 60 * 15,
-					'display'  => sprintf( $minutes_display, 15 ),
+					'display'  => \sprintf( $minutes_display, 15 ),
 				);
 				break;
 			case self::MINUTES_30:
 				$result = array(
 					'interval' => 60 * 30,
-					'display'  => sprintf( $minutes_display, 30 ),
+					'display'  => \sprintf( $minutes_display, 30 ),
 				);
 				break;
 			case self::HOURS_2:
 				$result = array(
 					'interval' => 60 * 60 * 2,
-					'display'  => sprintf( $hours_display, 2 ),
+					'display'  => \sprintf( $hours_display, 2 ),
 				);
 				break;
 			case self::HOURS_3:
 				$result = array(
 					'interval' => 60 * 60 * 3,
-					'display'  => sprintf( $hours_display, 3 ),
+					'display'  => \sprintf( $hours_display, 3 ),
 				);
 				break;
 			case self::HOURS_4:
 				$result = array(
 					'interval' => 60 * 60 * 4,
-					'display'  => sprintf( $hours_display, 4 ),
+					'display'  => \sprintf( $hours_display, 4 ),
 				);
 				break;
 			case self::HOURS_6:
 				$result = array(
 					'interval' => 60 * 60 * 6,
-					'display'  => sprintf( $hours_display, 6 ),
+					'display'  => \sprintf( $hours_display, 6 ),
 				);
 				break;
 		}

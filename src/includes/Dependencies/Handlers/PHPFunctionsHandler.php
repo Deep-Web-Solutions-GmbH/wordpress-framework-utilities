@@ -55,19 +55,17 @@ class PHPFunctionsHandler extends AbstractDependenciesHandler {
 	// region HELPERS
 
 	/**
-	 * Makes sure the dependency is valid. If that can't be ensured, return null.
+	 * Checks whether the dependency is valid for the current handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $dependency     Dependency to parse.
+	 * @param   mixed   $dependency     Dependency to check.
 	 *
-	 * @return  array|null
+	 * @return  bool
 	 */
-	protected function parse_dependency( $dependency ): ?array {
-		return \is_string( $dependency )
-			? array( $dependency )
-			: null;
+	protected function is_dependency_valid( $dependency ): bool {
+		return \is_string( $dependency );
 	}
 
 	// endregion

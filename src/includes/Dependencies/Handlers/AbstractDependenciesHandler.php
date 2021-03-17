@@ -100,14 +100,12 @@ abstract class AbstractDependenciesHandler implements DependenciesHandlerInterfa
 	 * @return  bool
 	 */
 	public function register_dependency( $dependency ): bool {
-		$dependency = $this->parse_dependency( $dependency );
-
-		if ( \is_null( $dependency ) ) {
-			return false;
-		} else {
-			$this->dependencies = \array_merge( $this->dependencies, $dependency );
-			return true;
+		$validity = $this->is_dependency_valid( $dependency );
+		if ( true === $validity ) {
+			$this->dependencies[] = $dependency;
 		}
+
+		return $validity;
 	}
 
 	/**
@@ -127,16 +125,16 @@ abstract class AbstractDependenciesHandler implements DependenciesHandlerInterfa
 	// region HELPERS
 
 	/**
-	 * Makes sure the dependency is valid. If that can't be ensured, return null.
+	 * Checks whether the dependency is valid for the current handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $dependency     Dependency to parse.
+	 * @param   mixed   $dependency     Dependency to check.
 	 *
-	 * @return  array|null
+	 * @return  bool
 	 */
-	abstract protected function parse_dependency( $dependency ): ?array;
+	abstract protected function is_dependency_valid( $dependency ): bool;
 
 	// endregion
 }

@@ -49,27 +49,27 @@ class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
 		$missing = array();
 
 		if ( \function_exists( 'ini_get' ) ) {
-			foreach ( $this->get_dependencies() as $php_setting => $expected_value ) {
-				$environment_value = ini_get( $php_setting );
+			foreach ( $this->get_dependencies() as $dependency ) {
+				$environment_value = ini_get( $dependency['option_name'] );
 				if ( empty( $environment_value ) ) {
 					continue;
 				}
 
-				if ( is_int( $expected_value ) ) {
+				if ( is_int( $dependency['expected_value'] ) ) {
 					$is_size           = ! is_numeric( substr( $environment_value, -1 ) );
 					$environment_value = $is_size ? Strings::letter_to_number( $environment_value ) : $environment_value;
 
-					if ( $environment_value < $expected_value ) {
-						$missing[ $php_setting ] = array(
-							'expected'    => $is_size ? size_format( $expected_value ) : $expected_value,
-							'environment' => $is_size ? size_format( $environment_value ) : $environment_value,
-							'type'        => 'min',
+					if ( $environment_value < $dependency['expected_value'] ) {
+						$missing[ $dependency['option_name'] ] = array(
+							'expected_value' => $is_size ? \size_format( $dependency['expected_value'] ) : $dependency['expected_value'],
+							'environment'    => $is_size ? \size_format( $environment_value ) : $environment_value,
+							'type'           => 'min',
 						);
 					}
-				} elseif ( $environment_value !== $expected_value ) {
-					$missing[ $php_setting ] = array(
-						'expected'    => $expected_value,
-						'environment' => $environment_value,
+				} elseif ( $environment_value !== $dependency['expected_value'] ) {
+					$missing[ $dependency['option_name'] ] = array(
+						'expected_value' => $dependency['expected_value'],
+						'environment'    => $environment_value,
 					);
 				}
 			}
@@ -83,19 +83,17 @@ class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
 	// region HELPERS
 
 	/**
-	 * Makes sure the dependency is valid. If that can't be ensured, return null.
+	 * Checks whether the dependency is valid for the current handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $dependency     Dependency to parse.
+	 * @param   mixed   $dependency     Dependency to check.
 	 *
-	 * @return  array|null
+	 * @return  bool
 	 */
-	protected function parse_dependency( $dependency ): ?array {
-		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency )
-			? $dependency
-			: null;
+	protected function is_dependency_valid( $dependency ): bool {
+		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency ) && isset( $dependency['option_name'], $dependency['expected_value'] );
 	}
 
 	// endregion

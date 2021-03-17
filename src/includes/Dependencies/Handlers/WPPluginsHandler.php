@@ -52,15 +52,15 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 	public function get_missing_dependencies(): array {
 		$missing = array();
 
-		foreach ( $this->get_dependencies() as $active_plugin => $active_plugin_config ) {
-			$is_active = $this->is_plugin_active( $active_plugin, $active_plugin_config );
+		foreach ( $this->get_dependencies() as $dependency ) {
+			$is_active = $this->is_plugin_active( $dependency['plugin'], $dependency );
 
 			if ( ! $is_active ) {
-				$missing[ $active_plugin ] = $active_plugin_config;
-			} elseif ( isset( $active_plugin_config['min_version'] ) ) {
-				$version = $this->get_active_plugin_version( $active_plugin, $active_plugin_config );
-				if ( version_compare( $version, $active_plugin_config['min_version'], '<' ) ) {
-					$missing[ $active_plugin ] = $active_plugin_config + array( 'version' => $version );
+				$missing[ $dependency['plugin'] ] = $dependency;
+			} elseif ( isset( $dependency['min_version'] ) ) {
+				$version = $this->get_active_plugin_version( $dependency['plugin'], $dependency );
+				if ( version_compare( $version, $dependency['min_version'], '<' ) ) {
+					$missing[ $dependency['plugin'] ] = $dependency + array( 'version' => $version );
 				}
 			}
 		}
@@ -73,19 +73,17 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 	// region HELPERS
 
 	/**
-	 * Makes sure the dependency is valid. If that can't be ensured, return null.
+	 * Checks whether the dependency is valid for the current handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $dependency     Dependency to parse.
+	 * @param   mixed   $dependency     Dependency to check.
 	 *
-	 * @return  array|null
+	 * @return  bool
 	 */
-	protected function parse_dependency( $dependency ): ?array {
-		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency )
-			? $dependency
-			: null;
+	protected function is_dependency_valid( $dependency ): bool {
+		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency ) && isset( $dependency['plugin'] );
 	}
 
 	/**

@@ -82,18 +82,20 @@ trait DependenciesAdminNoticesTrait {
 		$missing_dependencies = $dependencies_checker->get_missing_dependencies();
 		foreach ( $missing_dependencies as $type => $handler_dependencies ) {
 			foreach ( $handler_dependencies as $handler => $dependencies ) {
-				$is_optional_handler = ( strpos( $handler, 'optional' ) !== false );
-				$store               = $is_optional_handler ? 'options' : 'dynamic';
+				if ( ! empty( $dependencies ) ) {
+					$is_optional_handler = ( strpos( $handler, 'optional' ) !== false );
+					$store               = $is_optional_handler ? 'options' : 'dynamic';
 
-				$notice_handle  = $this->get_admin_notice_handle( "missing-{$type}", array( md5( wp_json_encode( $dependencies ) ) ) );
-				$notice_message = $this->compose_message( $type, $dependencies, $is_optional_handler );
-				$notice_params  = array( 'capability' => 'activate_plugins' );
+					$notice_handle  = $this->get_admin_notice_handle( "missing-{$type}", array( md5( wp_json_encode( $dependencies ) ) ) );
+					$notice_message = $this->compose_message( $type, $dependencies, $is_optional_handler );
+					$notice_params  = array( 'capability' => 'activate_plugins' );
 
-				$notice = $is_optional_handler
-					? new DismissibleNotice( $notice_handle, $notice_message, $notice_params + array( 'persistent' => true ) )
-					: new Notice( $notice_handle, $notice_message, $notice_params );
+					$notice = $is_optional_handler
+						? new DismissibleNotice( $notice_handle, $notice_message, $notice_params + array( 'persistent' => true ) )
+						: new Notice( $notice_handle, $notice_message, $notice_params );
 
-				$notices_service->add_notice( $notice, $store );
+					$notices_service->add_notice( $notice, $store );
+				}
 			}
 		}
 	}

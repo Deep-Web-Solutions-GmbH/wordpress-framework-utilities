@@ -138,7 +138,12 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 		// Load the found template.
 		\do_action( $this->get_hook_tag( 'before_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 
-		\load_template( $template, false, $args );
+		if ( \did_action( 'setup_theme' ) ) {
+			\load_template( $template, false, $args );
+		} else {
+			/* @noinspection PhpIncludeInspection */
+			require $template;
+		}
 
 		\do_action( $this->get_hook_tag( 'after_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 	}
@@ -178,7 +183,9 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  string
 	 */
 	public function locate_template( string $template_name, string $template_path, string $default_path, string $constant_name = 'TEMPLATE_DEBUG' ): string {
-		$template = ( Request::has_debug( $constant_name ) || ! \did_action( 'setup_theme' ) ) ? '' : locate_template(
+		$can_locate_template = ! Request::has_debug( $constant_name ) && \did_action( 'setup_theme' );
+
+		$template = ( ! $can_locate_template ) ? '' : locate_template(
 			array(
 				\trailingslashit( $template_path ) . $template_name,
 				$template_name,

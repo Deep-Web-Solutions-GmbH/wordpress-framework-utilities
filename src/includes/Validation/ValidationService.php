@@ -170,6 +170,8 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 */
 	public function validate_boolean_value( $value, string $key ): bool {
 		$default = $this->get_default_value_or_throw( $key );
+		$default = \is_bool( $default ) ? $default : Validation::validate_boolean( $default, false );
+
 		return Validation::validate_boolean( $value, $default );
 	}
 
@@ -188,6 +190,8 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 */
 	public function validate_integer_value( $value, string $key ): int {
 		$default = $this->get_default_value_or_throw( $key );
+		$default = \is_int( $default ) ? $default : Validation::validate_integer( $default, 0 );
+
 		return Validation::validate_integer( $value, $default );
 	}
 
@@ -206,6 +210,8 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 */
 	public function validate_float_value( $value, string $key ): float {
 		$default = $this->get_default_value_or_throw( $key );
+		$default = \is_float( $default ) ? $default : Validation::validate_float( $default, 0.0 );
+
 		return Validation::validate_float( $value, $default );
 	}
 
@@ -221,6 +227,13 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 */
 	public function validate_callback_value( $value, string $key ): callable {
 		$default = $this->get_default_value_or_throw( $key );
+		$default = \is_callable( $default ) ? $default : Validation::validate_callback(
+			$default,
+			function( $value ) {
+				return $value;
+			}
+		);
+
 		return Validation::validate_callback( $value, $default );
 	}
 

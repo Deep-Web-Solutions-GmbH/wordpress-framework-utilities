@@ -50,7 +50,7 @@ abstract class AbstractDependenciesHandler implements DependenciesHandlerInterfa
 	 * @param   string  $name           Name of the handler. Should be unique per handler type.
 	 * @param   array   $dependencies   List of dependencies to check for.
 	 */
-	public function __construct( string $name, array $dependencies ) {
+	public function __construct( string $name, array $dependencies = array() ) {
 		$this->name = $name;
 		foreach ( $dependencies as $dependency ) {
 			$this->register_dependency( $dependency );

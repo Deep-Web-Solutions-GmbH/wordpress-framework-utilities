@@ -9,7 +9,7 @@
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
 
-## Description 
+## Description
 
 [![Build Status](https://travis-ci.com/deep-web-solutions/wordpress-framework-utilities.svg?branch=master)](https://travis-ci.com/deep-web-solutions/wordpress-framework-utilities)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ccac5a84720a1b6230f6/maintainability)](https://codeclimate.com/github/deep-web-solutions/wordpress-framework-utilities/maintainability)
@@ -26,12 +26,12 @@ If the package will be used outside a composer-based installation, e.g. inside a
 using the `--ignore-platform-reqs` option. If you don't do that, the bundled `DWS WordPress Framework - Bootstrapper` package
 will only be able to perform checks for the WordPress version because composer will throw an error in case of an incompatible PHP version.
 
-## Contributing 
+## Contributing
 
 Contributions both in the form of bug-reports and pull requests are more than welcome!
 
 
-## Frequently Asked Questions 
+## Frequently Asked Questions
 
 - Will you support earlier versions of WordPress and PHP?
 
@@ -46,7 +46,7 @@ If you're using older versions of either one, you should really consider upgradi
 Hopefully yes, probably not. If you found any problems, please raise an issue on Github!
 
 
-## Changelog 
+## Changelog
 
 ### 1.0.0 (TBD) 
 * First official release.

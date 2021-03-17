@@ -178,7 +178,7 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  string
 	 */
 	public function locate_template( string $template_name, string $template_path, string $default_path, string $constant_name = 'TEMPLATE_DEBUG' ): string {
-		$template = Request::has_debug( $constant_name ) ? '' : locate_template(
+		$template = ( Request::has_debug( $constant_name ) || ! \did_action( 'setup_theme' ) ) ? '' : locate_template(
 			array(
 				\trailingslashit( $template_path ) . $template_name,
 				$template_name,

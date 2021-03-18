@@ -277,14 +277,14 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 
 		$value = $this->get_container_entry( $key );
 		if ( \is_null( $value ) ) {
-			return new InexistentPropertyException();
+			return new InexistentPropertyException( \sprintf( 'Inexistent container entry: %s', $key ) );
 		}
 
 		foreach ( $boom as $key ) {
 			if ( isset( $value[ $key ] ) || array_key_exists( $key, $value ) ) {
 				$value = $value[ $key ];
 			} else {
-				return new InexistentPropertyException();
+				return new InexistentPropertyException( \sprintf( 'Inexistent container entry: %s', $key ) );
 			}
 		}
 

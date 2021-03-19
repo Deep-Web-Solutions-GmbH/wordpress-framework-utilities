@@ -1,5 +1,7 @@
+wp-stubs.json
 .env.testing
 codeception.yml
+tests/_data/dump.sql
 
 # Created by https://www.toptal.com/developers/gitignore/api/composer,phpstorm+all,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=composer,phpstorm+all,node

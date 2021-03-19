@@ -4,19 +4,14 @@ namespace DeepWebSolutions\Framework\Utilities\Validation;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotSupportedException;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\DependencyInjection\ContainerAwareTrait;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\Security\Validation;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareTrait;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -29,12 +24,10 @@ use Psr\Container\NotFoundExceptionInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
-class ValidationService implements ContainerAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface {
+class ValidationService extends AbstractService implements ContainerAwareInterface {
 	// region TRAITS
 
 	use ContainerAwareTrait;
-	use LoggingServiceAwareTrait;
-	use PluginAwareTrait;
 
 	// endregion
 
@@ -46,14 +39,16 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface         $plugin             Instance of the plugin.
-	 * @param   LoggingService          $logging_service    Instance of the logging service.
-	 * @param   ContainerInterface      $container          Defaults and options container.
+	 * @param   PluginInterface             $plugin             Instance of the plugin.
+	 * @param   LoggingService              $logging_service    Instance of the logging service.
+	 * @param   ContainerInterface|null     $container          Defaults and options container.
 	 */
-	public function __construct( PluginInterface $plugin, LoggingService $logging_service, ContainerInterface $container ) {
-		$this->set_plugin( $plugin );
-		$this->set_logging_service( $logging_service );
-		$this->set_container( $container );
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service, ?ContainerInterface $container = null ) {
+		parent::__construct( $plugin, $logging_service );
+
+		if ( ! \is_null( $container ) ) {
+			$this->set_container( $container );
+		}
 	}
 
 	// endregion
@@ -306,6 +301,7 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 */
 	protected function get_default_value_or_throw( string $key ) {
 		$default = $this->get_default_value( $key );
+
 		if ( $default instanceof InexistentPropertyException ) {
 			throw $default;
 		}
@@ -327,6 +323,7 @@ class ValidationService implements ContainerAwareInterface, LoggingServiceAwareI
 	 */
 	protected function get_supported_options_or_throw( string $key ): array {
 		$options = $this->get_supported_options( $key );
+
 		if ( $options instanceof InexistentPropertyException ) {
 			throw $options;
 		}

@@ -1,7 +1,5 @@
 {
-    "classes": [
-        "Exception"
-    ],
+    "classes": [],
     "functions": [
         "add_action",
         "load_plugin_textdomain",
@@ -45,7 +43,6 @@
         "add_filter",
         "remove_filter",
         "remove_action",
-        "_doing_it_wrong",
         "add_shortcode",
         "remove_shortcode",
         "_n",

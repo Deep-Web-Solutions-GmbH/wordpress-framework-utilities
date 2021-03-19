@@ -2,15 +2,10 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Templating;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\Helpers\HooksHelpersTrait;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
 \defined( 'ABSPATH' ) || exit;
@@ -23,31 +18,11 @@ use Psr\Log\LogLevel;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Templating
  */
-class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInterface {
+class TemplatingService extends AbstractService {
 	// region TRAITS
 
 	use FilesystemAwareTrait;
 	use HooksHelpersTrait;
-	use LoggingServiceAwareTrait;
-	use PluginAwareTrait;
-
-	// endregion
-
-	// region MAGIC METHODS
-
-	/**
-	 * TemplatingService constructor.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   PluginInterface     $plugin             Instance of the plugin.
-	 * @param   LoggingService      $logging_service    Instance of the logging service.
-	 */
-	public function __construct( PluginInterface $plugin, LoggingService $logging_service ) {
-		$this->set_plugin( $plugin );
-		$this->set_logging_service( $logging_service );
-	}
 
 	// endregion
 
@@ -138,12 +113,7 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 		// Load the found template.
 		\do_action( $this->get_hook_tag( 'before_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 
-		if ( \did_action( 'setup_theme' ) ) {
-			\load_template( $template, false, $args );
-		} else {
-			/* @noinspection PhpIncludeInspection */
-			require $template;
-		}
+		\load_template( $template, false, $args );
 
 		\do_action( $this->get_hook_tag( 'after_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
 	}
@@ -183,9 +153,7 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @return  string
 	 */
 	public function locate_template( string $template_name, string $template_path, string $default_path, string $constant_name = 'TEMPLATE_DEBUG' ): string {
-		$can_locate_template = ! Request::has_debug( $constant_name ) && \did_action( 'setup_theme' );
-
-		$template = ( ! $can_locate_template ) ? '' : locate_template(
+		$template = Request::has_debug( $constant_name ) ? '' : locate_template(
 			array(
 				\trailingslashit( $template_path ) . $template_name,
 				$template_name,
@@ -217,15 +185,15 @@ class TemplatingService implements LoggingServiceAwareInterface, PluginAwareInte
 	protected function maybe_overwrite_template( string $filtered_template, string $template ): ?string {
 		if ( $filtered_template !== $template ) {
 			if ( ! $this->get_wp_filesystem()->exists( $filtered_template ) ) {
-				$this->log_event_and_doing_it_wrong(
-					__FUNCTION__,
+				return $this->log_event(
 					/* translators: %s: Path to template file */
-					\sprintf( __( '%s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
-					'1.0.0',
-					LogLevel::ERROR,
+					\sprintf( __( 'The file %s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
+					array(),
 					'framework'
-				);
-				return null;
+				)
+							->set_log_level( LogLevel::ERROR )
+							->doing_it_wrong( __FUNCTION__, '1.0.0' )
+							->finalize();
 			}
 
 			$template = $filtered_template;

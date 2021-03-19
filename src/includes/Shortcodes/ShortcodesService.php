@@ -8,12 +8,8 @@ use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
 use Psr\Log\LogLevel;
 
 \defined( 'ABSPATH' ) || exit;
@@ -31,11 +27,9 @@ use Psr\Log\LogLevel;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInterface, RunnableInterface, ResettableInterface {
+class ShortcodesService extends AbstractService implements RunnableInterface, ResettableInterface {
 	// region TRAITS
 
-	use LoggingServiceAwareTrait;
-	use PluginAwareTrait;
 	use RunnableTrait;
 	use ResettableTrait;
 
@@ -53,24 +47,6 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 	 * @var     array
 	 */
 	protected array $shortcodes = array();
-
-	// endregion
-
-	// region MAGIC METHODS
-
-	/**
-	 * ShortcodesService constructor.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   PluginInterface     $plugin             Instance of the plugin.
-	 * @param   LoggingService      $logging_service    Instance of the logging service.
-	 */
-	public function __construct( PluginInterface $plugin, LoggingService $logging_service ) {
-		$this->set_plugin( $plugin );
-		$this->set_logging_service( $logging_service );
-	}
 
 	// endregion
 
@@ -114,19 +90,15 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event_and_doing_it_wrong_and_return_exception(
-				__FUNCTION__,
-				'The shortcodes service has been run already. Please reset it before running it again.',
-				'1.0.0',
-				RunFailureException::class,
-				null,
-				LogLevel::NOTICE,
-				'framework'
-			);
+			return $this->log_event( 'The shortcodes service has been run already. Please reset it before running it again.', array(), 'framework' )
+						->set_log_level( LogLevel::NOTICE )
+						->doing_it_wrong( __FUNCTION__, '1.0.0' )
+						->return_exception( RunFailureException::class )
+						->finalize();
 		}
 
 		if ( $this->run_result instanceof RunFailureException ) {
-			$this->log_event( LogLevel::ERROR, $this->run_result->getMessage(), 'framework' );
+			$this->log_event_and_finalize( $this->run_result->getMessage(), array(), LogLevel::ERROR, 'framework' );
 		}
 
 		return $this->run_result;
@@ -150,19 +122,15 @@ class ShortcodesService implements LoggingServiceAwareInterface, PluginAwareInte
 			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event_and_doing_it_wrong_and_return_exception(
-				__FUNCTION__,
-				'The shortcodes service has been reset already. Please run it before resetting it again.',
-				'1.0.0',
-				ResetFailureException::class,
-				null,
-				LogLevel::NOTICE,
-				'framework'
-			);
+			return $this->log_event( 'The shortcodes service has been reset already. Please run it before resetting it again.', array(), 'framework' )
+						->set_log_level( LogLevel::NOTICE )
+						->doing_it_wrong( __FUNCTION__, '1.0.0' )
+						->return_exception( ResetFailureException::class )
+						->finalize();
 		}
 
 		if ( $this->reset_result instanceof ResetFailureException ) {
-			$this->log_event( LogLevel::ERROR, $this->reset_result->getMessage(), 'framework' );
+			$this->log_event_and_finalize( $this->reset_result->getMessage(), array(), LogLevel::ERROR, 'framework' );
 		}
 
 		return $this->reset_result;

@@ -5,14 +5,11 @@ namespace DeepWebSolutions\Framework\Utilities\REST;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
 \defined( 'ABSPATH' ) || exit;
@@ -25,12 +22,10 @@ use Psr\Log\LogLevel;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-class RESTService implements LoggingServiceAwareInterface, PluginAwareInterface, RunnableInterface {
+class RESTService extends AbstractService implements RunnableInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
-	use LoggingServiceAwareTrait;
-	use PluginAwareTrait;
 	use RunnableTrait;
 
 	// endregion
@@ -63,8 +58,7 @@ class RESTService implements LoggingServiceAwareInterface, PluginAwareInterface,
 	 * @param   RESTServiceRegisterInterface[]      $subscribers        Subscribers to call the registration method on run.
 	 */
 	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $subscribers = array() ) {
-		$this->set_plugin( $plugin );
-		$this->set_logging_service( $logging_service );
+		parent::__construct( $plugin, $logging_service );
 
 		$this->register_hooks( $hooks_service );
 		$this->set_subscribers( $subscribers );
@@ -146,19 +140,15 @@ class RESTService implements LoggingServiceAwareInterface, PluginAwareInterface,
 			$this->run_result = null;
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event_and_doing_it_wrong_and_return_exception(
-				__FUNCTION__,
-				'The REST service has already been run.',
-				'1.0.0',
-				RunFailureException::class,
-				null,
-				LogLevel::NOTICE,
-				'framework'
-			);
+			return $this->log_event( 'The REST service has been run already. Please reset it before running it again.', array(), 'framework' )
+						->set_log_level( LogLevel::NOTICE )
+						->doing_it_wrong( __FUNCTION__, '1.0.0' )
+						->return_exception( RunFailureException::class )
+						->finalize();
 		}
 
 		if ( $this->run_result instanceof RunFailureException ) {
-			$this->log_event( LogLevel::ERROR, $this->run_result->getMessage(), 'framework' );
+			$this->log_event_and_finalize( $this->run_result->getMessage(), array(), LogLevel::ERROR, 'framework' );
 		}
 
 		return $this->run_result;

@@ -2,15 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
-use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResettableTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
-use Psr\Log\LogLevel;
+use DeepWebSolutions\Framework\Foundations\Actions\{ ResettableInterface, RunnableInterface };
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\{ ResetFailureException, ResettableTrait };
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\{ RunFailureException, RunnableTrait };
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -27,7 +21,7 @@ use Psr\Log\LogLevel;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-class ShortcodesService extends AbstractService implements RunnableInterface, ResettableInterface {
+class DefaultShortcodesHandler extends AbstractShortcodesHandler implements RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use RunnableTrait;
@@ -47,22 +41,6 @@ class ShortcodesService extends AbstractService implements RunnableInterface, Re
 	 * @var     array
 	 */
 	protected array $shortcodes = array();
-
-	// endregion
-
-	// region GETTERS
-
-	/**
-	 * Returns the list of shortcodes registered with WP by this service instance on run.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  array
-	 */
-	public function get_shortcodes(): array {
-		return $this->shortcodes;
-	}
 
 	// endregion
 
@@ -88,17 +66,6 @@ class ShortcodesService extends AbstractService implements RunnableInterface, Re
 
 			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
-		} else {
-			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event( 'The shortcodes service has been run already. Please reset it before running it again.', array(), 'framework' )
-						->set_log_level( LogLevel::NOTICE )
-						->doing_it_wrong( __FUNCTION__, '1.0.0' )
-						->return_exception( RunFailureException::class )
-						->finalize();
-		}
-
-		if ( $this->run_result instanceof RunFailureException ) {
-			$this->log_event_and_finalize( $this->run_result->getMessage(), array(), LogLevel::ERROR, 'framework' );
 		}
 
 		return $this->run_result;
@@ -120,20 +87,25 @@ class ShortcodesService extends AbstractService implements RunnableInterface, Re
 
 			$this->is_reset     = true;
 			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
-		} else {
-			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event( 'The shortcodes service has been reset already. Please run it before resetting it again.', array(), 'framework' )
-						->set_log_level( LogLevel::NOTICE )
-						->doing_it_wrong( __FUNCTION__, '1.0.0' )
-						->return_exception( ResetFailureException::class )
-						->finalize();
-		}
-
-		if ( $this->reset_result instanceof ResetFailureException ) {
-			$this->log_event_and_finalize( $this->reset_result->getMessage(), array(), LogLevel::ERROR, 'framework' );
 		}
 
 		return $this->reset_result;
+	}
+
+	// endregion
+
+	// region GETTERS
+
+	/**
+	 * Returns the list of shortcodes registered with WP by this service instance on run.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  array
+	 */
+	public function get_shortcodes(): array {
+		return $this->shortcodes;
 	}
 
 	// endregion

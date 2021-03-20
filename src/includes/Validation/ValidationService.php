@@ -25,7 +25,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $handler_id
+	 * @param   string  $handler_id     The ID of the handler to retrieve.
 	 *
 	 * @return  ValidationHandlerInterface|null
 	 */
@@ -78,7 +78,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	}
 
 	/**
-	 * Validates a given value as a boolean.
+	 * Validates a given value as a boolean using the given handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -96,7 +96,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	}
 
 	/**
-	 * Validates a given value as an int.
+	 * Validates a given value as an int using the given handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -114,7 +114,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	}
 
 	/**
-	 * Validates a given value as a float.
+	 * Validates a given value as a float using the given handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -132,7 +132,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	}
 
 	/**
-	 * Validates a given value as a callable.
+	 * Validates a given value as a callable using the given handler.
 	 *
 	 * @param   mixed   $value          The value to validate.
 	 * @param   string  $key            The composite key to retrieve the default value.
@@ -147,7 +147,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	}
 
 	/**
-	 * Validates a given value as a valid option.
+	 * Validates a given value as a valid option using the given handler.
 	 *
 	 * @param   mixed   $value          The value to validate.
 	 * @param   string  $options_key    The composite key to retrieve the supported values.

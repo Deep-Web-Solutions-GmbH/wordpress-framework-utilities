@@ -1,13 +1,12 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Validation\Handlers;
+namespace DeepWebSolutions\Framework\Utilities\Validation;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\PluginUtilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Foundations\PluginUtilities\DependencyInjection\ContainerAwareTrait;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\Security\Validation;
-use DeepWebSolutions\Framework\Utilities\Validation\AbstractValidationHandler;
 use Psr\Container\ContainerInterface;
 
 \defined( 'ABSPATH' ) || exit;
@@ -18,7 +17,7 @@ use Psr\Container\ContainerInterface;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\Validation\Handlers
+ * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
 class ContainerValidationHandler extends AbstractValidationHandler implements ContainerAwareInterface {
 	// region TRAITS

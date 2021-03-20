@@ -43,10 +43,10 @@
         "add_filter",
         "remove_filter",
         "remove_action",
-        "add_shortcode",
-        "remove_shortcode",
         "_n",
         "esc_html",
+        "add_shortcode",
+        "remove_shortcode",
         "do_action",
         "load_template",
         "locate_template"

@@ -4,7 +4,9 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
-use DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies\DependenciesAdminNoticesTrait as ActiveableDependenciesAdminNoticesTrait;
+use DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies\DependenciesAdminNoticesTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +21,7 @@ use DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies\Dependen
 trait SetupDependenciesAdminNoticesTrait {
 	// region TRAITS
 
-	use ActiveableDependenciesAdminNoticesTrait;
+	use DependenciesAdminNoticesTrait;
 	use SetupAdminNoticesTrait { setup_admin_notices as setup_admin_notices_trait; }
 	use SetupableExtensionTrait;
 
@@ -32,6 +34,9 @@ trait SetupDependenciesAdminNoticesTrait {
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
+	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters some other error.
 	 *
 	 * @return  SetupFailureException|null
 	 */

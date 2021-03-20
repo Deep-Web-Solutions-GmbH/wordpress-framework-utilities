@@ -21,6 +21,11 @@
         <exclude name="Squiz.Commenting.FileComment.Missing"/>
     </rule>
 
+    <!-- There are some instances that are false-positives, so better to just rely on PhpStorm. -->
+    <rule ref="Squiz.Commenting.FunctionCommentThrowTag">
+        <exclude name="Squiz.Commenting.FunctionCommentThrowTag.WrongNumber"/>
+    </rule>
+
     <!-- Minimum PHP and WP versions. -->
     <config name="testVersion" value="7.4-"/>
     <config name="minimum_supported_wp_version" value="5.5"/>

@@ -5,9 +5,11 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Initializable;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
 use DeepWebSolutions\Framework\Foundations\Hierarchy\ChildInterface;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceAwareTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -34,6 +36,9 @@ trait InitializeRESTServiceTrait {
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
+	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters some other error.
 	 *
 	 * @return  InitializationFailureException|null
 	 */

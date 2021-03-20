@@ -4,11 +4,13 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTService;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\REST\RESTServiceRegisterTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -36,6 +38,9 @@ trait SetupRESTConfigTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters some other error.
+	 *
 	 * @return  SetupFailureException|null
 	 */
 	public function setup_rest_config(): ?SetupFailureException {
@@ -51,7 +56,7 @@ trait SetupRESTConfigTrait {
 			return new SetupFailureException( \sprintf( 'Cannot add REST service subscriber that is not an instance of %s', RESTServiceRegisterInterface::class ) );
 		}
 
-		$service->add_subscriber( $this );
+		$service->register_subscriber( $this );
 		return null;
 	}
 

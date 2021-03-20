@@ -37,10 +37,10 @@
         "remove_filter",
         "remove_action",
         "wp_parse_args",
-        "_n",
-        "esc_html",
         "add_shortcode",
         "remove_shortcode",
+        "_n",
+        "esc_html",
         "do_action",
         "load_template",
         "locate_template"

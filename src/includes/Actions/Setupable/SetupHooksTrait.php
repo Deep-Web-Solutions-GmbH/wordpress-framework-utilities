@@ -4,10 +4,12 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -34,6 +36,9 @@ trait SetupHooksTrait {
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
+	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters some other error.
 	 *
 	 * @return  SetupFailureException|null
 	 */

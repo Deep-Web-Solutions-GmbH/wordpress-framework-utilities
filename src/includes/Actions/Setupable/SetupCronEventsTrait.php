@@ -4,10 +4,12 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsService;
 use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsServiceRegisterTrait;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -34,6 +36,9 @@ trait SetupCronEventsTrait {
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
+	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters some other error.
 	 *
 	 * @return  SetupFailureException|null
 	 */

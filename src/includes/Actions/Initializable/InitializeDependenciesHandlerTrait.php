@@ -4,23 +4,24 @@ namespace DeepWebSolutions\Framework\Utilities\Actions\Initializable;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
-use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesHandlerInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Trait for initializing a dependencies checker on the using instance.
+ * Trait for initializing a dependencies handler on the using instance.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Initializable
  */
-trait InitializeDependenciesCheckerTrait {
+trait InitializeDependenciesHandlerTrait {
 	// region TRAITS
 
 	use InitializableExtensionTrait;
@@ -35,6 +36,9 @@ trait InitializeDependenciesCheckerTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters some other error.
+	 *
 	 * @return  InitializationFailureException|null
 	 */
 	public function initialize_dependencies_checker(): ?InitializationFailureException {
@@ -43,25 +47,22 @@ trait InitializeDependenciesCheckerTrait {
 		} elseif ( $this instanceof ContainerAwareInterface ) {
 			$service = $this->get_container()->get( DependenciesService::class );
 		} else {
-			return new InitializationFailureException( 'Dependencies checker initialization scenario not supported' );
+			return new InitializationFailureException( 'Dependencies handler initialization scenario not supported' );
 		}
 
-		$checker_name         = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : \get_class( $this );
-		$dependencies_checker = $this->get_dependencies_checker();
-
-		$service->register_checker( $checker_name, $dependencies_checker );
+		$service->register_handler( $this->get_dependencies_handler() );
 		return null;
 	}
 
 	/**
-	 * Using classes should instantiate a dependencies checker in here.
+	 * Using classes should instantiate a dependencies handler in here.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  DependenciesCheckerInterface
+	 * @return  DependenciesHandlerInterface
 	 */
-	abstract public function get_dependencies_checker(): DependenciesCheckerInterface;
+	abstract public function get_dependencies_handler(): DependenciesHandlerInterface;
 
 	// endregion
 }

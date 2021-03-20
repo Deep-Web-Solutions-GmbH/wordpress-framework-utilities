@@ -41,7 +41,7 @@ interface DependenciesHandlerInterface extends HandlerInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  bool|bool[]|bool[][]
+	 * @return  bool|bool[][]
 	 */
 	public function are_dependencies_fulfilled();
 }

@@ -44,8 +44,8 @@ class Notice extends AbstractNotice {
 	 * @return  OutputFailureException|null
 	 */
 	public function output(): ?OutputFailureException {
-		$args          = \wp_parse_args( $this->args, array( 'html' => false ) );
-		$this->message = Validation::validate_boolean( $args['html'], false ) ? $this->message : "<p>{$this->message}</p>";
+		$this->message = Validation::validate_boolean( $args['html'] ?? false, false )
+			? $this->message : "<p>{$this->message}</p>";
 
 		return parent::output();
 	}

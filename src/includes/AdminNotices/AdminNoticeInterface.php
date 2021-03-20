@@ -4,6 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreableInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -15,23 +16,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-interface AdminNoticeInterface extends OutputtableInterface {
-	// region GETTERS
-
-	/**
-	 * Returns the notice's unique ID.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_handle(): string;
-
-	// endregion
-
-	// region METHODS
-
+interface AdminNoticeInterface extends StoreableInterface, OutputtableInterface {
 	/**
 	 * Whether the notice is persistent or not. Non-persistent notices should be deleted from the store
 	 * after their first output.
@@ -63,6 +48,4 @@ interface AdminNoticeInterface extends OutputtableInterface {
 	 * @return  OutputFailureException|null
 	 */
 	public function output(): ?OutputFailureException;
-
-	// endregion
 }

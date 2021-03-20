@@ -54,7 +54,7 @@ class DismissibleNotice extends Notice {
 	 *
 	 * @param   bool    $is_dismissed   Whether the notice is dismissed or not.
 	 */
-	public function set_dismissed_status( bool $is_dismissed ): void {
+	public function set_dismissed( bool $is_dismissed ): void {
 		$this->is_dismissed = $is_dismissed;
 	}
 

@@ -4,6 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\AbstractStoreable;
 use DeepWebSolutions\Framework\Helpers\Security\Validation;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
@@ -20,18 +21,8 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Notices
  */
-abstract class AbstractNotice implements AdminNoticeInterface {
+abstract class AbstractNotice extends AbstractStoreable implements AdminNoticeInterface {
 	// region FIELDS AND CONSTANTS
-
-	/**
-	 * The notice's unique ID.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @var     string
-	 */
-	protected string $handle;
 
 	/**
 	 * The message to display.
@@ -85,12 +76,14 @@ abstract class AbstractNotice implements AdminNoticeInterface {
 	 *
 	 * @param   string  $handle     A unique ID for the notice.
 	 * @param   string  $message    The notice's content.
+	 * @param   string  $type       The type of the notice.
 	 * @param   array   $args       Other relevant arguments.
 	 */
-	public function __construct( string $handle, string $message, array $args = array() ) {
-		$this->handle        = \sanitize_key( $handle );
-		$this->message       = \wp_kses_post( $message );
-		$this->type          = $args['type'] ?? AdminNoticeTypesEnum::ERROR;
+	public function __construct( string $handle, string $message, string $type = AdminNoticeTypesEnum::ERROR, array $args = array() ) {
+		parent::__construct( $handle );
+
+		$this->message       = $message;
+		$this->type          = Validation::validate_allowed_value( $type, AdminNoticeTypesEnum::get_all(), AdminNoticeTypesEnum::ERROR );
 		$this->is_persistent = Validation::validate_boolean( $args['persistent'] ?? false, false );
 		$this->args          = $args;
 	}
@@ -98,18 +91,6 @@ abstract class AbstractNotice implements AdminNoticeInterface {
 	// endregion
 
 	// region GETTERS
-
-	/**
-	 * Returns the notice's unique ID.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_handle(): string {
-		return $this->handle;
-	}
 
 	/**
 	 * Returns whether the notice is persistent or not.
@@ -151,7 +132,7 @@ abstract class AbstractNotice implements AdminNoticeInterface {
 		if ( $this->should_output() ) {
 			echo \sprintf(
 				'<div id="%1$s" data-handle="%1$s" class="%2$s">%3$s</div>',
-				\esc_attr( $this->get_handle() ),
+				\esc_attr( $this->get_id() ),
 				\esc_attr( \implode( ' ', $this->get_classes() ) ),
 				\wp_kses_post( $this->message )
 			);

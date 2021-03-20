@@ -56,4 +56,16 @@ class AdminNoticeTypesEnum {
 	 * @var     string
 	 */
 	public const INFO = 'info';
+
+	/**
+	 * Returns an array of all valid admin notice types.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string[]
+	 */
+	public static function get_all(): array {
+		return array( self::ERROR, self::WARNING, self::SUCCESS, self::INFO );
+	}
 }

@@ -2,61 +2,60 @@
 
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
-use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputtableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\OutputtableHandlerServiceTrait;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\MemoryStore;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\OptionsStore;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\UserMetaStore;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\DismissibleNoticesHandler;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers\NoticesHandler;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\DynamicStoreAdmin;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\OptionsStoreAdmin;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Stores\UserMetaStoreAdmin;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareTrait;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
-use Psr\Log\LogLevel;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
 /**
  * Compatibility layer between the framework and WordPress' API for admin notices.
  *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, HooksServiceAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, OutputtableInterface {
+class AdminNoticesService extends AbstractMultiHandlerService implements HooksServiceAwareInterface, OutputtableInterface {
 	// region TRAITS
 
-	use AdminNoticesStoresContainerAwareTrait;
 	use HooksServiceAwareTrait;
 	use HooksServiceRegisterTrait;
-	use LoggingServiceAwareTrait;
-	use PluginAwareTrait;
-	use OutputtableTrait;
+	use OutputtableHandlerServiceTrait;
 
 	// endregion
 
 	// region FIELDS AND CONSTANTS
 
 	/**
-	 * Admin notices handlers to output.
+	 * Instance of the admin notices stores store.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @var     AdminNoticesHandlerInterface[]
+	 * @access  protected
+	 * @var     MemoryStore
 	 */
-	protected array $handlers;
+	protected MemoryStore $admin_notices_stores;
 
 	// endregion
 
@@ -70,67 +69,44 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 	 *
 	 * @param   PluginInterface                 $plugin             Instance of the plugin.
 	 * @param   LoggingService                  $logging_service    Instance of the logging service.
-	 * @param   AdminNoticesStoresContainer     $store_container    Instance of the admin notices store factory.
 	 * @param   HooksService                    $hooks_service      Instance of the hooks service.
+	 * @param   StoreInterface[]                $stores             Stores containing admin notices.
 	 * @param   AdminNoticesHandlerInterface[]  $handlers           Admin notices handlers to output.
 	 */
-	public function __construct( PluginInterface $plugin, LoggingService $logging_service, AdminNoticesStoresContainer $store_container, HooksService $hooks_service, array $handlers = array() ) {
-		$this->set_plugin( $plugin );
-		$this->set_logging_service( $logging_service );
-		$this->set_admin_notices_store_factory( $store_container );
+	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $stores = array(), array $handlers = array() ) {
+		parent::__construct( $plugin, $logging_service, $handlers );
+		$this->set_default_stores( $stores );
 
 		$this->set_hooks_service( $hooks_service );
 		$this->register_hooks( $hooks_service );
-
-		$this->set_default_stores( $store_container );
-		$this->set_default_handlers( $handlers );
-	}
-
-	// endregion
-
-	// region GETTERS
-
-	/**
-	 * Returns the list of handlers registered to output.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  AdminNoticesHandlerInterface[]
-	 */
-	public function get_handlers(): array {
-		return $this->handlers;
-	}
-
-	// endregion
-
-	// region SETTERS
-
-	/**
-	 * Sets the list of handlers to output.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   array   $handlers   Collection of handlers to output.
-	 *
-	 * @return  AdminNoticesService
-	 */
-	public function set_handlers( array $handlers ): AdminNoticesService {
-		$this->handlers = array();
-
-		foreach ( $handlers as $handler ) {
-			if ( $handler instanceof AdminNoticesHandlerInterface ) {
-				$this->register_handler( $handler );
-			}
-		}
-
-		return $this;
 	}
 
 	// endregion
 
 	// region INHERITED METHODS
+
+	/**
+	 * Registers a new handler with the service.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   HandlerInterface    $handler    The new handler to register with the service.
+	 *
+	 * @return  AdminNoticesService
+	 */
+	public function register_handler( HandlerInterface $handler ): AdminNoticesService {
+		parent::register_handler( $handler );
+
+		if ( $handler instanceof AdminNoticesHandlerInterface ) {
+			$handler->set_store( $this->admin_notices_stores );
+		}
+		if ( $handler instanceof HooksServiceRegisterInterface ) {
+			$handler->register_hooks( $this->get_hooks_service() );
+		}
+
+		return $this;
+	}
 
 	/**
 	 * Registers hooks with the hooks service.
@@ -144,91 +120,23 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 		$hooks_service->add_action( 'admin_notices', $this, 'output', PHP_INT_MAX );
 	}
 
-	/**
-	 * Output the registered admin notices.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  OutputFailureException|null
-	 */
-	public function output(): ?OutputFailureException {
-		if ( \is_null( $this->is_outputted ) ) {
-			$this->output_result = null;
-
-			foreach ( $this->get_handlers() as $handler ) {
-				$result = $handler->output();
-				if ( ! \is_null( $result ) ) {
-					$this->output_result = $result;
-					break;
-				}
-			}
-
-			$this->is_outputted = \is_null( $this->output_result );
-		} else {
-			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event_and_doing_it_wrong_and_return_exception(
-				__FUNCTION__,
-				'The admin notices service has already been outputted.',
-				'1.0.0',
-				OutputFailureException::class,
-				null,
-				LogLevel::NOTICE,
-				'framework'
-			);
-		}
-
-		if ( $this->output_result instanceof OutputFailureException ) {
-			$this->log_event( LogLevel::ERROR, $this->output_result->getMessage(), 'framework' );
-		}
-
-		return $this->output_result;
-	}
-
 	// endregion
 
 	// region METHODS
 
 	/**
-	 * Adds a handler to the list of handlers to output.
+	 * Returns a given admin notices store.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   AdminNoticesHandlerInterface    $handler    Handler to add.
+	 * @param   string  $store_id   The ID of the admin notices store to retrieve.
 	 *
-	 * @return  AdminNoticesService
+	 * @return  StoreInterface
 	 */
-	public function register_handler( AdminNoticesHandlerInterface $handler ): AdminNoticesService {
-		if ( $handler instanceof PluginAwareInterface ) {
-			$handler->set_plugin( $this->get_plugin() );
-		}
-		if ( $handler instanceof LoggingServiceAwareInterface ) {
-			$handler->set_logging_service( $this->get_logging_service() );
-		}
-		if ( $handler instanceof AdminNoticesStoresContainerAwareInterface ) {
-			$handler->set_admin_notices_store_factory( $this->get_admin_notices_store_factory() );
-		}
-		if ( $handler instanceof HooksServiceRegisterInterface ) {
-			$handler->register_hooks( $this->get_hooks_service() );
-		}
-
-		$this->handlers[ $handler->get_notices_type() ] = $handler;
-		return $this;
-	}
-
-	/**
-	 * Returns the handler for a specific type of notices.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $notice_type    Class name of an AdminNoticeInterface implementation.
-	 *
-	 * @return  AdminNoticesHandlerInterface|null
-	 */
-	public function get_handler( string $notice_type ): ?AdminNoticesHandlerInterface {
-		return $this->handlers[ $notice_type ] ?? null;
+	public function get_admin_notices_store( string $store_id ): StoreInterface {
+		/* @noinspection PhpIncompatibleReturnTypeInspection */
+		return $this->admin_notices_stores->get( $store_id );
 	}
 
 	/**
@@ -239,12 +147,16 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 	 *
 	 * @param   AdminNoticeInterface    $notice     Notice to add to the store.
 	 * @param   string                  $store      Name of the store to add the notice to.
-	 * @param   array                   $params     Any parameters required to insert the notice into the store.
 	 *
 	 * @return  bool
 	 */
-	public function add_notice( AdminNoticeInterface $notice, string $store = 'dynamic', array $params = array() ): bool {
-		return $this->get_admin_notices_store( $store )->add_notice( $notice, $params );
+	public function add_notice( AdminNoticeInterface $notice, string $store = 'dynamic' ): bool {
+		try {
+			$result = $this->get_admin_notices_store( $store )->add( $notice );
+			return \is_null( $result ) || \boolval( $result );
+		} catch ( ContainerExceptionInterface $exception ) {
+			return false;
+		}
 	}
 
 	/**
@@ -255,12 +167,15 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 	 *
 	 * @param   string  $handle     Handle of the notice to retrieve.
 	 * @param   string  $store      Name of the store to add the notice to.
-	 * @param   array   $params     Any parameters required to insert the notice into the store.
 	 *
 	 * @return  AdminNoticeInterface|null
 	 */
-	public function get_notice( string $handle, string $store = 'dynamic', array $params = array() ): ?AdminNoticeInterface {
-		return $this->get_admin_notices_store( $store )->get_notice( $handle, $params );
+	public function get_notice( string $handle, string $store = 'dynamic' ): ?AdminNoticeInterface {
+		try {
+			return $this->get_admin_notices_store( $store )->get( $handle );
+		} catch ( ContainerExceptionInterface $exception ) {
+			return null;
+		}
 	}
 
 	/**
@@ -271,12 +186,16 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 	 *
 	 * @param   AdminNoticeInterface    $notice     Notice to add to the store.
 	 * @param   string                  $store      Name of the store to add the notice to.
-	 * @param   array                   $params     Any parameters required to insert the notice into the store.
 	 *
 	 * @return  bool
 	 */
-	public function update_notice( AdminNoticeInterface $notice, string $store = 'dynamic', array $params = array() ): bool {
-		return $this->get_admin_notices_store( $store )->update_notice( $notice, $params );
+	public function update_notice( AdminNoticeInterface $notice, string $store = 'dynamic' ): bool {
+		try {
+			$result = $this->get_admin_notices_store( $store )->update( $notice );
+			return \is_null( $result ) || \boolval( $result );
+		} catch ( ContainerExceptionInterface $exception ) {
+			return false;
+		}
 	}
 
 	/**
@@ -287,17 +206,44 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 	 *
 	 * @param   string  $handle         Handle of the notice to remove.
 	 * @param   string  $store          The name of the store to remove the notice from.
-	 * @param   array   $params         Any parameters needed to remove the notice.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
 	 */
-	public function remove_notice( string $handle, string $store = 'dynamic', array $params = array() ): bool {
-		return $this->get_admin_notices_store( $store )->remove_notice( $handle, $params );
+	public function remove_notice( string $handle, string $store = 'dynamic' ): bool {
+		try {
+			$result = $this->get_admin_notices_store( $store )->remove( $handle );
+			return \is_null( $result ) || \boolval( $result );
+		} catch ( NotFoundExceptionInterface $exception ) {
+			return true;
+		} catch ( ContainerExceptionInterface $exception ) {
+			return false;
+		}
 	}
 
 	// endregion
 
 	// region HELPERS
+
+	/**
+	 * Register the stores passed on in the constructor together with the default stores.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   StoreInterface[]    $stores     Custom stores passed on through the constructor.
+	 */
+	protected function set_default_stores( array $stores ): void {
+		$database_key   = '_dws_admin_notices_' . $this->get_plugin()->get_plugin_safe_slug();
+		$default_stores = array(
+			new MemoryStore( 'dynamic' ),
+			new OptionsStore( 'options', $database_key ),
+			new UserMetaStore( 'user-meta', $database_key ),
+		);
+
+		foreach ( array_merge( $default_stores, $stores ) as $store ) {
+			$this->admin_notices_stores->update( $store );
+		}
+	}
 
 	/**
 	 * Register the handlers passed on in the constructor together with the default handlers.
@@ -306,37 +252,32 @@ class AdminNoticesService implements AdminNoticesStoresContainerAwareInterface, 
 	 * @version 1.0.0
 	 *
 	 * @param   array   $handlers   Handlers passed on in the constructor.
+	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the NullLogger is not found in the plugin DI-container.
+	 * @throws  ContainerExceptionInterface     Thrown if some other error occurs while retrieving the NullLogger instance.
 	 */
 	protected function set_default_handlers( array $handlers ): void {
 		$plugin = $this->get_plugin();
 		if ( $plugin instanceof ContainerAwareInterface ) {
-			$container = $plugin->get_container();
-			$handlers += array( $container->get( NoticesHandler::class ), $container->get( DismissibleNoticesHandler::class ) );
+			$container        = $plugin->get_container();
+			$default_handlers = array( $container->get( NoticesHandler::class ), $container->get( DismissibleNoticesHandler::class ) );
 		} else {
-			$handlers += array( new NoticesHandler(), new DismissibleNoticesHandler() );
+			$default_handlers = array( new NoticesHandler(), new DismissibleNoticesHandler() );
 		}
 
-		$this->set_handlers( $handlers );
+		$this->set_handlers( array_merge( $default_handlers, $handlers ) );
 	}
 
 	/**
-	 * Register the stores supported by default with the store container.
+	 * Returns the class name of the used handler for better type-checking.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   AdminNoticesStoresContainer     $store_factory  Instance of the store factory.
+	 * @return  string
 	 */
-	protected function set_default_stores( AdminNoticesStoresContainer $store_factory ): void {
-		$stores = array(
-			'dynamic'   => new DynamicStoreAdmin(),
-			'options'   => new OptionsStoreAdmin( '_dws_admin_notices_' . $this->get_plugin()->get_plugin_safe_slug() ),
-			'user-meta' => new UserMetaStoreAdmin( '_dws_admin_notices_' . $this->get_plugin()->get_plugin_safe_slug() ),
-		);
-
-		foreach ( $stores as $name => $store ) {
-			$store_factory->register_store( $name, $store );
-		}
+	protected function get_handler_class(): string {
+		return AdminNoticesHandlerInterface::class;
 	}
 
 	// endregion

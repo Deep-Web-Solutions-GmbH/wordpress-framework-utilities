@@ -8,8 +8,13 @@ use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\MemoryStore;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
+use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LogLevel;
 
 \defined( 'ABSPATH' ) || exit;
@@ -22,25 +27,12 @@ use Psr\Log\LogLevel;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-class RESTService extends AbstractService implements RunnableInterface {
+class RESTService extends AbstractService implements HooksServiceRegisterInterface, RunnableInterface, StoreAwareInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
 	use RunnableTrait;
-
-	// endregion
-
-	// region FIELDS AND CONSTANTS
-
-	/**
-	 * Subscribers to register on run.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @var     RESTServiceRegisterInterface[]
-	 */
-	protected array $subscribers;
+	use StoreAwareTrait;
 
 	// endregion
 
@@ -66,22 +58,6 @@ class RESTService extends AbstractService implements RunnableInterface {
 
 	// endregion
 
-	// region GETTERS
-
-	/**
-	 * Returns the list of subscribers registered to call on run.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  RESTServiceRegisterInterface[]
-	 */
-	public function get_subscribers(): array {
-		return $this->subscribers;
-	}
-
-	// endregion
-
 	// region SETTERS
 
 	/**
@@ -95,11 +71,11 @@ class RESTService extends AbstractService implements RunnableInterface {
 	 * @return  RESTService
 	 */
 	public function set_subscribers( array $subscribers ): RESTService {
-		$this->subscribers = array();
+		$this->set_store( new MemoryStore( $this->get_id() ) );
 
 		foreach ( $subscribers as $subscriber ) {
 			if ( $subscriber instanceof RESTServiceRegisterInterface ) {
-				$this->add_subscriber( $subscriber );
+				$this->register_subscriber( $subscriber );
 			}
 		}
 
@@ -128,11 +104,14 @@ class RESTService extends AbstractService implements RunnableInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
+	 * @throws  ContainerExceptionInterface     Thrown if the store can't retrieve the subscribers.
+	 *
 	 * @return  RunFailureException|null
 	 */
 	public function run(): ?RunFailureException {
 		if ( \is_null( $this->is_run ) ) {
-			foreach ( $this->get_subscribers() as $subscriber ) {
+			foreach ( $this->get_store()->get_all() as $subscriber ) {
+				/* @noinspection PhpPossiblePolymorphicInvocationInspection */
 				$subscriber->register_rest_config( $this );
 			}
 
@@ -140,15 +119,9 @@ class RESTService extends AbstractService implements RunnableInterface {
 			$this->run_result = null;
 		} else {
 			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event( 'The REST service has been run already. Please reset it before running it again.', array(), 'framework' )
-						->set_log_level( LogLevel::NOTICE )
-						->doing_it_wrong( __FUNCTION__, '1.0.0' )
-						->return_exception( RunFailureException::class )
-						->finalize();
-		}
-
-		if ( $this->run_result instanceof RunFailureException ) {
-			$this->log_event_and_finalize( $this->run_result->getMessage(), array(), LogLevel::ERROR, 'framework' );
+			return $this->log_event( 'The REST service has been run already.', array(), 'framework' )
+						->set_log_level( LogLevel::NOTICE )->doing_it_wrong( __FUNCTION__, '1.0.0' )
+						->return_exception( RunFailureException::class )->finalize();
 		}
 
 		return $this->run_result;
@@ -168,8 +141,8 @@ class RESTService extends AbstractService implements RunnableInterface {
 	 *
 	 * @return  RESTService
 	 */
-	public function add_subscriber( RESTServiceRegisterInterface $subscriber ): RESTService {
-		$this->subscribers[] = $subscriber;
+	public function register_subscriber( RESTServiceRegisterInterface $subscriber ): RESTService {
+		$this->update_store_entry( $subscriber );
 		return $this;
 	}
 

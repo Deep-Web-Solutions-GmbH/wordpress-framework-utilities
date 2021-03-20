@@ -2,6 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\REST;
 
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreableInterface;
+
 \defined( 'ABSPATH' ) || exit;
 
 /**
@@ -12,7 +14,7 @@ namespace DeepWebSolutions\Framework\Utilities\REST;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\REST
  */
-interface RESTServiceRegisterInterface {
+interface RESTServiceRegisterInterface extends StoreableInterface {
 	/**
 	 * Using classes should define their REST configuration in here.
 	 *
@@ -21,5 +23,5 @@ interface RESTServiceRegisterInterface {
 	 *
 	 * @param   RESTService     $rest_service       Instance of the REST service.
 	 */
-	public function register_rest_config( RESTService $rest_service ): void;
+	public function register_rest_config( RESTService $rest_service );
 }

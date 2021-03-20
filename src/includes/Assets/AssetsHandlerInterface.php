@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Assets;
 
-use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -14,14 +14,6 @@ use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Assets
  */
-interface AssetsHandlerInterface extends RunnableInterface {
-	/**
-	 * Should return a unique name for the handler.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_name(): string;
+interface AssetsHandlerInterface extends HandlerInterface {
+	/* empty on purpose */
 }

@@ -1,13 +1,14 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Assets\Handlers;
+namespace DeepWebSolutions\Framework\Utilities\Assets;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 use DeepWebSolutions\Framework\Helpers\FileSystem\Files;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
 use DeepWebSolutions\Framework\Helpers\WordPress\Assets;
-use DeepWebSolutions\Framework\Utilities\Assets\AssetsHandlerInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -17,9 +18,9 @@ use DeepWebSolutions\Framework\Utilities\Assets\AssetsHandlerInterface;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\Assets\Handlers
+ * @package DeepWebSolutions\WP-Framework\Utilities\Assets
  */
-abstract class AbstractAssetsHandler implements AssetsHandlerInterface {
+abstract class AbstractAssetsHandler extends AbstractHandler implements AssetsHandlerInterface, RunnableInterface {
 	// region TRAITS
 
 	use FilesystemAwareTrait;
@@ -27,63 +28,19 @@ abstract class AbstractAssetsHandler implements AssetsHandlerInterface {
 
 	// endregion
 
-	// region FIELDS AND CONSTANTS
+	// region INHERITED METHODS
 
 	/**
-	 * The unique name of the handler.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @var     string
-	 */
-	protected string $name;
-
-	// endregion
-
-	// region MAGIC METHODS
-
-	/**
-	 * AbstractAssetsHandler constructor.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $name   Unique name of the handler.
-	 */
-	public function __construct( string $name ) {
-		$this->name = $name;
-	}
-
-	// endregion
-
-	// region GETTERS
-
-	/**
-	 * Returns the name of the handler.
+	 * Returns the type of the handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @return  string
 	 */
-	public function get_name(): string {
-		return $this->name;
+	public function get_type(): string {
+		return 'assets';
 	}
-
-	// endregion
-
-	// region INHERITED METHODS
-
-	/**
-	 * Registers and enqueues the assets with WordPress.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  RunFailureException|null
-	 */
-	abstract public function run(): ?RunFailureException;
 
 	// endregion
 

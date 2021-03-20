@@ -6,6 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Helpers\FileSystem\Files;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
+use DeepWebSolutions\Framework\Utilities\Assets\AbstractAssetsHandler;
 
 \defined( 'ABSPATH' ) || exit;
 

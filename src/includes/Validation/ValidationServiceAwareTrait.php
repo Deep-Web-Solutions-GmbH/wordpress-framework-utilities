@@ -72,12 +72,13 @@ trait ValidationServiceAwareTrait {
 	 * @version 1.0.0
 	 *
 	 * @param   string  $key    The key inside the container.
+	 * @param   string  $handler_id     The ID of the handler to retrieve the value from.
 	 *
 	 * @noinspection PhpMissingReturnTypeInspection
 	 * @return  InexistentPropertyException|mixed
 	 */
-	public function get_default_value( string $key ) {
-		return $this->get_validation_service()->get_default_value( $key );
+	public function get_default_value( string $key, string $handler_id = 'default' ) {
+		return $this->get_validation_service()->get_handler( $handler_id )->get_default_value( $key );
 	}
 
 	/**
@@ -86,12 +87,13 @@ trait ValidationServiceAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $key    The key inside the container.
+	 * @param   string  $key            The key inside the container.
+	 * @param   string  $handler_id     The ID of the handler to retrieve the value from.
 	 *
 	 * @return  InexistentPropertyException|array
 	 */
-	public function get_supported_options( string $key ) {
-		return $this->get_validation_service()->get_supported_options( $key );
+	public function get_supported_options( string $key, string $handler_id = 'default' ) {
+		return $this->get_validation_service()->get_handler( $handler_id )->get_supported_options( $key );
 	}
 
 	/**
@@ -104,13 +106,14 @@ trait ValidationServiceAwareTrait {
 	 * @param   string  $default_key        The key of the default value in the container.
 	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
 	 * @param   array   $params             Additional params needed for the validation type.
+	 * @param   string  $handler_id         The ID of the handler to validate against.
 	 *
 	 * @throws  NotSupportedException   Thrown if the validation type requested is not supported.
 	 *
 	 * @return  mixed
 	 */
-	public function validate_value( $value, string $default_key, string $validation_type, array $params = array() ) {
-		return $this->get_validation_service()->validate_value( $value, $default_key, $validation_type, $params );
+	public function validate_value( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
+		return $this->get_validation_service()->validate_value( $value, $default_key, $validation_type, $params, $handler_id );
 	}
 
 	// endregion

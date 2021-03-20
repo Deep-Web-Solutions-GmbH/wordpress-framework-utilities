@@ -8,6 +8,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\Handlers\HandlerInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -24,7 +25,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks\Handlers
  */
-class HooksHandler implements RunnableInterface, ResettableInterface {
+class HooksHandler implements HandlerInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use RunnableTrait;

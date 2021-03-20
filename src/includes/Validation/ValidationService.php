@@ -4,108 +4,34 @@ namespace DeepWebSolutions\Framework\Utilities\Validation;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotSupportedException;
-use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\DependencyInjection\ContainerAwareInterface;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\DependencyInjection\ContainerAwareTrait;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
-use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
-use DeepWebSolutions\Framework\Helpers\Security\Validation;
-use Psr\Container\ContainerInterface;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractMultiHandlerService;
 
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Holds a container of default values and valid options (for values in a collection) and holds validation wrappers
- * against those values.
+ * Performs various data validation actions against values defined in various given handlers.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
-class ValidationService extends AbstractService implements ContainerAwareInterface {
-	// region TRAITS
-
-	use ContainerAwareTrait;
-
-	// endregion
-
-	// region MAGIC METHODS
+class ValidationService extends AbstractMultiHandlerService {
+	// region INHERITED METHODS
 
 	/**
-	 * ValidationService constructor.
+	 * Returns the instance of a given handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   PluginInterface             $plugin             Instance of the plugin.
-	 * @param   LoggingService              $logging_service    Instance of the logging service.
-	 * @param   ContainerInterface|null     $container          Defaults and options container.
+	 * @param   string  $handler_id
+	 *
+	 * @return  ValidationHandlerInterface|null
 	 */
-	public function __construct( PluginInterface $plugin, LoggingService $logging_service, ?ContainerInterface $container = null ) {
-		parent::__construct( $plugin, $logging_service );
-
-		if ( ! \is_null( $container ) ) {
-			$this->set_container( $container );
-		}
-	}
-
-	// endregion
-
-	// region GETTERS
-
-	/**
-	 * Retrieves the default value for a given key.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $key    The key inside the container.
-	 *
-	 * @noinspection PhpMissingReturnTypeInspection
-	 * @return  InexistentPropertyException|mixed
-	 */
-	public function get_default_value( string $key ) {
-		return $this->get_container_value( 'defaults/' . $key );
-	}
-
-	/**
-	 * Retrieves a list of all default values.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  array
-	 */
-	public function get_known_default_values(): array {
-		return \array_keys( $this->get_container_value( 'defaults' ) );
-	}
-
-	/**
-	 * Retrieves the supported options for a given key.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $key    The key inside the container.
-	 *
-	 * @return  InexistentPropertyException|array
-	 */
-	public function get_supported_options( string $key ) {
-		return $this->get_container_value( 'options/' . $key );
-	}
-
-	/**
-	 * Retrieves a list of all supported options configurations.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  array
-	 */
-	public function get_known_supported_options(): array {
-		return \array_keys( $this->get_container_value( 'options' ) );
+	public function get_handler( string $handler_id ): ?ValidationHandlerInterface { // phpcs:ignore
+		/* @noinspection PhpIncompatibleReturnTypeInspection */
+		return parent::get_handler( $handler_id );
 	}
 
 	// endregion
@@ -122,26 +48,27 @@ class ValidationService extends AbstractService implements ContainerAwareInterfa
 	 * @param   string  $default_key        The key of the default value in the container.
 	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
 	 * @param   array   $params             Additional params needed for the validation type.
+	 * @param   string  $handler_id         The ID of the handler to use for validation.
 	 *
 	 * @throws  NotSupportedException   Thrown if the validation type requested is not supported.
 	 *
 	 * @return  mixed
 	 */
-	public function validate_value( $value, string $default_key, string $validation_type, array $params = array() ) {
+	public function validate_value( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
 		switch ( $validation_type ) {
 			case ValidationTypesEnum::BOOLEAN:
-				return $this->validate_boolean_value( $value, $default_key );
+				return $this->validate_boolean_value( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::INTEGER:
-				return $this->validate_integer_value( $value, $default_key );
+				return $this->validate_integer_value( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::FLOAT:
-				return $this->validate_float_value( $value, $default_key );
+				return $this->validate_float_value( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::CALLBACK:
-				return $this->validate_callback_value( $value, $default_key );
+				return $this->validate_callback_value( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::OPTION:
-				return $this->validate_supported_value( $value, $params['options_key'] ?? '', $default_key );
+				return $this->validate_supported_value( $value, $params['options_key'] ?? '', $default_key, $handler_id );
 			case ValidationTypesEnum::CUSTOM:
 				if ( isset( $params['callable'] ) && \is_callable( $params['callable'] ) ) {
-					return \call_user_func_array( $params['callable'], array( $value, $default_key ) + ( $params['args'] ?? array() ) );
+					return \call_user_func_array( $params['callable'], array( $value, $default_key, $this->get_handler( $handler_id ) ) + ( $params['args'] ?? array() ) );
 				} else {
 					throw new NotSupportedException( 'Custom validation requires a valid callable' );
 				}
@@ -156,18 +83,16 @@ class ValidationService extends AbstractService implements ContainerAwareInterfa
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $key            The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
 	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
 	 *
 	 * @return  bool
 	 */
-	public function validate_boolean_value( $value, string $key ): bool {
-		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_bool( $default ) ? $default : Validation::validate_boolean( $default, false );
-
-		return Validation::validate_boolean( $value, $default );
+	public function validate_boolean_value( $value, string $key, string $handler_id = 'default' ): bool {
+		return $this->get_handler( $handler_id )->validate_boolean_value( $value, $key );
 	}
 
 	/**
@@ -176,18 +101,16 @@ class ValidationService extends AbstractService implements ContainerAwareInterfa
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $key            The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
 	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
 	 *
 	 * @return  int
 	 */
-	public function validate_integer_value( $value, string $key ): int {
-		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_int( $default ) ? $default : Validation::validate_integer( $default, 0 );
-
-		return Validation::validate_integer( $value, $default );
+	public function validate_integer_value( $value, string $key, string $handler_id = 'default' ): int {
+		return $this->get_handler( $handler_id )->validate_integer_value( $value, $key );
 	}
 
 	/**
@@ -196,40 +119,31 @@ class ValidationService extends AbstractService implements ContainerAwareInterfa
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $key            The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
 	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
 	 *
 	 * @return  float
 	 */
-	public function validate_float_value( $value, string $key ): float {
-		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_float( $default ) ? $default : Validation::validate_float( $default, 0.0 );
-
-		return Validation::validate_float( $value, $default );
+	public function validate_float_value( $value, string $key, string $handler_id = 'default' ): float {
+		return $this->get_handler( $handler_id )->validate_float_value( $value, $key );
 	}
 
 	/**
 	 * Validates a given value as a callable.
 	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $key            The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
 	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
 	 *
 	 * @return  callable
 	 */
-	public function validate_callback_value( $value, string $key ): callable {
-		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_callable( $default ) ? $default : Validation::validate_callback(
-			$default,
-			function( $value ) {
-				return $value;
-			}
-		);
-
-		return Validation::validate_callback( $value, $default );
+	public function validate_callback_value( $value, string $key, string $handler_id = 'default' ): callable {
+		return $this->get_handler( $handler_id )->validate_callback_value( $value, $key );
 	}
 
 	/**
@@ -238,20 +152,14 @@ class ValidationService extends AbstractService implements ContainerAwareInterfa
 	 * @param   mixed   $value          The value to validate.
 	 * @param   string  $options_key    The composite key to retrieve the supported values.
 	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
 	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the containers.
 	 *
 	 * @return  mixed
 	 */
-	public function validate_supported_value( $value, string $options_key, string $default_key ) {
-		$default          = $this->get_default_value_or_throw( $default_key );
-		$supported_values = $this->get_supported_options_or_throw( $options_key );
-
-		if ( Arrays::has_string_keys( $supported_values ) ) {
-			$supported_values = \array_keys( $supported_values );
-		}
-
-		return Validation::validate_allowed_value( $value, $supported_values, $default );
+	public function validate_supported_value( $value, string $options_key, string $default_key, string $handler_id = 'default' ) {
+		return $this->get_handler( $handler_id )->validate_supported_value( $value, $options_key, $default_key );
 	}
 
 	// endregion
@@ -259,76 +167,15 @@ class ValidationService extends AbstractService implements ContainerAwareInterfa
 	// region HELPERS
 
 	/**
-	 * Retrieves a nested value from the container using a composite key.
-	 *
-	 * @param   string  $key    Composite key of the value to retrieve.
-	 *
-	 * @noinspection PhpMissingReturnTypeInspection
-	 * @return  InexistentPropertyException|mixed
-	 */
-	protected function get_container_value( string $key ) {
-		$boom = \explode( '/', $key );
-		$key  = \array_shift( $boom );
-
-		$value = $this->get_container_entry( $key );
-		if ( \is_null( $value ) ) {
-			return new InexistentPropertyException( \sprintf( 'Inexistent container entry: %s', $key ) );
-		}
-
-		foreach ( $boom as $key ) {
-			if ( isset( $value[ $key ] ) || array_key_exists( $key, $value ) ) {
-				$value = $value[ $key ];
-			} else {
-				return new InexistentPropertyException( \sprintf( 'Inexistent container entry: %s', $key ) );
-			}
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Retrieves the default value for a given key or throws the exception if not found.
+	 * Returns the class name of the used handler for better type-checking.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $key    The key inside the container.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the containers.
-	 *
-	 * @noinspection PhpMissingReturnTypeInspection
-	 * @return  mixed
+	 * @return  string
 	 */
-	protected function get_default_value_or_throw( string $key ) {
-		$default = $this->get_default_value( $key );
-
-		if ( $default instanceof InexistentPropertyException ) {
-			throw $default;
-		}
-
-		return $default;
-	}
-
-	/**
-	 * Retrieves the supported options for a given key or throws the exception if not found.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $key    The key inside the container.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the containers.
-	 *
-	 * @return  array
-	 */
-	protected function get_supported_options_or_throw( string $key ): array {
-		$options = $this->get_supported_options( $key );
-
-		if ( $options instanceof InexistentPropertyException ) {
-			throw $options;
-		}
-
-		return $options;
+	protected function get_handler_class(): string {
+		return ValidationHandlerInterface::class;
 	}
 
 	// endregion

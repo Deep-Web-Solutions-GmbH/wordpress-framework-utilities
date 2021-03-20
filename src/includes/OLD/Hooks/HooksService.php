@@ -8,15 +8,11 @@ use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\HooksHandler;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\HooksHandlerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\HooksHandlerAwareTrait;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingService;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Logging\LoggingServiceAwareTrait;
 use Psr\Log\LogLevel;
 
 \defined( 'ABSPATH' ) || exit;
@@ -29,12 +25,10 @@ use Psr\Log\LogLevel;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks
  */
-class HooksService implements HooksHandlerAwareInterface, LoggingServiceAwareInterface, PluginAwareInterface, RunnableInterface, ResettableInterface {
+class HooksService extends AbstractService implements HooksHandlerAwareInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use HooksHandlerAwareTrait;
-	use LoggingServiceAwareTrait;
-	use PluginAwareTrait;
 	use RunnableTrait;
 	use ResettableTrait;
 

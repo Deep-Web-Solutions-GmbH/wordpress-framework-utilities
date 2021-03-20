@@ -24,7 +24,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks\Handlers
  */
-class ScopedHooksHandler extends HooksHandler implements InitializableInterface {
+class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInterface {
 	// region TRAITS
 
 	use InitializableTrait;
@@ -64,10 +64,12 @@ class ScopedHooksHandler extends HooksHandler implements InitializableInterface 
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array   $start  The hook on which the actions and filters should be registered.
-	 * @param   array   $end    The hook on which the actions and filters should be un-registered.
+	 * @param   string  $handler_id     The ID of the handler instance.
+	 * @param   array   $start          The hook on which the actions and filters should be registered.
+	 * @param   array   $end            The hook on which the actions and filters should be un-registered.
 	 */
-	public function __construct( array $start = array(), array $end = array() ) {
+	public function __construct( string $handler_id, array $start = array(), array $end = array() ) {
+		parent::__construct( $handler_id );
 		$this->parse_scope( $start, $end );
 		$this->initialize();
 	}

@@ -1,6 +1,8 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
+namespace DeepWebSolutions\Framework\Utilities\Dependencies\Checkers;
+
+use DeepWebSolutions\Framework\Utilities\Dependencies\AbstractDependenciesChecker;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -10,9 +12,9 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Dependencies\Handlers
+ * @package DeepWebSolutions\WP-Framework\Dependencies\Checkers
  */
-class PHPFunctionsHandler extends AbstractDependenciesHandler {
+class PHPFunctionsChecker extends AbstractDependenciesChecker {
 	// region GETTERS
 
 	/**
@@ -23,7 +25,7 @@ class PHPFunctionsHandler extends AbstractDependenciesHandler {
 	 *
 	 * @return  string
 	 */
-	public function get_dependency_type(): string {
+	public function get_type(): string {
 		return 'php_functions';
 	}
 

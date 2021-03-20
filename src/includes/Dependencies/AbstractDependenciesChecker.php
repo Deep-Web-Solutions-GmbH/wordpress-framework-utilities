@@ -1,31 +1,21 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
+namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesHandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Basic implementation of the dependencies handler interface.
+ * Template for encapsulating some of the most often needed functionality of a dependencies checker.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Dependencies\Handlers
+ * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies
  */
-abstract class AbstractDependenciesHandler implements DependenciesHandlerInterface {
+abstract class AbstractDependenciesChecker extends AbstractHandler implements DependenciesCheckerInterface {
 	// region FIELDS AND CONSTANTS
-
-	/**
-	 * Name of the handler.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @var     string
-	 */
-	protected string $name;
 
 	/**
 	 * List of dependencies to check for.
@@ -42,36 +32,28 @@ abstract class AbstractDependenciesHandler implements DependenciesHandlerInterfa
 	// region MAGIC METHODS
 
 	/**
-	 * AbstractDependenciesHandler constructor.
+	 * AbstractDependenciesChecker constructor.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $name           Name of the handler. Should be unique per handler type.
+	 * @param   string  $checker_id     The ID of the checker.
 	 * @param   array   $dependencies   List of dependencies to check for.
 	 */
-	public function __construct( string $name, array $dependencies = array() ) {
-		$this->name = $name;
-		foreach ( $dependencies as $dependency ) {
-			$this->register_dependency( $dependency );
+	public function __construct( string $checker_id, array $dependencies = array() ) {
+		parent::__construct( $checker_id );
+		foreach ( $dependencies as $key => $config ) {
+			if ( \is_string( $key ) && \is_array( $config ) ) {
+				$this->register_dependency( $config + array( $this->get_dependency_key() => $key ) );
+			} else {
+				$this->register_dependency( $config );
+			}
 		}
 	}
 
 	// endregion
 
 	// region GETTERS
-
-	/**
-	 * Returns the name of the handler to differentiate multiple ones of the same type.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_name(): string {
-		return $this->name;
-	}
 
 	/**
 	 * Returns a list of registered dependencies to check for.
@@ -125,7 +107,7 @@ abstract class AbstractDependenciesHandler implements DependenciesHandlerInterfa
 	// region HELPERS
 
 	/**
-	 * Checks whether the dependency is valid for the current handler.
+	 * Checks whether the dependency is valid for the current checker.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -135,6 +117,19 @@ abstract class AbstractDependenciesHandler implements DependenciesHandlerInterfa
 	 * @return  bool
 	 */
 	abstract protected function is_dependency_valid( $dependency ): bool;
+
+	/**
+	 * For dependencies passed on as an associative array, this determines the name of the key's key within
+	 * the array passed on to 'register_dependency'.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string
+	 */
+	protected function get_dependency_key(): string {
+		return 'key';
+	}
 
 	// endregion
 }

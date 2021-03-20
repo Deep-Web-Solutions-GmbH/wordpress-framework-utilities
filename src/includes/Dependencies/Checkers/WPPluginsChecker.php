@@ -1,10 +1,11 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
+namespace DeepWebSolutions\Framework\Utilities\Dependencies\Checkers;
 
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
 use DeepWebSolutions\Framework\Helpers\Security\Validation;
+use DeepWebSolutions\Framework\Utilities\Dependencies\AbstractDependenciesChecker;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -14,9 +15,9 @@ use DeepWebSolutions\Framework\Helpers\Security\Validation;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Dependencies\Handlers
+ * @package DeepWebSolutions\WP-Framework\Dependencies\Checkers
  */
-class WPPluginsHandler extends AbstractDependenciesHandler {
+class WPPluginsChecker extends AbstractDependenciesChecker {
 	// region TRAITS
 
 	use FilesystemAwareTrait;
@@ -33,7 +34,7 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 	 *
 	 * @return  string
 	 */
-	public function get_dependency_type(): string {
+	public function get_type(): string {
 		return 'active_plugins';
 	}
 
@@ -59,7 +60,7 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 				$missing[ $dependency['plugin'] ] = $dependency;
 			} elseif ( isset( $dependency['min_version'] ) ) {
 				$version = $this->get_active_plugin_version( $dependency['plugin'], $dependency );
-				if ( version_compare( $version, $dependency['min_version'], '<' ) ) {
+				if ( \version_compare( $version, $dependency['min_version'], '<' ) ) {
 					$missing[ $dependency['plugin'] ] = $dependency + array( 'version' => $version );
 				}
 			}
@@ -84,6 +85,18 @@ class WPPluginsHandler extends AbstractDependenciesHandler {
 	 */
 	protected function is_dependency_valid( $dependency ): bool {
 		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency ) && isset( $dependency['plugin'] );
+	}
+
+	/**
+	 * Key to set the plugin's slug within the config array.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string
+	 */
+	protected function get_dependency_key(): string {
+		return 'plugin';
 	}
 
 	/**

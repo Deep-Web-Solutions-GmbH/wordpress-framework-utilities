@@ -1,9 +1,10 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Dependencies\Handlers;
+namespace DeepWebSolutions\Framework\Utilities\Dependencies\Checkers;
 
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
+use DeepWebSolutions\Framework\Utilities\Dependencies\AbstractDependenciesChecker;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -13,9 +14,9 @@ use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Dependencies\Handlers
+ * @package DeepWebSolutions\WP-Framework\Dependencies\Checkers
  */
-class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
+class PHPIncompatibleSettingsChecker extends AbstractDependenciesChecker {
 	// region GETTERS
 
 	/**
@@ -26,7 +27,7 @@ class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
 	 *
 	 * @return  string
 	 */
-	public function get_dependency_type(): string {
+	public function get_type(): string {
 		return 'php_settings';
 	}
 
@@ -50,13 +51,13 @@ class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
 
 		if ( \function_exists( 'ini_get' ) ) {
 			foreach ( $this->get_dependencies() as $dependency ) {
-				$environment_value = ini_get( $dependency['option_name'] );
+				$environment_value = \ini_get( $dependency['option_name'] );
 				if ( empty( $environment_value ) ) {
 					continue;
 				}
 
-				if ( is_int( $dependency['expected_value'] ) ) {
-					$is_size           = ! is_numeric( substr( $environment_value, -1 ) );
+				if ( \is_int( $dependency['expected_value'] ) ) {
+					$is_size           = ! \is_numeric( \substr( $environment_value, -1 ) );
 					$environment_value = $is_size ? Strings::letter_to_number( $environment_value ) : $environment_value;
 
 					if ( $environment_value < $dependency['expected_value'] ) {
@@ -94,6 +95,18 @@ class PHPIncompatibleSettingsHandler extends AbstractDependenciesHandler {
 	 */
 	protected function is_dependency_valid( $dependency ): bool {
 		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency ) && isset( $dependency['option_name'], $dependency['expected_value'] );
+	}
+
+	/**
+	 * Key to set the PHP setting's name within the config array.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string
+	 */
+	protected function get_dependency_key(): string {
+		return 'option_name';
 	}
 
 	// endregion

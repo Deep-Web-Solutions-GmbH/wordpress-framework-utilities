@@ -20,10 +20,8 @@ interface DependenciesCheckerInterface extends DependenciesHandlerInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   mixed   $dependency     The dependency to check for.
-	 *
-	 * @return  bool    Whether the dependency was successfully registered or not.
 	 */
-	public function register_dependency( $dependency ): bool;
+	public function register_dependency( $dependency );
 
 	/**
 	 * Returns whether the dependencies are fulfilled or not.

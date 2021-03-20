@@ -94,7 +94,7 @@ class SingleCheckerHandler extends AbstractDependenciesHandler {
 	 * @return  array
 	 */
 	public function get_dependencies(): array {
-		return $this->checker->get_dependencies();
+		return array( $this->checker->get_id() => $this->checker->get_dependencies() );
 	}
 
 	/**
@@ -106,7 +106,7 @@ class SingleCheckerHandler extends AbstractDependenciesHandler {
 	 * @return  array
 	 */
 	public function get_missing_dependencies(): array {
-		return $this->checker->get_missing_dependencies();
+		return array( $this->checker->get_id() => $this->checker->get_missing_dependencies() );
 	}
 
 	/**
@@ -115,10 +115,10 @@ class SingleCheckerHandler extends AbstractDependenciesHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  bool
+	 * @return  bool[]
 	 */
-	public function are_dependencies_fulfilled(): bool {
-		return $this->checker->are_dependencies_fulfilled();
+	public function are_dependencies_fulfilled(): array {
+		return array( $this->checker->get_id() => $this->checker->are_dependencies_fulfilled() );
 	}
 
 	// endregion

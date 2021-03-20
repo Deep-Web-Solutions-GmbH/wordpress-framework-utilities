@@ -165,11 +165,11 @@ class MultiCheckerHandler extends AbstractDependenciesHandler {
 		$result = array();
 
 		foreach ( $this->checkers as $checker ) {
-			$handler_type = $checker->get_type();
-			$handler_id   = $checker->get_id();
+			$checker_type = $checker->get_type();
+			$checker_id   = $checker->get_id();
 
-			$result[ $handler_type ]                = $result[ $handler_type ] ?? array();
-			$result[ $handler_type ][ $handler_id ] = \method_exists( $checker, $method ) ? \call_user_func( array( $checker, $method ) ) : null;
+			$result[ $checker_type ]                = $result[ $checker_type ] ?? array();
+			$result[ $checker_type ][ $checker_id ] = \method_exists( $checker, $method ) ? \call_user_func( array( $checker, $method ) ) : null;
 		}
 
 		return $result;

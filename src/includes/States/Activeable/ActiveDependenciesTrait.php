@@ -5,10 +5,12 @@ namespace DeepWebSolutions\Framework\Utilities\States\Activeable;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -30,41 +32,41 @@ trait ActiveDependenciesTrait {
 	// region METHODS
 
 	/**
-	 * If the using class is IsActiveExtensionTrait, prevent its activation if required dependencies are not fulfilled.
+	 * If the using class is activeable, prevent its activation if required dependencies are not fulfilled.
 	 * Optional dependencies can be marked by including the word 'optional' in the key of the result.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @throws  NotImplementedException     Thrown when using this function in an unsupported context.
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters any other error.
+	 * @throws  NotImplementedException         Thrown when using this function in an unsupported context.
 	 *
 	 * @return  bool
 	 */
 	public function is_active_dependencies(): bool {
-		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : \get_class( $this );
+		$handler_id = ( $this instanceof PluginComponentInterface ) ? $this->get_id() : \get_class( $this );
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
-			$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $checker_name );
+			$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );
 		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$are_deps_fulfilled = $this->get_container()->get( DependenciesService::class )->are_dependencies_fulfilled( $checker_name );
+			$are_deps_fulfilled = $this->get_container()->get( DependenciesService::class )->are_dependencies_fulfilled( $handler_id );
 		} else {
 			throw new NotImplementedException( 'Dependency checking scenario not supported' );
 		}
 
-		if ( \is_array( $are_deps_fulfilled ) ) {
-			if ( \is_array( \reset( $are_deps_fulfilled ) ) ) {
-				foreach ( $are_deps_fulfilled as $dependencies_status ) {
-					$required_status = $this->is_active_required_dependencies( $dependencies_status );
-					if ( false === $required_status ) {
-						$are_deps_fulfilled = false;
-						break;
-					}
+		if ( \is_array( \reset( $are_deps_fulfilled ) ) ) { // MultiCheckerHandler
+			foreach ( $are_deps_fulfilled as $dependencies_status ) {
+				$required_status = $this->is_active_required_dependencies( $dependencies_status );
+				if ( false === $required_status ) {
+					$are_deps_fulfilled = false;
+					break;
 				}
-
-				$are_deps_fulfilled = \is_array( $are_deps_fulfilled );
-			} else {
-				$are_deps_fulfilled = $this->is_active_required_dependencies( $are_deps_fulfilled );
 			}
+
+			$are_deps_fulfilled = \is_array( $are_deps_fulfilled );
+		} else { // SingleCheckerHandler
+			$are_deps_fulfilled = $this->is_active_required_dependencies( $are_deps_fulfilled );
 		}
 
 		return $are_deps_fulfilled;

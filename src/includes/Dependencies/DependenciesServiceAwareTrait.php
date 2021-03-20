@@ -125,7 +125,7 @@ trait DependenciesServiceAwareTrait {
 	 */
 	protected function parse_dependencies_handler_id( ?string $handler_id ): string {
 		if ( \is_null( $handler_id ) && $this instanceof PluginComponentInterface ) {
-			$handler_id = $this->get_component_id();
+			$handler_id = $this->get_id();
 		}
 
 		return $handler_id ?? '';

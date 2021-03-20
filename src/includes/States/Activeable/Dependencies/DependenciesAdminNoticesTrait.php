@@ -4,16 +4,20 @@ namespace DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesService;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceRegisterTrait;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\Notice;
-use DeepWebSolutions\Framework\Utilities\Dependencies\Checkers\HandlerChecker;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\MultiCheckerHandler;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\SingleCheckerHandler;
 use DeepWebSolutions\Framework\Utilities\States\Activeable\ActiveDependenciesTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -43,20 +47,31 @@ trait DependenciesAdminNoticesTrait {
 	 *
 	 * @param   AdminNoticesService     $notices_service        Instance of the admin notices service.
 	 *
-	 * @throws  NotImplementedException     Thrown when using this function in an unsupported context.
+	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters any other error.
+	 * @throws  NotImplementedException         Thrown when using this function in an unsupported context.
 	 */
 	public function register_admin_notices( AdminNoticesService $notices_service ): void {
-		$checker_name = ( $this instanceof PluginComponentInterface ) ? $this->get_instance_id() : \get_class( $this );
+		$handler_id = ( $this instanceof PluginComponentInterface ) ? $this->get_id() : \get_class( $this );
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
-			$checker = $this->get_dependencies_service()->get_checker( $checker_name );
+			$handler = $this->get_dependencies_service()->get_handler( $handler_id );
 		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$checker = $this->get_container()->get( DependenciesService::class )->get_checker( $checker_name );
+			$handler = $this->get_container()->get( DependenciesService::class )->get_handler( $handler_id );
 		} else {
 			throw new NotImplementedException( 'Dependencies admin notices scenario not supported' );
 		}
 
-		$this->register_missing_dependencies_admin_notices( $notices_service, $checker );
+		$missing_dependencies = $handler->get_missing_dependencies();
+		if ( $handler instanceof MultiCheckerHandler ) {
+			foreach ( $missing_dependencies as $type => $dependencies ) {
+				if ( ! empty( $dependencies ) ) {
+					$this->register_missing_dependencies_admin_notices( $notices_service, $missing_dependencies, $type );
+				}
+			}
+		} elseif ( $handler instanceof SingleCheckerHandler ) {
+			$this->register_missing_dependencies_admin_notices( $notices_service, $missing_dependencies, $handler->get_checker()->get_type() );
+		}
 	}
 
 	// endregion
@@ -69,34 +84,24 @@ trait DependenciesAdminNoticesTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   AdminNoticesService             $notices_service        Instance of the admin notices service.
-	 * @param   DependenciesCheckerInterface    $dependencies_checker   Instance of dependencies checker.
-	 *
-	 * @throws  NotImplementedException     Thrown when the dependencies checker is not supported.
+	 * @param   AdminNoticesService     $notices_service        Instance of the admin notices service.
+	 * @param   array                   $missing_dependencies   Unfulfilled dependencies.
+	 * @param   string                  $type                   The type of the unfulfilled dependencies.
 	 */
-	protected function register_missing_dependencies_admin_notices( AdminNoticesService $notices_service, DependenciesCheckerInterface $dependencies_checker ): void {
-		if ( ! $dependencies_checker instanceof HandlerChecker ) {
-			throw new NotImplementedException( 'Dependencies admin notices scenario not supported' );
-		}
+	protected function register_missing_dependencies_admin_notices( AdminNoticesService $notices_service, array $missing_dependencies, string $type ): void {
+		foreach ( $missing_dependencies as $checker_id => $dependencies ) {
+			$is_optional_handler = ( \strpos( $checker_id, 'optional' ) !== false );
+			$store               = $is_optional_handler ? 'options' : 'dynamic';
 
-		$missing_dependencies = $dependencies_checker->get_missing_dependencies();
-		foreach ( $missing_dependencies as $type => $handler_dependencies ) {
-			foreach ( $handler_dependencies as $handler => $dependencies ) {
-				if ( ! empty( $dependencies ) ) {
-					$is_optional_handler = ( strpos( $handler, 'optional' ) !== false );
-					$store               = $is_optional_handler ? 'options' : 'dynamic';
+			$notice_handle  = $this->get_admin_notice_handle( "missing-{$type}", array( \md5( \wp_json_encode( $dependencies ) ) ) );
+			$notice_message = $this->compose_message( $type, $dependencies, $is_optional_handler );
+			$notice_params  = array( 'capability' => 'activate_plugins' );
 
-					$notice_handle  = $this->get_admin_notice_handle( "missing-{$type}", array( md5( wp_json_encode( $dependencies ) ) ) );
-					$notice_message = $this->compose_message( $type, $dependencies, $is_optional_handler );
-					$notice_params  = array( 'capability' => 'activate_plugins' );
+			$notice = $is_optional_handler
+				? new DismissibleNotice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params + array( 'persistent' => true ) )
+				: new Notice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params );
 
-					$notice = $is_optional_handler
-						? new DismissibleNotice( $notice_handle, $notice_message, $notice_params + array( 'persistent' => true ) )
-						: new Notice( $notice_handle, $notice_message, $notice_params );
-
-					$notices_service->add_notice( $notice, $store );
-				}
-			}
+			$notices_service->add_notice( $notice, $store );
 		}
 	}
 
@@ -154,7 +159,7 @@ trait DependenciesAdminNoticesTrait {
 		if ( $is_optional ) {
 			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
-				_n(
+				\_n(
 					'<strong>%1$s</strong> may behave unexpectedly because the %2$s PHP extension is missing. Contact your host or server administrator to install and configure the missing extension.',
 					'<strong>%1$s</strong> may behave unexpectedly because the following PHP extensions are missing: %2$s. Contact your host or server administrator to install and configure the missing extensions.',
 					\count( $php_extensions ),
@@ -166,7 +171,7 @@ trait DependenciesAdminNoticesTrait {
 		} else {
 			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
-				_n(
+				\_n(
 					'<strong>%1$s</strong> requires the %2$s PHP extension to function. Contact your host or server administrator to install and configure the missing extension.',
 					'<strong>%1$s</strong> requires the following PHP extensions to function: %2$s. Contact your host or server administrator to install and configure the missing extensions.',
 					\count( $php_extensions ),
@@ -195,7 +200,7 @@ trait DependenciesAdminNoticesTrait {
 		if ( $is_optional ) {
 			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP functions. */
-				_n(
+				\_n(
 					'<strong>%1$s</strong> may behave unexpectedly because the %2$s PHP function is missing. Contact your host or server administrator to install and configure the missing function.',
 					'<strong>%1$s</strong> may behave unexpectedly because the following PHP functions are missing: %2$s. Contact your host or server administrator to install and configure the missing functions.',
 					\count( $php_functions ),
@@ -207,7 +212,7 @@ trait DependenciesAdminNoticesTrait {
 		} else {
 			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP functions. */
-				_n(
+				\_n(
 					'<strong>%1$s</strong> requires the %2$s PHP function to exist. Contact your host or server administrator to install and configure the missing function.',
 					'<strong>%1$s</strong> requires the following PHP functions to exist: %2$s. Contact your host or server administrator to install and configure the missing functions.',
 					\count( $php_functions ),
@@ -236,7 +241,7 @@ trait DependenciesAdminNoticesTrait {
 		if ( $is_optional ) {
 			$message = \sprintf(
 				/* translators: Plugin name or identifiable name. */
-				__( '<strong>%s</strong> may behave unexpectedly because the following PHP configuration settings are expected:', 'dws-wp-framework-utilities' ),
+				\__( '<strong>%s</strong> may behave unexpectedly because the following PHP configuration settings are expected:', 'dws-wp-framework-utilities' ),
 				\esc_html( $this->get_registrant_name() )
 			) . '<ul>';
 			$message .= $this->format_incompatible_settings_list( $php_settings );
@@ -244,11 +249,11 @@ trait DependenciesAdminNoticesTrait {
 		} else {
 			$message = \sprintf(
 				/* translators: Plugin name or identifiable name. */
-				__( '<strong>%s</strong> cannot run because the following PHP configuration settings are expected:', 'dws-wp-framework-utilities' ),
+				\__( '<strong>%s</strong> cannot run because the following PHP configuration settings are expected:', 'dws-wp-framework-utilities' ),
 				\esc_html( $this->get_registrant_name() )
 			) . '<ul>';
 			$message .= $this->format_incompatible_settings_list( $php_settings );
-			$message .= '</ul>' . __( 'Please contact your hosting provider or server administrator to configure these settings.', 'dws-wp-framework-utilities' );
+			$message .= '</ul>' . \__( 'Please contact your hosting provider or server administrator to configure these settings.', 'dws-wp-framework-utilities' );
 		}
 
 		return $message;
@@ -271,7 +276,7 @@ trait DependenciesAdminNoticesTrait {
 		if ( $is_optional ) {
 			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
-				_n(
+				\_n(
 					'<strong>%1$s</strong> may behave unexpectedly because the %2$s plugin is either not installed or not active. Please install and activate the plugin first.',
 					'<strong>%1$s</strong> may behave unexpectedly because the following plugins are either not installed or active: %2$s. Please install and activate these plugins first.',
 					\count( $plugins ),
@@ -283,7 +288,7 @@ trait DependenciesAdminNoticesTrait {
 		} else {
 			return \sprintf(
 				/* translators: 1. Plugin or identifiable name, 2. Comma-separated list of missing PHP extensions. */
-				_n(
+				\_n(
 					'<strong>%1$s</strong> requires the %2$s plugin to be installed and active. Please install and activate the plugin first.',
 					'<strong>%1$s</strong> requires the following plugins to be installed and active: %2$s. Please install and activate these plugins first.',
 					\count( $plugins ),

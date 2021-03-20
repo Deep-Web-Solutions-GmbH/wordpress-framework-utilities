@@ -28,7 +28,7 @@ trait RESTHelpersTrait {
 	 */
 	public function get_rest_namespace( int $version = 1 ): string {
 		if ( $this instanceof PluginComponentInterface ) {
-			$namespace = \join( '/', array( $this->get_plugin()->get_plugin_slug(), $this->get_component_safe_name() ) );
+			$namespace = \join( '/', array( $this->get_plugin()->get_plugin_slug(), $this->get_safe_name() ) );
 		} elseif ( $this instanceof PluginAwareInterface ) {
 			$namespace = $this->get_plugin()->get_plugin_slug();
 		} else {

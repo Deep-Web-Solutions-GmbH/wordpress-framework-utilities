@@ -2,18 +2,19 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
+
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Describes a dependencies checker instance.
+ * Describes an instance of a shortcodes handler compatible with the shortcodes service.
  *
  * @since   1.0.0
  * @version 1.0.0
+ * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies
  */
-interface DependenciesCheckerInterface {
-	// region GETTERS
-
+interface DependenciesHandlerInterface extends HandlerInterface {
 	/**
 	 * Returns the dependencies checked for.
 	 *
@@ -23,10 +24,6 @@ interface DependenciesCheckerInterface {
 	 * @return  array
 	 */
 	public function get_dependencies(): array;
-
-	// endregion
-
-	// region METHODS
 
 	/**
 	 * Returns the unfulfilled dependencies.
@@ -47,6 +44,4 @@ interface DependenciesCheckerInterface {
 	 * @return  bool|bool[]|bool[][]
 	 */
 	public function are_dependencies_fulfilled();
-
-	// endregion
 }

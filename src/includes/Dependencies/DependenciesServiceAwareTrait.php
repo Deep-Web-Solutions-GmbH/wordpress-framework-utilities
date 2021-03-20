@@ -2,6 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
+use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
+
 \defined( 'ABSPATH' ) || exit;
 
 /**
@@ -68,12 +70,13 @@ trait DependenciesServiceAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $checker_name   The checker to retrieve the dependencies from.
+	 * @param   string|null     $handler_id     The checker to retrieve the dependencies status from.
 	 *
 	 * @return  array
 	 */
-	public function get_dependencies( string $checker_name ): array {
-		return $this->get_dependencies_service()->get_dependencies( $checker_name );
+	public function get_dependencies( ?string $handler_id = null ): array {
+		$handler_id = $this->parse_dependencies_handler_id( $handler_id );
+		return $this->get_dependencies_service()->get_dependencies( $handler_id );
 	}
 
 	/**
@@ -82,12 +85,13 @@ trait DependenciesServiceAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $checker_name   The checker to retrieve the missing dependencies from.
+	 * @param   string|null     $handler_id     The checker to retrieve the dependencies status from.
 	 *
 	 * @return  array
 	 */
-	public function get_missing_dependencies( string $checker_name ): array {
-		return $this->get_dependencies_service()->get_missing_dependencies( $checker_name );
+	public function get_missing_dependencies( ?string $handler_id = null ): array {
+		$handler_id = $this->parse_dependencies_handler_id( $handler_id );
+		return $this->get_dependencies_service()->get_missing_dependencies( $handler_id );
 	}
 
 	/**
@@ -96,12 +100,35 @@ trait DependenciesServiceAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $checker_name   The checker to retrieve the dependencies status from.
+	 * @param   string|null     $handler_id     The checker to retrieve the dependencies status from.
 	 *
 	 * @return  mixed
 	 */
-	public function are_dependencies_fulfilled( string $checker_name ) {
-		return $this->get_dependencies_service()->are_dependencies_fulfilled( $checker_name );
+	public function are_dependencies_fulfilled( ?string $handler_id = null ) {
+		$handler_id = $this->parse_dependencies_handler_id( $handler_id );
+		return $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Provides some sensible defaults to the handler ID if not specified outright.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string|null     $handler_id     The handler ID to parse.
+	 *
+	 * @return  string
+	 */
+	protected function parse_dependencies_handler_id( ?string $handler_id ): string {
+		if ( \is_null( $handler_id ) && $this instanceof PluginComponentInterface ) {
+			$handler_id = $this->get_component_id();
+		}
+
+		return $handler_id ?? '';
 	}
 
 	// endregion

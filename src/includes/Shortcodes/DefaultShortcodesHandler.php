@@ -2,9 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
-use DeepWebSolutions\Framework\Foundations\Actions\{ ResettableInterface, RunnableInterface };
-use DeepWebSolutions\Framework\Foundations\Actions\Resettable\{ ResetFailureException, ResettableTrait };
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\{ RunFailureException, RunnableTrait };
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -21,26 +20,20 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\{ RunFailureExceptio
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-class DefaultShortcodesHandler extends AbstractShortcodesHandler implements RunnableInterface, ResettableInterface {
-	// region TRAITS
-
-	use RunnableTrait;
-	use ResettableTrait;
-
-	// endregion
-
-	// region FIELDS AND CONSTANTS
+class DefaultShortcodesHandler extends AbstractShortcodesHandler {
+	// region MAGIC METHODS
 
 	/**
-	 * The shortcodes registered with WordPress that can be used after the service runs.
+	 * DefaultShortcodesHandler constructor.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @access  protected
-	 * @var     array
+	 * @param   string      $handler_id     The ID of the handler instance.
 	 */
-	protected array $shortcodes = array();
+	public function __construct( string $handler_id = 'default' ) { // phpcs:ignore
+		parent::__construct( $handler_id );
+	}
 
 	// endregion
 
@@ -90,70 +83,6 @@ class DefaultShortcodesHandler extends AbstractShortcodesHandler implements Runn
 		}
 
 		return $this->reset_result;
-	}
-
-	// endregion
-
-	// region GETTERS
-
-	/**
-	 * Returns the list of shortcodes registered with WP by this service instance on run.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  array
-	 */
-	public function get_shortcodes(): array {
-		return $this->shortcodes;
-	}
-
-	// endregion
-
-	// region METHODS
-
-	/**
-	 * Adds a new shortcode to the collection to be registered with WordPress.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string          $tag            The name of the WordPress shortcode that is being registered.
-	 * @param   object|null     $component      A reference to the instance of the object on which the shortcode is defined.
-	 * @param   string          $callback       The name of the function definition on the $component.
-	 */
-	public function add_shortcode( string $tag, ?object $component, string $callback ): void {
-		$this->shortcodes[] = array(
-			'tag'       => $tag,
-			'component' => $component,
-			'callback'  => $callback,
-		);
-	}
-
-	/**
-	 * Removes a shortcode from the collection to be registered with WordPress.
-	 *
-	 * @param   string          $tag            The name of the WordPress shortcode that is being deregistered.
-	 * @param   object|null     $component      A reference to the instance of the object on which the shortcode is defined.
-	 * @param   string          $callback       The name of the function definition on the $component.
-	 */
-	public function remove_shortcode( string $tag, ?object $component, string $callback ): void {
-		foreach ( $this->shortcodes as $index => $hook_info ) {
-			if ( $hook_info['tag'] === $tag && $hook_info['component'] === $component && $hook_info['callback'] === $callback ) {
-				unset( $this->shortcodes[ $index ] );
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Removes all shortcodes from the collection to be registered with WordPress.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 */
-	public function remove_all_shortcodes(): void {
-		$this->shortcodes = array();
 	}
 
 	// endregion

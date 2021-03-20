@@ -1,10 +1,12 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\CronEvents\Handlers;
+namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResettableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
-use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsHandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -13,9 +15,9 @@ use DeepWebSolutions\Framework\Utilities\CronEvents\CronEventsHandlerInterface;
  *
  * @since   1.0.0
  * @version 1.0.0
- * @package DeepWebSolutions\WP-Framework\Utilities\CronEvents\Handlers
+ * @package DeepWebSolutions\WP-Framework\Utilities\CronEvents
  */
-abstract class AbstractHandler implements CronEventsHandlerInterface {
+abstract class AbstractCronEventsHandler extends AbstractHandler implements CronEventsHandlerInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use ResettableTrait;
@@ -46,6 +48,22 @@ abstract class AbstractHandler implements CronEventsHandlerInterface {
 	 * @var     array
 	 */
 	protected array $recurring_events = array();
+
+	// endregion
+
+	// region INHERITED METHODS
+
+	/**
+	 * Returns the type of the handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string
+	 */
+	public function get_type(): string {
+		return 'cron-events';
+	}
 
 	// endregion
 
@@ -133,7 +151,7 @@ abstract class AbstractHandler implements CronEventsHandlerInterface {
 	 */
 	protected function remove( array $events, string $hook, int $timestamp, array $args ): array {
 		foreach ( $events as $key => $event ) {
-			if ( $event['hook'] === $hook && $event['timestamp'] === $timestamp && md5( serialize( $args ) ) === md5( serialize( $event['args'] ) ) ) { // phpcs:ignore
+			if ( $event['hook'] === $hook && $event['timestamp'] === $timestamp && \md5( \serialize( $args ) ) === \md5( \serialize( $event['args'] ) ) ) { // phpcs:ignore
 				unset( $events[ $key ] );
 				break;
 			}

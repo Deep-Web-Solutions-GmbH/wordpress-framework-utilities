@@ -15,6 +15,22 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
  * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
 abstract class AbstractValidationHandler extends AbstractHandler implements ValidationHandlerInterface {
+	// region MAGIC METHODS
+
+	/**
+	 * AbstractValidationHandler constructor.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string      $handler_id     The ID of the handler instance.
+	 */
+	public function __construct( string $handler_id = 'default' ) { // phpcs:ignore
+		parent::__construct( $handler_id );
+	}
+
+	// endregion
+
 	// region INHERITED METHODS
 
 	/**

@@ -2,8 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 
-use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
-use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -15,17 +14,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\CronEvents
  */
-interface CronEventsHandlerInterface extends RunnableInterface, ResettableInterface {
-	/**
-	 * Returns the handler's type.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_type(): string;
-
+interface CronEventsHandlerInterface extends HandlerInterface {
 	/**
 	 * Schedules a new single cron event.
 	 *
@@ -36,7 +25,7 @@ interface CronEventsHandlerInterface extends RunnableInterface, ResettableInterf
 	 * @param   int         $timestamp      UNIX timestamp of when the event should take place.
 	 * @param   array       $args           Arguments to pass on to the event.
 	 */
-	public function schedule_single_event( string $hook, int $timestamp, array $args ): void;
+	public function schedule_single_event( string $hook, int $timestamp, array $args );
 
 	/**
 	 * Removes a scheduled single cron event.
@@ -48,7 +37,7 @@ interface CronEventsHandlerInterface extends RunnableInterface, ResettableInterf
 	 * @param   int         $timestamp      The timestamp at which the event should be executed.
 	 * @param   array       $args           Arguments to pass on to the event.
 	 */
-	public function unschedule_single_event( string $hook, int $timestamp, array $args ): void;
+	public function unschedule_single_event( string $hook, int $timestamp, array $args );
 
 	/**
 	 * Schedules a new recurring cron event.
@@ -61,7 +50,7 @@ interface CronEventsHandlerInterface extends RunnableInterface, ResettableInterf
 	 * @param   int         $timestamp      UNIX timestamp of when the first event should take place.
 	 * @param   array       $args           Arguments to pass on to the event.
 	 */
-	public function schedule_recurring_event( string $hook, $recurrence, int $timestamp, array $args ): void;
+	public function schedule_recurring_event( string $hook, $recurrence, int $timestamp, array $args );
 
 	/**
 	 * Removes a scheduled recurring cron event.
@@ -73,5 +62,5 @@ interface CronEventsHandlerInterface extends RunnableInterface, ResettableInterf
 	 * @param   int         $timestamp  The timestamp at which the event should be next executed.
 	 * @param   array       $args           Arguments to pass on to the event.
 	 */
-	public function unschedule_recurring_event( string $hook, int $timestamp, array $args ): void;
+	public function unschedule_recurring_event( string $hook, int $timestamp, array $args );
 }

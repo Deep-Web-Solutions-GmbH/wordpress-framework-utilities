@@ -2,6 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
+use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\{ ResettableInterface, RunnableInterface };
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractHandlerService;
@@ -90,10 +93,16 @@ class ShortcodesService extends AbstractHandlerService implements RunnableInterf
 	 * @version 1.0.0
 	 *
 	 * @param   HandlerInterface|null       $handler    Handler passed on in the constructor.
+	 *
+	 * @throws  NotFoundExceptionInterface      Thrown if the NullLogger is not found in the plugin DI-container.
+	 * @throws  ContainerExceptionInterface     Thrown if some other error occurs while retrieving the NullLogger instance.
 	 */
 	protected function set_default_handler( ?HandlerInterface $handler ): void {
 		if ( ! \is_a( $handler, $this->get_handler_class() ) ) {
-			$handler = new DefaultShortcodesHandler( 'default' );
+			$plugin  = $this->get_plugin();
+			$handler = ( $plugin instanceof ContainerAwareInterface )
+				? $plugin->get_container()->get( DefaultShortcodesHandler::class )
+				: new DefaultShortcodesHandler();
 		}
 
 		$this->set_handler( $handler );

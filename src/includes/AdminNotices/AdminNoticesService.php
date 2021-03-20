@@ -265,7 +265,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 			$default_handlers = array( new NoticesHandler(), new DismissibleNoticesHandler() );
 		}
 
-		$this->set_handlers( array_merge( $default_handlers, $handlers ) );
+		parent::set_default_handlers( array_merge( $default_handlers, $handlers ) );
 	}
 
 	/**

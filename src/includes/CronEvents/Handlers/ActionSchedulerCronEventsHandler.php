@@ -6,9 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureExcept
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
-use DeepWebSolutions\Framework\Utilities\CronEvents\CronIntervalsEnum;
-use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
-use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
+use DeepWebSolutions\Framework\Utilities\CronEvents\AbstractCronEventsHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +17,7 @@ use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
  * @version 1.0.0
  * @package DeepWebSolutions\WP-Framework\Utilities\CronEvents\Handlers
  */
-class ActionSchedulerHandler extends AbstractHandler implements PluginAwareInterface {
+class ActionSchedulerCronEventsHandler extends AbstractCronEventsHandler implements PluginAwareInterface {
 	// region TRAITS
 
 	use PluginAwareTrait;
@@ -27,18 +25,6 @@ class ActionSchedulerHandler extends AbstractHandler implements PluginAwareInter
 	// endregion
 
 	// region INHERITED METHODS
-
-	/**
-	 * Returns the handler's type.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_type(): string {
-		return 'action-scheduler';
-	}
 
 	/**
 	 * Registers cron events with the Action Scheduler.
@@ -54,18 +40,18 @@ class ActionSchedulerHandler extends AbstractHandler implements PluginAwareInter
 
 			$events = \array_merge( $this->single_events, $this->recurring_events );
 			foreach ( $events as $event ) {
-				if ( as_next_scheduled_action( $event['hook'], $event['args'] ) ) {
+				if ( \as_next_scheduled_action( $event['hook'], $event['args'] ) ) {
 					continue;
 				}
 
 				if ( isset( $event['recurrence'] ) ) {
-					$result = as_schedule_recurring_action( $event['timestamp'], $event['recurrence'], $event['hook'], $event['args'], $this->get_plugin()->get_plugin_slug() );
+					$result = \as_schedule_recurring_action( $event['timestamp'], $event['recurrence'], $event['hook'], $event['args'], $this->get_plugin()->get_plugin_slug() );
 				} else {
-					$result = as_schedule_single_action( $event['timestamp'], $event['hook'], $event['args'], $this->get_plugin()->get_plugin_slug() );
+					$result = \as_schedule_single_action( $event['timestamp'], $event['hook'], $event['args'], $this->get_plugin()->get_plugin_slug() );
 				}
 
 				if ( 0 === $result ) {
-					$this->run_result = new RunFailureException( \sprintf( 'Failed to schedule event %s', wp_json_encode( $event ) ) );
+					$this->run_result = new RunFailureException( \sprintf( 'Failed to schedule event %s', \wp_json_encode( $event ) ) );
 					break;
 				}
 			}
@@ -93,10 +79,10 @@ class ActionSchedulerHandler extends AbstractHandler implements PluginAwareInter
 
 			$events = \array_merge( $this->single_events, $this->recurring_events );
 			foreach ( $events as $event ) {
-				$result = as_unschedule_action( $event['hook'], $event['args'], $this->get_plugin()->get_plugin_slug() );
+				$result = \as_unschedule_action( $event['hook'], $event['args'], $this->get_plugin()->get_plugin_slug() );
 
 				if ( false === $result ) {
-					$this->reset_result = new ResetFailureException( \sprintf( 'Failed to unschedule event %s', wp_json_encode( $event ) ) );
+					$this->reset_result = new ResetFailureException( \sprintf( 'Failed to unschedule event %s', \wp_json_encode( $event ) ) );
 					break;
 				}
 			}

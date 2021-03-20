@@ -148,8 +148,8 @@ class CronIntervalsEnum {
 	 * @return  array|null
 	 */
 	public static function get_interval_description( string $interval_slug ): ?array {
-		$minutes_display = /* translators: number of minutes */ __( 'Every %s minutes', 'dws-wp-framework-utilities' );
-		$hours_display   = /* translators: number of hours */ __( 'Every %s hours', 'dws-wp-framework-utilities' );
+		$minutes_display = /* translators: Number of minutes. */ __( 'Every %s minutes', 'dws-wp-framework-utilities' );
+		$hours_display   = /* translators: number of hours. */ __( 'Every %s hours', 'dws-wp-framework-utilities' );
 		$result          = null;
 
 		switch ( $interval_slug ) {

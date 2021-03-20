@@ -4,9 +4,8 @@ namespace DeepWebSolutions\Framework\Utilities\CronEvents\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
 use DeepWebSolutions\Framework\Helpers\WordPress\Hooks\HooksHelpersAwareInterface;
+use DeepWebSolutions\Framework\Utilities\CronEvents\AbstractCronEventsHandler;
 use DeepWebSolutions\Framework\Utilities\CronEvents\CronIntervalsEnum;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
@@ -21,10 +20,26 @@ use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
  * @version 1.0.0
  * @package DeepWebSolutions\WP-Framework\Utilities\CronEvents\Handlers
  */
-class WordPressHandler extends AbstractHandler implements HooksHelpersAwareInterface, HooksServiceRegisterInterface {
+class DefaultCronEventsHandler extends AbstractCronEventsHandler implements HooksHelpersAwareInterface, HooksServiceRegisterInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
+
+	// endregion
+
+	// region MAGIC METHODS
+
+	/**
+	 * DefaultCronEventsHandler constructor.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string      $handler_id     The ID of the handler instance.
+	 */
+	public function __construct( string $handler_id = 'default' ) { // phpcs:ignore
+		parent::__construct( $handler_id );
+	}
 
 	// endregion
 
@@ -43,18 +58,6 @@ class WordPressHandler extends AbstractHandler implements HooksHelpersAwareInter
 	}
 
 	/**
-	 * Returns the handler's type.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
-	 */
-	public function get_type(): string {
-		return \sanitize_key( 'WordPress' );
-	}
-
-	/**
 	 * Registers cron events with WordPress.
 	 *
 	 * @since   1.0.0
@@ -68,18 +71,18 @@ class WordPressHandler extends AbstractHandler implements HooksHelpersAwareInter
 
 			$events = \array_merge( $this->single_events, $this->recurring_events );
 			foreach ( $events as $event ) {
-				if ( wp_next_scheduled( $event['hook'], $event['args'] ) ) {
+				if ( \wp_next_scheduled( $event['hook'], $event['args'] ) ) {
 					continue;
 				}
 
 				if ( isset( $event['recurrence'] ) ) {
-					$result = wp_schedule_event( $event['timestamp'], $event['recurrence'], $event['hook'], $event['args'] );
+					$result = \wp_schedule_event( $event['timestamp'], $event['recurrence'], $event['hook'], $event['args'] );
 				} else {
-					$result = wp_schedule_single_event( $event['timestamp'], $event['hook'], $event['args'] );
+					$result = \wp_schedule_single_event( $event['timestamp'], $event['hook'], $event['args'] );
 				}
 
 				if ( false === $result ) {
-					$this->run_result = new RunFailureException( \sprintf( 'Failed to schedule event %s', wp_json_encode( $event ) ) );
+					$this->run_result = new RunFailureException( \sprintf( 'Failed to schedule event %s', \wp_json_encode( $event ) ) );
 					break;
 				}
 			}
@@ -107,11 +110,11 @@ class WordPressHandler extends AbstractHandler implements HooksHelpersAwareInter
 
 			$events = \array_merge( $this->single_events, $this->recurring_events );
 			foreach ( $events as $event ) {
-				$timestamp = wp_next_scheduled( $event['hook'], $event['args'] );
-				$result    = wp_unschedule_event( $timestamp, $event['hook'], $event['args'] );
+				$timestamp = \wp_next_scheduled( $event['hook'], $event['args'] );
+				$result    = \wp_unschedule_event( $timestamp, $event['hook'], $event['args'] );
 
 				if ( false === $result ) {
-					$this->reset_result = new ResetFailureException( \sprintf( 'Failed to unschedule event %s', wp_json_encode( $event ) ) );
+					$this->reset_result = new ResetFailureException( \sprintf( 'Failed to unschedule event %s', \wp_json_encode( $event ) ) );
 					break;
 				}
 			}

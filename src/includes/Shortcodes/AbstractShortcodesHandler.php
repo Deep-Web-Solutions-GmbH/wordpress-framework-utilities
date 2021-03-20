@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Handlers\AbstractHandler;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 

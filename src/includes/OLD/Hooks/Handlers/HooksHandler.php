@@ -8,7 +8,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Handlers\HandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 
 \defined( 'ABSPATH' ) || exit;
 

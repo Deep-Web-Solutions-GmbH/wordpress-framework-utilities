@@ -3,9 +3,9 @@
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
 use DeepWebSolutions\Framework\Foundations\Actions\{ ResettableInterface, RunnableInterface };
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Handlers\HandlerInterface;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractHandlerService;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\Actions\{ ResettableHandlerServiceTrait, RunnableHandlerServiceTrait };
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractHandlerService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\{ ResettableHandlerServiceTrait, RunnableHandlerServiceTrait };
 
 \defined( 'ABSPATH' ) || exit;
 

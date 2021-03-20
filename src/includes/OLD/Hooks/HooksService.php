@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractService;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\HooksHandler;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\HooksHandlerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\HooksHandlerAwareTrait;

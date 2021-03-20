@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Validation;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotSupportedException;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractMultiHandlerService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
 
 \defined( 'ABSPATH' ) || exit;
 

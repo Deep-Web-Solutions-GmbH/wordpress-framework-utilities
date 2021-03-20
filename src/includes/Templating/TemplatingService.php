@@ -3,8 +3,9 @@
 namespace DeepWebSolutions\Framework\Utilities\Templating;
 
 use DeepWebSolutions\Framework\Foundations\Helpers\HooksHelpersTrait;
-use DeepWebSolutions\Framework\Foundations\PluginUtilities\Services\AbstractService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractService;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
+use DeepWebSolutions\Framework\Helpers\WordPress\Hooks\HooksHelpersAwareInterface;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use Psr\Log\LogLevel;
 
@@ -18,7 +19,7 @@ use Psr\Log\LogLevel;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Templating
  */
-class TemplatingService extends AbstractService {
+class TemplatingService extends AbstractService implements HooksHelpersAwareInterface {
 	// region TRAITS
 
 	use FilesystemAwareTrait;

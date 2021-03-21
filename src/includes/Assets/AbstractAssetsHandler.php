@@ -69,6 +69,33 @@ abstract class AbstractAssetsHandler extends AbstractHandler implements AssetsHa
 	}
 
 	/**
+	 * Given a relative path to an assets file, tries to resolve any valid alternatives and returns the absolute path
+	 * to the resolved file.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $relative_path  Relative path to the asset file.
+	 * @param   string  $constant_name  The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 *
+	 * @return  string|null
+	 */
+	protected function resolve_absolute_file_path( string &$relative_path, string $constant_name ): ?string {
+		$wp_filesystem = $this->get_wp_filesystem();
+
+		if ( $wp_filesystem ) {
+			$relative_path = $this->maybe_switch_to_minified_file( $relative_path, $constant_name );
+			$absolute_path = Files::generate_full_path( $wp_filesystem->abspath(), $relative_path );
+
+			if ( $wp_filesystem->is_file( $absolute_path ) ) {
+				return $absolute_path;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Maybe updates the relative path such that it loads the minified version of the file, if it exists and minification
 	 * enqueuing is active.
 	 *
@@ -76,7 +103,7 @@ abstract class AbstractAssetsHandler extends AbstractHandler implements AssetsHa
 	 * @version 1.0.0
 	 *
 	 * @param   string  $relative_path          The relative path to WP's root directory.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 *
 	 * @return  string  The updated relative path.
 	 */

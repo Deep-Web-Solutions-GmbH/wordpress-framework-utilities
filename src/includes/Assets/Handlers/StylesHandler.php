@@ -141,7 +141,7 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function register_public_style( string $handle, string $relative_path, string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['public']['register'] = $this->add_style( $this->styles['public']['register'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
@@ -170,7 +170,7 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function enqueue_public_style( string $handle, string $relative_path = '', string $fallback_version = '', array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['public']['enqueue'] = $this->add_style( $this->styles['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
@@ -199,7 +199,7 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function register_admin_style( string $handle, string $relative_path, string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['admin']['register'] = $this->add_style( $this->styles['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
@@ -228,7 +228,7 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function enqueue_admin_style( string $handle, string $relative_path, string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['admin']['enqueue'] = $this->add_style( $this->styles['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
@@ -278,26 +278,21 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version   The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps               Array of dependent CSS handles that should be loaded first.
 	 * @param   string  $media              The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name      The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name      The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 *
 	 * @return  array
 	 */
 	protected function add_style( array $assets, string $handle, string $relative_path, string $fallback_version, array $deps, string $media, string $constant_name ): array {
-		$wp_filesystem = $this->get_wp_filesystem();
+		$absolute_path = $this->resolve_absolute_file_path( $relative_path, $constant_name );
 
-		if ( $wp_filesystem ) {
-			$relative_path = $this->maybe_switch_to_minified_file( $relative_path, $constant_name );
-			$absolute_path = Files::generate_full_path( $wp_filesystem->abspath(), $relative_path );
-
-			if ( $wp_filesystem->is_file( $absolute_path ) ) {
-				$assets[] = array(
-					'handle' => $handle,
-					'src'    => $relative_path,
-					'deps'   => $deps,
-					'ver'    => $this->maybe_generate_mtime_version_string( $absolute_path, $fallback_version ),
-					'media'  => $media,
-				);
-			}
+		if ( ! \is_null( $absolute_path ) ) {
+			$assets[] = array(
+				'handle' => $handle,
+				'src'    => $relative_path,
+				'deps'   => $deps,
+				'ver'    => $this->maybe_generate_mtime_version_string( $absolute_path, $fallback_version ),
+				'media'  => $media,
+			);
 		}
 
 		return $assets;

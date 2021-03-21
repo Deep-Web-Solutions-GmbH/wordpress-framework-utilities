@@ -167,7 +167,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function register_public_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['public']['register'] = $this->add_script( $this->scripts['public']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
@@ -198,7 +198,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function enqueue_public_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['public']['enqueue'] = $this->add_script( $this->scripts['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
@@ -229,7 +229,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function register_admin_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['admin']['register'] = $this->add_script( $this->scripts['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
@@ -260,7 +260,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function enqueue_admin_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['admin']['enqueue'] = $this->add_script( $this->scripts['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
@@ -330,26 +330,21 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string  $fallback_version   The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array   $deps               Array of dependent CSS handles that should be loaded first.
 	 * @param   bool    $in_footer          Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name      The name of the constant to check for truthful values in case the assets should be loaded in a minified state.
+	 * @param   string  $constant_name      The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 *
 	 * @return  array
 	 */
 	protected function add_script( array $assets, string $handle, string $relative_path, string $fallback_version, array $deps, bool $in_footer, string $constant_name ): array {
-		$wp_filesystem = $this->get_wp_filesystem();
+		$absolute_path = $this->resolve_absolute_file_path( $relative_path, $constant_name );
 
-		if ( $wp_filesystem ) {
-			$relative_path = $this->maybe_switch_to_minified_file( $relative_path, $constant_name );
-			$absolute_path = Files::generate_full_path( $wp_filesystem->abspath(), $relative_path );
-
-			if ( $wp_filesystem->is_file( $absolute_path ) ) {
-				$assets[] = array(
-					'handle'    => $handle,
-					'src'       => $relative_path,
-					'deps'      => $deps,
-					'ver'       => $this->maybe_generate_mtime_version_string( $absolute_path, $fallback_version ),
-					'in_footer' => $in_footer,
-				);
-			}
+		if ( ! \is_null( $absolute_path ) ) {
+			$assets[] = array(
+				'handle'    => $handle,
+				'src'       => $relative_path,
+				'deps'      => $deps,
+				'ver'       => $this->maybe_generate_mtime_version_string( $absolute_path, $fallback_version ),
+				'in_footer' => $in_footer,
+			);
 		}
 
 		return $assets;

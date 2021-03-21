@@ -82,22 +82,6 @@ class CronEventsService extends AbstractMultiHandlerService implements HooksServ
 	}
 
 	/**
-	 * Registers hooks with the hooks service.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   HooksService    $hooks_service      Instance of the hooks service.
-	 */
-	public function register_hooks( HooksService $hooks_service ): void {
-		$hooks_service->add_action( 'init', $this, 'run', PHP_INT_MAX );
-	}
-
-	// endregion
-
-	// region METHODS
-
-	/**
 	 * Registers a new handler with the service.
 	 *
 	 * @since   1.0.0
@@ -116,6 +100,22 @@ class CronEventsService extends AbstractMultiHandlerService implements HooksServ
 
 		return $this;
 	}
+
+	/**
+	 * Registers hooks with the hooks service.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   HooksService    $hooks_service      Instance of the hooks service.
+	 */
+	public function register_hooks( HooksService $hooks_service ): void {
+		$hooks_service->add_action( 'init', $this, 'run', PHP_INT_MAX );
+	}
+
+	// endregion
+
+	// region METHODS
 
 	/**
 	 * Registers a new cron single event to be scheduled on run.

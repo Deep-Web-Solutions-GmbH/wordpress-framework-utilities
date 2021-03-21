@@ -7,6 +7,7 @@ use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractService;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\OutputtableHandlerServiceTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\MemoryStore;
@@ -73,6 +74,8 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @param   AdminNoticesHandlerInterface[]  $handlers           Admin notices handlers to output.
 	 */
 	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $stores = array(), array $handlers = array() ) {
+		AbstractService::__construct( $plugin, $logging_service );
+
 		$this->set_hooks_service( $hooks_service );
 		$this->set_default_stores( $stores );
 

@@ -41,7 +41,7 @@ trait InitializeDependenciesHandlerTrait {
 	 *
 	 * @return  InitializationFailureException|null
 	 */
-	public function initialize_dependencies_checker(): ?InitializationFailureException {
+	public function initialize_dependencies_handler(): ?InitializationFailureException {
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
 			$service = $this->get_dependencies_service();
 		} elseif ( $this instanceof ContainerAwareInterface ) {

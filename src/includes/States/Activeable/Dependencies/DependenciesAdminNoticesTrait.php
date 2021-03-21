@@ -90,18 +90,20 @@ trait DependenciesAdminNoticesTrait {
 	 */
 	protected function register_missing_dependencies_admin_notices( AdminNoticesService $notices_service, array $missing_dependencies, string $type ): void {
 		foreach ( $missing_dependencies as $checker_id => $dependencies ) {
-			$is_optional_handler = ( \strpos( $checker_id, 'optional' ) !== false );
-			$store               = $is_optional_handler ? 'options' : 'dynamic';
+			if ( ! empty( $dependencies ) ) {
+				$is_optional_handler = ( \strpos( $checker_id, 'optional' ) !== false );
+				$store               = $is_optional_handler ? 'options' : 'dynamic';
 
-			$notice_handle  = $this->get_admin_notice_handle( "missing-{$type}", array( \md5( \wp_json_encode( $dependencies ) ) ) );
-			$notice_message = $this->compose_message( $type, $dependencies, $is_optional_handler );
-			$notice_params  = array( 'capability' => 'activate_plugins' );
+				$notice_handle  = $this->get_admin_notice_handle( "missing-{$type}", array( \md5( \wp_json_encode( $dependencies ) ) ) );
+				$notice_message = $this->compose_message( $type, $dependencies, $is_optional_handler );
+				$notice_params  = array( 'capability' => 'activate_plugins' );
 
-			$notice = $is_optional_handler
-				? new DismissibleNotice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params + array( 'persistent' => true ) )
-				: new Notice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params );
+				$notice = $is_optional_handler
+					? new DismissibleNotice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params + array( 'persistent' => true ) )
+					: new Notice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params );
 
-			$notices_service->add_notice( $notice, $store );
+				$notices_service->add_notice( $notice, $store );
+			}
 		}
 	}
 

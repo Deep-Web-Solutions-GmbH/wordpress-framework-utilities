@@ -68,10 +68,10 @@ trait AdminNoticesHelpersTrait {
 	 * @return  string
 	 */
 	protected function get_registrant_name(): string {
-		if ( $this instanceof PluginComponentInterface ) {
-			$name = \sprintf( '%s: %s', $this->get_plugin()->get_plugin_name(), $this->get_name() );
-		} elseif ( $this instanceof PluginInterface ) {
+		if ( $this instanceof PluginInterface ) {
 			$name = $this->get_plugin_name();
+		} elseif ( $this instanceof PluginComponentInterface ) {
+			$name = \sprintf( '%s: %s', $this->get_plugin()->get_plugin_name(), $this->get_name() );
 		} elseif ( $this instanceof PluginAwareInterface ) {
 			$name = $this->get_plugin()->get_plugin_name();
 		} else {

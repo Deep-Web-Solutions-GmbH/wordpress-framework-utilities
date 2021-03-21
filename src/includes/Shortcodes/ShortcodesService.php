@@ -87,25 +87,15 @@ class ShortcodesService extends AbstractHandlerService implements RunnableInterf
 	// region HELPERS
 
 	/**
-	 * Registers a default handler if one has not been set through the container.
+	 * Returns the class name of the default handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   HandlerInterface|null       $handler    Handler passed on in the constructor.
-	 *
-	 * @throws  NotFoundExceptionInterface      Thrown if the NullLogger is not found in the plugin DI-container.
-	 * @throws  ContainerExceptionInterface     Thrown if some other error occurs while retrieving the NullLogger instance.
+	 * @return  string
 	 */
-	protected function set_default_handler( ?HandlerInterface $handler ): void {
-		if ( ! \is_a( $handler, $this->get_handler_class() ) ) {
-			$plugin  = $this->get_plugin();
-			$handler = ( $plugin instanceof ContainerAwareInterface )
-				? $plugin->get_container()->get( DefaultShortcodesHandler::class )
-				: new DefaultShortcodesHandler();
-		}
-
-		$this->set_handler( $handler );
+	protected function get_default_handler_class(): string {
+		return DefaultShortcodesHandler::class;
 	}
 
 	/**

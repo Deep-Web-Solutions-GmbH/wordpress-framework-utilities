@@ -219,24 +219,15 @@ class CronEventsService extends AbstractMultiHandlerService implements HooksServ
 	// region HELPERS
 
 	/**
-	 * Register the handlers passed on in the constructor together with the default handlers.
+	 * Returns a list of what the default handlers actually are for the inheriting service.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   array   $handlers   Handlers passed on in the constructor.
-	 *
-	 * @throws  NotFoundExceptionInterface      Thrown if the NullLogger is not found in the plugin DI-container.
-	 * @throws  ContainerExceptionInterface     Thrown if some other error occurs while retrieving the NullLogger instance.
+	 * @return  array
 	 */
-	protected function set_default_handlers( array $handlers ): void {
-		$plugin = $this->get_plugin();
-
-		$wordpress_handler = ( $plugin instanceof ContainerAwareInterface )
-			? $plugin->get_container()->get( DefaultCronEventsHandler::class )
-			: new DefaultCronEventsHandler();
-
-		parent::set_default_handlers( array_merge( array( $wordpress_handler ), $handlers ) );
+	protected function get_default_handlers_classes(): array {
+		return array( DefaultCronEventsHandler::class );
 	}
 
 	/**

@@ -50,8 +50,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 */
 	public function run(): ?RunFailureException {
 		if ( \is_null( $this->is_run ) ) {
-			\array_walk( $this->filters, array( $this, 'array_walk_add_hook' ) );
-			\array_walk( $this->actions, array( $this, 'array_walk_add_hook' ) );
+			$this->array_walk_hooks( 'array_walk_add_hook' );
 
 			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
@@ -70,8 +69,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 */
 	public function reset(): ?ResetFailureException {
 		if ( \is_null( $this->is_reset ) ) {
-			\array_walk( $this->filters, array( $this, 'array_walk_remove_hook' ) );
-			\array_walk( $this->actions, array( $this, 'array_walk_remove_hook' ) );
+			$this->array_walk_hooks( 'array_walk_remove_hook' );
 
 			$this->is_reset     = true;
 			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
@@ -118,6 +116,19 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 		} else {
 			return \remove_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
 		}
+	}
+
+	/**
+	 * Invokes a given function across every instance of filters and actions that we have.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $array_walk_function
+	 */
+	protected function array_walk_hooks( string $array_walk_function ): void {
+		\array_walk( $this->filters, array( $this, $array_walk_function ) );
+		\array_walk( $this->actions, array( $this, $array_walk_function ) );
 	}
 
 	// endregion

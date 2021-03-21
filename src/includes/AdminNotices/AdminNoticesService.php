@@ -5,7 +5,6 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\OutputtableHandlerServiceTrait;

@@ -5,9 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\ResettableHandlerServiceTrait;
@@ -19,8 +17,6 @@ use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareTrait;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 

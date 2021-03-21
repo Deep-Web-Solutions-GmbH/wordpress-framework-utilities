@@ -35,7 +35,6 @@
         "trailingslashit",
         "add_filter",
         "remove_filter",
-        "remove_action",
         "wp_parse_args",
         "add_shortcode",
         "remove_shortcode",

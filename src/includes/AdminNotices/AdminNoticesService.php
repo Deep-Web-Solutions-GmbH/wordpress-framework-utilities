@@ -73,10 +73,10 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @param   AdminNoticesHandlerInterface[]  $handlers           Admin notices handlers to output.
 	 */
 	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $stores = array(), array $handlers = array() ) {
-		parent::__construct( $plugin, $logging_service, $handlers );
-		$this->set_default_stores( $stores );
-
 		$this->set_hooks_service( $hooks_service );
+		parent::__construct( $plugin, $logging_service, $handlers );
+
+		$this->set_default_stores( $stores );
 		$this->register_hooks( $hooks_service );
 	}
 

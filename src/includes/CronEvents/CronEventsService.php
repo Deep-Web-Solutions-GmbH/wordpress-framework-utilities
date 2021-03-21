@@ -52,9 +52,9 @@ class CronEventsService extends AbstractMultiHandlerService implements HooksServ
 	 * @param   CronEventsHandlerInterface[]    $handlers           Cron events handlers to run.
 	 */
 	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $handlers = array() ) {
+		$this->set_hooks_service( $hooks_service );
 		parent::__construct( $plugin, $logging_service, $handlers );
 
-		$this->set_hooks_service( $hooks_service );
 		$this->register_hooks( $hooks_service );
 	}
 

@@ -124,7 +124,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $array_walk_function
+	 * @param   string  $array_walk_function    The inner class method to call on each hook.
 	 */
 	protected function array_walk_hooks( string $array_walk_function ): void {
 		\array_walk( $this->filters, array( $this, $array_walk_function ) );

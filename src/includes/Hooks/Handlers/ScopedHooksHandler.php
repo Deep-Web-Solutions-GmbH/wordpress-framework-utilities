@@ -91,18 +91,10 @@ class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInt
 		$this->remove_all_filters();
 
 		if ( \is_string( $this->start['hook'] ) && ! empty( $this->start['hook'] ) ) {
-			if ( 'action' === $this->start['type'] ) {
-				$this->array_walk_add_action( $this->start );
-			} else {
-				$this->array_walk_add_filter( $this->start );
-			}
+			$this->array_walk_add_hook( $this->start );
 		}
 		if ( \is_string( $this->end['hook'] ) && ! empty( $this->end['hook'] ) ) {
-			if ( 'action' === $this->end['type'] ) {
-				$this->array_walk_add_action( $this->end );
-			} else {
-				$this->array_walk_add_filter( $this->end );
-			}
+			$this->array_walk_add_hook( $this->end );
 		}
 
 		return null;
@@ -118,11 +110,17 @@ class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInt
 	 */
 	public function run(): ?RunFailureException {
 		if ( \is_null( $this->is_run ) ) {
-			\array_walk( $this->filters['added'], array( $this, 'array_walk_add_filter' ) );
-			$this->filters['removed'] = \array_filter( $this->filters['removed'], array( $this, 'array_walk_remove_filter' ) );
+			\array_walk( $this->filters['added'], array( $this, 'array_walk_add_hook' ) );
+			$this->filters['removed'] = \array_filter(
+				$this->filters['removed'],
+				array(
+					$this,
+					'array_walk_remove_hook',
+				)
+			);
 
-			\array_walk( $this->actions['added'], array( $this, 'array_walk_add_action' ) );
-			$this->actions['removed'] = \array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_action' ) );
+			\array_walk( $this->actions['added'], array( $this, 'array_walk_add_hook' ) );
+			$this->actions['removed'] = \array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_hook' ) );
 
 			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
@@ -141,11 +139,11 @@ class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInt
 	 */
 	public function reset(): ?ResetFailureException {
 		if ( \is_null( $this->is_reset ) ) {
-			\array_walk( $this->filters['added'], array( $this, 'array_walk_remove_filter' ) );
-			\array_walk( $this->filters['removed'], array( $this, 'array_walk_add_filter' ) );
+			\array_walk( $this->filters['added'], array( $this, 'array_walk_remove_hook' ) );
+			\array_walk( $this->filters['removed'], array( $this, 'array_walk_add_hook' ) );
 
-			\array_walk( $this->actions['added'], array( $this, 'array_walk_remove_action' ) );
-			\array_walk( $this->actions['removed'], array( $this, 'array_walk_add_action' ) );
+			\array_walk( $this->actions['added'], array( $this, 'array_walk_remove_hook' ) );
+			\array_walk( $this->actions['removed'], array( $this, 'array_walk_add_hook' ) );
 
 			$this->is_reset     = true;
 			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore

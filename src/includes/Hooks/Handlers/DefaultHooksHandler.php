@@ -50,8 +50,8 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 */
 	public function run(): ?RunFailureException {
 		if ( \is_null( $this->is_run ) ) {
-			\array_walk( $this->filters, array( $this, 'array_walk_add_filter' ) );
-			\array_walk( $this->actions, array( $this, 'array_walk_add_action' ) );
+			\array_walk( $this->filters, array( $this, 'array_walk_add_hook' ) );
+			\array_walk( $this->actions, array( $this, 'array_walk_add_hook' ) );
 
 			$this->is_run     = true;
 			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
@@ -70,8 +70,8 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 */
 	public function reset(): ?ResetFailureException {
 		if ( \is_null( $this->is_reset ) ) {
-			\array_walk( $this->filters, array( $this, 'array_walk_remove_filter' ) );
-			\array_walk( $this->actions, array( $this, 'array_walk_remove_action' ) );
+			\array_walk( $this->filters, array( $this, 'array_walk_remove_hook' ) );
+			\array_walk( $this->actions, array( $this, 'array_walk_remove_hook' ) );
 
 			$this->is_reset     = true;
 			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
@@ -85,7 +85,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	// region HELPERS
 
 	/**
-	 * Registers a filter with WP.
+	 * Registers an action/filter with WP.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -94,7 +94,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 *
 	 * @return  bool    Whether registration was successful or not.
 	 */
-	protected function array_walk_add_filter( array $hook ): bool {
+	protected function array_walk_add_hook( array $hook ): bool {
 		if ( empty( $hook['component'] ) ) {
 			return \add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
 		} else {
@@ -103,7 +103,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	}
 
 	/**
-	 * Un-registers a filter with WP.
+	 * Un-registers an action/filter with WP.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -112,47 +112,11 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 *
 	 * @return  bool    Whether un-registration was successful or not.
 	 */
-	protected function array_walk_remove_filter( array $hook ): bool {
+	protected function array_walk_remove_hook( array $hook ): bool {
 		if ( empty( $hook['component'] ) ) {
 			return \remove_filter( $hook['hook'], $hook['callback'], $hook['priority'] );
 		} else {
 			return \remove_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
-		}
-	}
-
-	/**
-	 * Registers an action with WP.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   array   $hook   Action to register.
-	 *
-	 * @return  bool    Whether registration was successful or not.
-	 */
-	protected function array_walk_add_action( array $hook ): bool {
-		if ( empty( $hook['component'] ) ) {
-			return \add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
-		} else {
-			return \add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
-		}
-	}
-
-	/**
-	 * Un-registers an action with WP.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   array   $hook   Action to un-register.
-	 *
-	 * @return  bool    Whether un-registration was successful or not.
-	 */
-	protected function array_walk_remove_action( array $hook ): bool {
-		if ( empty( $hook['component'] ) ) {
-			return \remove_action( $hook['hook'], $hook['callback'], $hook['priority'] );
-		} else {
-			return \remove_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'] );
 		}
 	}
 

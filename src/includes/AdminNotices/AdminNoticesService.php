@@ -74,9 +74,10 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 */
 	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $stores = array(), array $handlers = array() ) {
 		$this->set_hooks_service( $hooks_service );
+		$this->set_default_stores( $stores );
+
 		parent::__construct( $plugin, $logging_service, $handlers );
 
-		$this->set_default_stores( $stores );
 		$this->register_hooks( $hooks_service );
 	}
 
@@ -239,6 +240,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 			new UserMetaStore( 'user-meta', $database_key ),
 		);
 
+		$this->admin_notices_stores = new MemoryStore( $this->get_id() . '_admin-notices' );
 		foreach ( array_merge( $default_stores, $stores ) as $store ) {
 			$this->admin_notices_stores->update( $store );
 		}

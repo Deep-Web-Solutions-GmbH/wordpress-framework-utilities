@@ -66,7 +66,7 @@ trait DependenciesAdminNoticesTrait {
 		if ( $handler instanceof MultiCheckerHandler ) {
 			foreach ( $missing_dependencies as $type => $dependencies ) {
 				if ( ! empty( $dependencies ) ) {
-					$this->register_missing_dependencies_admin_notices( $notices_service, $missing_dependencies, $type );
+					$this->register_missing_dependencies_admin_notices( $notices_service, $dependencies, $type );
 				}
 			}
 		} elseif ( $handler instanceof SingleCheckerHandler ) {

@@ -81,14 +81,18 @@ abstract class AbstractAssetsHandler extends AbstractHandler implements AssetsHa
 	 * @return  string|null
 	 */
 	protected function resolve_absolute_file_path( string &$relative_path, string $constant_name ): ?string {
-		$wp_filesystem = $this->get_wp_filesystem();
+		if ( \filter_var( $relative_path, FILTER_VALIDATE_URL ) ) {
+			return $relative_path;
+		} else {
+			$wp_filesystem = $this->get_wp_filesystem();
 
-		if ( $wp_filesystem ) {
-			$relative_path = $this->maybe_switch_to_minified_file( $relative_path, $constant_name );
-			$absolute_path = Files::generate_full_path( $wp_filesystem->abspath(), $relative_path );
+			if ( $wp_filesystem ) {
+				$relative_path = $this->maybe_switch_to_minified_file( $relative_path, $constant_name );
+				$absolute_path = Files::generate_full_path( $wp_filesystem->abspath(), $relative_path );
 
-			if ( $wp_filesystem->is_file( $absolute_path ) ) {
-				return $absolute_path;
+				if ( $wp_filesystem->is_file( $absolute_path ) ) {
+					return $absolute_path;
+				}
 			}
 		}
 
@@ -134,16 +138,20 @@ abstract class AbstractAssetsHandler extends AbstractHandler implements AssetsHa
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $absolute_path      The absolute path to an asset file.
-	 * @param   string  $fallback_version   The fallback version in case reading the mtime fails.
+	 * @param   string          $absolute_path      The absolute path to an asset file.
+	 * @param   string|null     $fallback_version   The fallback version in case reading the mtime fails.
 	 *
-	 * @return  string
+	 * @return  string|null
 	 */
-	protected function maybe_generate_mtime_version_string( string $absolute_path, string $fallback_version ): string {
-		$wp_filesystem = $this->get_wp_filesystem();
-		$version       = $wp_filesystem ? $wp_filesystem->mtime( $absolute_path ) : false;
+	protected function maybe_generate_mtime_version_string( string $absolute_path, ?string $fallback_version ): ?string {
+		if ( \filter_var( $absolute_path, FILTER_VALIDATE_URL ) ) {
+			return $fallback_version;
+		} else {
+			$wp_filesystem = $this->get_wp_filesystem();
+			$version       = $wp_filesystem ? $wp_filesystem->mtime( $absolute_path ) : false;
 
-		return ( empty( $version ) ) ? $fallback_version : \strval( $version );
+			return ( empty( $version ) ) ? $fallback_version : \strval( $version );
+		}
 	}
 
 	// endregion

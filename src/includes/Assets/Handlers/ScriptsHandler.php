@@ -162,14 +162,14 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 *
 	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   bool            $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function register_public_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function register_public_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['public']['register'] = $this->add_script( $this->scripts['public']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
 	}
 
@@ -193,14 +193,14 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 *
 	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   bool            $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function enqueue_public_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function enqueue_public_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['public']['enqueue'] = $this->add_script( $this->scripts['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
 	}
 
@@ -224,14 +224,14 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 *
 	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   bool            $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function register_admin_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function register_admin_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['admin']['register'] = $this->add_script( $this->scripts['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
 	}
 
@@ -255,14 +255,14 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 *
 	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   bool    $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   bool            $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function enqueue_admin_script( string $handle, string $relative_path, string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function enqueue_admin_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->scripts['admin']['enqueue'] = $this->add_script( $this->scripts['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
 	}
 

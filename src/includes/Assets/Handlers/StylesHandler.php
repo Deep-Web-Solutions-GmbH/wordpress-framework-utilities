@@ -136,14 +136,14 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   string          $media                  The media query that the CSS asset should be active at.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function register_public_style( string $handle, string $relative_path, string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function register_public_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['public']['register'] = $this->add_style( $this->styles['public']['register'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
 	}
 
@@ -165,14 +165,14 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   string          $media                  The media query that the CSS asset should be active at.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function enqueue_public_style( string $handle, string $relative_path = '', string $fallback_version = '', array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function enqueue_public_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['public']['enqueue'] = $this->add_style( $this->styles['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
 	}
 
@@ -194,14 +194,14 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   string          $media                  The media query that the CSS asset should be active at.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function register_admin_style( string $handle, string $relative_path, string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function register_admin_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['admin']['register'] = $this->add_style( $this->styles['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
 	}
 
@@ -223,14 +223,14 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $handle                 A string that should uniquely identify the CSS asset.
-	 * @param   string  $relative_path          The path to the CSS file relative to WP's root directory.
-	 * @param   string  $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
-	 * @param   array   $deps                   Array of dependent CSS handles that should be loaded first.
-	 * @param   string  $media                  The media query that the CSS asset should be active at.
-	 * @param   string  $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
+	 * @param   string          $handle                 A string that should uniquely identify the CSS asset.
+	 * @param   string          $relative_path          The path to the CSS file relative to WP's root directory.
+	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
+	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
+	 * @param   string          $media                  The media query that the CSS asset should be active at.
+	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function enqueue_admin_style( string $handle, string $relative_path, string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
+	public function enqueue_admin_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
 		$this->styles['admin']['enqueue'] = $this->add_style( $this->styles['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, $constant_name );
 	}
 

@@ -2,9 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Hooks\Handlers;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableLocalTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializeLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\InitializableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
@@ -27,8 +26,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInterface {
 	// region TRAITS
 
-	use InitializableTrait;
-	use InitializableLocalTrait;
+	use InitializeLocalTrait;
 
 	// endregion
 
@@ -108,25 +106,20 @@ class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInt
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run(): ?RunFailureException {
-		if ( \is_null( $this->is_run ) ) {
-			\array_walk( $this->filters['added'], array( $this, 'array_walk_add_hook' ) );
-			$this->filters['removed'] = \array_filter(
-				$this->filters['removed'],
-				array(
-					$this,
-					'array_walk_remove_hook',
-				)
-			);
+	public function run_local(): ?RunFailureException {
+		\array_walk( $this->filters['added'], array( $this, 'array_walk_add_hook' ) );
+		$this->filters['removed'] = \array_filter(
+			$this->filters['removed'],
+			array(
+				$this,
+				'array_walk_remove_hook',
+			)
+		);
 
-			\array_walk( $this->actions['added'], array( $this, 'array_walk_add_hook' ) );
-			$this->actions['removed'] = \array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_hook' ) );
+		\array_walk( $this->actions['added'], array( $this, 'array_walk_add_hook' ) );
+		$this->actions['removed'] = \array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_hook' ) );
 
-			$this->is_run     = true;
-			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
-		}
-
-		return $this->run_result;
+		return null;
 	}
 
 	/**
@@ -137,19 +130,14 @@ class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInt
 	 *
 	 * @return  ResetFailureException|null
 	 */
-	public function reset(): ?ResetFailureException {
-		if ( \is_null( $this->is_reset ) ) {
-			\array_walk( $this->filters['added'], array( $this, 'array_walk_remove_hook' ) );
-			\array_walk( $this->filters['removed'], array( $this, 'array_walk_add_hook' ) );
+	public function reset_local(): ?ResetFailureException {
+		\array_walk( $this->filters['added'], array( $this, 'array_walk_remove_hook' ) );
+		\array_walk( $this->filters['removed'], array( $this, 'array_walk_add_hook' ) );
 
-			\array_walk( $this->actions['added'], array( $this, 'array_walk_remove_hook' ) );
-			\array_walk( $this->actions['removed'], array( $this, 'array_walk_add_hook' ) );
+		\array_walk( $this->actions['added'], array( $this, 'array_walk_remove_hook' ) );
+		\array_walk( $this->actions['removed'], array( $this, 'array_walk_add_hook' ) );
 
-			$this->is_reset     = true;
-			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
-		}
-
-		return $this->reset_result;
+		return null;
 	}
 
 	// endregion

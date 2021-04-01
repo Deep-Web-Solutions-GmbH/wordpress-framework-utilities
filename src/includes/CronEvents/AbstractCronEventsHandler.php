@@ -2,9 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\CronEvents;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResettableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 
@@ -20,8 +20,8 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 abstract class AbstractCronEventsHandler extends AbstractHandler implements CronEventsHandlerInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
-	use ResettableTrait;
-	use RunnableTrait;
+	use ResetLocalTrait;
+	use RunLocalTrait;
 
 	// endregion
 

@@ -2,9 +2,10 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\ResetHandlers;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlers;
 use DeepWebSolutions\Framework\Foundations\Actions\{ ResettableInterface, RunnableInterface };
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractHandlerService;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\{ ResettableHandlerServiceTrait, RunnableHandlerServiceTrait };
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -19,8 +20,8 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\{ Resettab
 class ShortcodesService extends AbstractHandlerService implements RunnableInterface, ResettableInterface {
 	// region TRAITS
 
-	use RunnableHandlerServiceTrait;
-	use ResettableHandlerServiceTrait;
+	use ResetHandlers;
+	use RunHandlers;
 
 	// endregion
 

@@ -47,21 +47,16 @@ class DefaultShortcodesHandler extends AbstractShortcodesHandler {
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run(): ?RunFailureException {
-		if ( \is_null( $this->is_run ) ) {
-			foreach ( $this->shortcodes as $hook ) {
-				if ( empty( $hook['component'] ) ) {
-					\add_shortcode( $hook['tag'], $hook['callback'] );
-				} else {
-					\add_shortcode( $hook['tag'], array( $hook['component'], $hook['callback'] ) );
-				}
+	public function run_local(): ?RunFailureException {
+		foreach ( $this->shortcodes as $hook ) {
+			if ( empty( $hook['component'] ) ) {
+				\add_shortcode( $hook['tag'], $hook['callback'] );
+			} else {
+				\add_shortcode( $hook['tag'], array( $hook['component'], $hook['callback'] ) );
 			}
-
-			$this->is_run     = true;
-			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
 		}
 
-		return $this->run_result;
+		return null;
 	}
 
 	/**
@@ -72,17 +67,12 @@ class DefaultShortcodesHandler extends AbstractShortcodesHandler {
 	 *
 	 * @return  ResetFailureException|null
 	 */
-	public function reset(): ?ResetFailureException {
-		if ( \is_null( $this->is_reset ) ) {
-			foreach ( $this->shortcodes as $shortcode ) {
-				\remove_shortcode( $shortcode );
-			}
-
-			$this->is_reset     = true;
-			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
+	public function reset_local(): ?ResetFailureException {
+		foreach ( $this->shortcodes as $shortcode ) {
+			\remove_shortcode( $shortcode );
 		}
 
-		return $this->reset_result;
+		return null;
 	}
 
 	// endregion

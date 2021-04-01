@@ -3,13 +3,11 @@
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\MemoryStore;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesHandlerInterface;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -24,6 +22,7 @@ use Psr\Container\NotFoundExceptionInterface;
 abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterface {
 	// region TRAITS
 
+	use OutputLocalTrait;
 	use StoreAwareTrait;
 
 	// endregion
@@ -133,7 +132,7 @@ abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterfa
 	 *
 	 * @return  OutputFailureException|null
 	 */
-	public function output(): ?OutputFailureException {
+	public function output_local(): ?OutputFailureException {
 		foreach ( $this->get_store()->get_all() as $admin_notices_store ) {
 			if ( $admin_notices_store instanceof StoreInterface ) {
 				foreach ( $this->get_notices( $admin_notices_store->get_id() ) as $notice ) {

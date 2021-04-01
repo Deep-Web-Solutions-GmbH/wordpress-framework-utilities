@@ -4,9 +4,9 @@ namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
 use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\ResetHandlers;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlers;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractHandlerService;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\ResettableHandlerServiceTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\RunnableHandlerServiceTrait;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\DefaultHooksHandler;
 
 \defined( 'ABSPATH' ) || exit;
@@ -22,8 +22,8 @@ use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\DefaultHooksHandler;
 class HooksService extends AbstractHandlerService implements RunnableInterface, ResettableInterface {
 	// region TRAITS
 
-	use RunnableHandlerServiceTrait;
-	use ResettableHandlerServiceTrait;
+	use ResetHandlers;
+	use RunHandlers;
 
 	// endregion
 

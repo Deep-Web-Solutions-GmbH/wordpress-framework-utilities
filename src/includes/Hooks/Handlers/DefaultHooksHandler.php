@@ -48,15 +48,9 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run(): ?RunFailureException {
-		if ( \is_null( $this->is_run ) ) {
-			$this->array_walk_hooks( 'array_walk_add_hook' );
-
-			$this->is_run     = true;
-			$this->run_result = $this->reset_result = $this->is_reset = null; // phpcs:ignore
-		}
-
-		return $this->run_result;
+	public function run_local(): ?RunFailureException {
+		$this->array_walk_hooks( 'array_walk_add_hook' );
+		return null;
 	}
 
 	/**
@@ -67,15 +61,9 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 *
 	 * @return  ResetFailureException|null
 	 */
-	public function reset(): ?ResetFailureException {
-		if ( \is_null( $this->is_reset ) ) {
-			$this->array_walk_hooks( 'array_walk_remove_hook' );
-
-			$this->is_reset     = true;
-			$this->reset_result = $this->is_run = $this->run_result = null; // phpcs:ignore
-		}
-
-		return $this->reset_result;
+	public function reset_local(): ?ResetFailureException {
+		$this->array_walk_hooks( 'array_walk_remove_hook' );
+		return null;
 	}
 
 	// endregion

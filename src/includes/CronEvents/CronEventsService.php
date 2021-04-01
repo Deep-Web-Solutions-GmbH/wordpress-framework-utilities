@@ -6,10 +6,10 @@ use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\ResetHandlers;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlers;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\ResettableHandlerServiceTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\RunnableHandlerServiceTrait;
 use DeepWebSolutions\Framework\Helpers\WordPress\Misc;
 use DeepWebSolutions\Framework\Utilities\CronEvents\Handlers\DefaultCronEventsHandler;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
@@ -33,8 +33,8 @@ class CronEventsService extends AbstractMultiHandlerService implements HooksServ
 
 	use HooksServiceAwareTrait;
 	use HooksServiceRegisterTrait;
-	use RunnableHandlerServiceTrait;
-	use ResettableHandlerServiceTrait;
+	use ResetHandlers;
+	use RunHandlers;
 
 	// endregion
 

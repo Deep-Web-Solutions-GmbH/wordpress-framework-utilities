@@ -10,7 +10,6 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceRegiste
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\Notice;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesCheckerInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\MultiCheckerHandler;

@@ -2,8 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Assets;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 use DeepWebSolutions\Framework\Helpers\FileSystem\Files;
@@ -24,7 +23,7 @@ abstract class AbstractAssetsHandler extends AbstractHandler implements AssetsHa
 	// region TRAITS
 
 	use FilesystemAwareTrait;
-	use RunnableTrait;
+	use RunLocalTrait;
 
 	// endregion
 

@@ -14,7 +14,7 @@
 [![Build Status](https://travis-ci.com/deep-web-solutions/wordpress-framework-utilities.svg?branch=master)](https://travis-ci.com/deep-web-solutions/wordpress-framework-utilities)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ccac5a84720a1b6230f6/maintainability)](https://codeclimate.com/github/deep-web-solutions/wordpress-framework-utilities/maintainability)
 
-A set of related utility classes to kick-start WordPress development.
+A set of related utility classes to kick-start WordPress development. Documentation can be found at https://docs.deep-web-solutions.com/
 
 
 ## Installation

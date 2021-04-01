@@ -5,10 +5,9 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
 use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\OutputHandlers;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractService;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\Actions\OutputtableHandlerServiceTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\MemoryStore;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\OptionsStore;
@@ -40,22 +39,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 
 	use HooksServiceAwareTrait;
 	use HooksServiceRegisterTrait;
-	use OutputtableHandlerServiceTrait;
-
-	// endregion
-
-	// region FIELDS AND CONSTANTS
-
-	/**
-	 * Instance of the admin notices stores store.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @access  protected
-	 * @var     MemoryStore
-	 */
-	protected MemoryStore $admin_notices_stores;
+	use OutputHandlers;
 
 	// endregion
 
@@ -74,14 +58,10 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @param   AdminNoticesHandlerInterface[]  $handlers           Admin notices handlers to output.
 	 */
 	public function __construct( PluginInterface $plugin, LoggingService $logging_service, HooksService $hooks_service, array $stores = array(), array $handlers = array() ) {
-		AbstractService::__construct( $plugin, $logging_service );
-
-		$this->set_hooks_service( $hooks_service );
-		$this->set_default_stores( $stores );
-
-		parent::__construct( $plugin, $logging_service, $handlers );
-
 		$this->register_hooks( $hooks_service );
+		$this->set_hooks_service( $hooks_service );
+
+		parent::__construct( $plugin, $logging_service, array_merge( $handlers, $stores ) );
 	}
 
 	// endregion
@@ -102,7 +82,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 		parent::register_handler( $handler );
 
 		if ( $handler instanceof AdminNoticesHandlerInterface ) {
-			$handler->set_store( $this->admin_notices_stores );
+			$handler->set_store( $this->get_admin_notices_stores_store() );
 		}
 		if ( $handler instanceof HooksServiceRegisterInterface ) {
 			$handler->register_hooks( $this->get_hooks_service() );
@@ -128,6 +108,18 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	// region METHODS
 
 	/**
+	 * Returns the store holding the admin notices stores.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  StoreInterface
+	 */
+	public function get_admin_notices_stores_store(): StoreInterface {
+		return $this->get_store( 'admin-notices-stores' );
+	}
+
+	/**
 	 * Returns a given admin notices store.
 	 *
 	 * @since   1.0.0
@@ -138,8 +130,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @return  StoreInterface
 	 */
 	public function get_admin_notices_store( string $store_id ): StoreInterface {
-		/* @noinspection PhpIncompatibleReturnTypeInspection */
-		return $this->admin_notices_stores->get( $store_id );
+		return $this->get_admin_notices_stores_store()->get( $store_id );
 	}
 
 	/**
@@ -228,6 +219,19 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	// region HELPERS
 
 	/**
+	 * Makes sure the default stores are set before setting the default handlers.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $handlers_and_stores    List of handlers and stores passed on in the constructor.
+	 */
+	protected function set_default_handlers( array $handlers_and_stores ): void {
+		$this->set_default_stores( $handlers_and_stores );
+		parent::set_default_handlers( $handlers_and_stores );
+	}
+
+	/**
 	 * Register the stores passed on in the constructor together with the default stores.
 	 *
 	 * @since   1.0.0
@@ -243,10 +247,14 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 			new UserMetaStore( 'user-meta', $database_key ),
 		);
 
-		$this->admin_notices_stores = new MemoryStore( $this->get_id() . '_admin-notices' );
+		$admin_notices_stores_store = new MemoryStore( 'admin-notices-stores' );
 		foreach ( array_merge( $default_stores, $stores ) as $store ) {
-			$this->admin_notices_stores->update( $store );
+			if ( $store instanceof StoreInterface ) {
+				$admin_notices_stores_store->update( $store );
+			}
 		}
+
+		$this->update_stores_store_entry( $admin_notices_stores_store );
 	}
 
 	/**

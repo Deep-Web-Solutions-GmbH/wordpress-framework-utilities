@@ -3,7 +3,6 @@
 namespace DeepWebSolutions\Framework\Utilities\Assets\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
-use DeepWebSolutions\Framework\Helpers\FileSystem\Files;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
 use DeepWebSolutions\Framework\Utilities\Assets\AbstractAssetsHandler;
@@ -133,21 +132,14 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run(): ?RunFailureException {
-		if ( \is_null( $this->is_run ) ) {
-			$this->scripts = Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ? $this->scripts['public'] : $this->scripts['admin'];
-			\array_walk( $this->scripts['register'], array( $this, 'array_walk_register_script' ) );
-			\array_walk( $this->scripts['enqueue'], array( $this, 'array_walk_enqueue_script' ) );
-			\array_walk( $this->scripts_inline, array( $this, 'array_walk_add_inline_script' ) );
-			\array_walk( $this->scripts_localization, array( $this, 'array_walk_localize_script' ) );
+	public function run_local(): ?RunFailureException {
+		$this->scripts = Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ? $this->scripts['public'] : $this->scripts['admin'];
+		\array_walk( $this->scripts['register'], array( $this, 'array_walk_register_script' ) );
+		\array_walk( $this->scripts['enqueue'], array( $this, 'array_walk_enqueue_script' ) );
+		\array_walk( $this->scripts_inline, array( $this, 'array_walk_add_inline_script' ) );
+		\array_walk( $this->scripts_localization, array( $this, 'array_walk_localize_script' ) );
 
-			$this->is_run     = true;
-			$this->run_result = null;
-		} else {
-			return new RunFailureException( 'The scripts handler has already been run.' );
-		}
-
-		return $this->run_result;
+		return null;
 	}
 
 	// endregion

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad478ef8e4f220c61a76c3f7f40f50e4",
+    "content-hash": "1f8645337131988ab1f300be9f8953a1",
     "packages": [
         {
             "name": "deep-web-solutions/wp-framework-bootstrapper",
@@ -76,16 +76,16 @@
         },
         {
             "name": "deep-web-solutions/wp-framework-foundations",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/deep-web-solutions/wordpress-framework-foundations.git",
-                "reference": "c1795ee05829a5778e5f8fae07f8be81e24a883e"
+                "reference": "b5af586a1f37bd7240b7fde7157cc7614939e676"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/c1795ee05829a5778e5f8fae07f8be81e24a883e",
-                "reference": "c1795ee05829a5778e5f8fae07f8be81e24a883e",
+                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/b5af586a1f37bd7240b7fde7157cc7614939e676",
+                "reference": "b5af586a1f37bd7240b7fde7157cc7614939e676",
                 "shasum": ""
             },
             "require": {
@@ -96,8 +96,14 @@
                 "psr/log": "^1.1.3"
             },
             "require-dev": {
+                "codeception/mockery-module": "^0.4",
+                "codeception/module-asserts": "^1.3",
+                "codeception/module-db": "^1.1",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0",
                 "dealerdirect/phpcodesniffer-composer-installer": "*",
                 "deep-web-solutions/wordpress-configs": "master@dev",
+                "lucatume/wp-browser": ">=3.0",
                 "object-calisthenics/phpcs-calisthenics-rules": "*",
                 "php-stubs/wordpress-stubs": ">=v5.5.3",
                 "phpcompatibility/php-compatibility": "*",
@@ -106,7 +112,6 @@
                 "squizlabs/php_codesniffer": "*",
                 "wp-coding-standards/wpcs": "*"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -142,9 +147,9 @@
             ],
             "support": {
                 "issues": "https://github.com/deep-web-solutions/wordpress-framework-foundations/issues",
-                "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/master"
+                "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/v1.0.0"
             },
-            "time": "2021-03-23T13:09:37+00:00"
+            "time": "2021-04-01T20:22:19+00:00"
         },
         {
             "name": "deep-web-solutions/wp-framework-helpers",
@@ -1121,12 +1126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/JetBrains/phpstorm-stubs.git",
-                "reference": "f5efa65671eaaa27ad3925ec96a65d7a2474c308"
+                "reference": "c2607811710b645ab782a72d63cf5ce700e79dcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JetBrains/phpstorm-stubs/zipball/f5efa65671eaaa27ad3925ec96a65d7a2474c308",
-                "reference": "f5efa65671eaaa27ad3925ec96a65d7a2474c308",
+                "url": "https://api.github.com/repos/JetBrains/phpstorm-stubs/zipball/c2607811710b645ab782a72d63cf5ce700e79dcf",
+                "reference": "c2607811710b645ab782a72d63cf5ce700e79dcf",
                 "shasum": ""
             },
             "require-dev": {
@@ -1162,7 +1167,7 @@
             "support": {
                 "source": "https://github.com/JetBrains/phpstorm-stubs/tree/master"
             },
-            "time": "2021-03-29T21:48:09+00:00"
+            "time": "2021-04-01T18:53:50+00:00"
         },
         {
             "name": "nette/caching",
@@ -2625,12 +2630,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "f209823d320547cb848cd2692b6cab37481f0e28"
+                "reference": "a278c68f3cebbae43526f70b0e37b9cd09412612"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/f209823d320547cb848cd2692b6cab37481f0e28",
-                "reference": "f209823d320547cb848cd2692b6cab37481f0e28",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/a278c68f3cebbae43526f70b0e37b9cd09412612",
+                "reference": "a278c68f3cebbae43526f70b0e37b9cd09412612",
                 "shasum": ""
             },
             "require": {
@@ -2679,7 +2684,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-03-30T08:12:49+00:00"
+            "time": "2021-04-01T20:18:45+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -2687,12 +2692,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "3decd5ef0eb3a9c688f0dc29bd832b8bc3af4406"
+                "reference": "d427d75a155195970133974162e7fa9dbf3069da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/3decd5ef0eb3a9c688f0dc29bd832b8bc3af4406",
-                "reference": "3decd5ef0eb3a9c688f0dc29bd832b8bc3af4406",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d427d75a155195970133974162e7fa9dbf3069da",
+                "reference": "d427d75a155195970133974162e7fa9dbf3069da",
                 "shasum": ""
             },
             "require": {
@@ -2736,7 +2741,7 @@
                 "source": "https://github.com/squizlabs/PHP_CodeSniffer",
                 "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
             },
-            "time": "2021-03-30T00:02:48+00:00"
+            "time": "2021-03-31T22:36:57+00:00"
         },
         {
             "name": "symfony/config",
@@ -5359,7 +5364,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "deep-web-solutions/wp-framework-foundations": 20,
         "deep-web-solutions/wordpress-configs": 20
     },
     "prefer-stable": true,

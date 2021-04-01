@@ -3,7 +3,7 @@
 namespace DeepWebSolutions\Framework\Utilities\REST;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
@@ -31,7 +31,7 @@ class RESTService extends AbstractService implements HooksServiceRegisterInterfa
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
-	use RunnableTrait;
+	use RunLocalTrait;
 	use StoreAwareTrait;
 
 	// endregion
@@ -108,23 +108,13 @@ class RESTService extends AbstractService implements HooksServiceRegisterInterfa
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run(): ?RunFailureException {
-		if ( \is_null( $this->is_run ) ) {
-			foreach ( $this->get_store()->get_all() as $subscriber ) {
-				/* @noinspection PhpPossiblePolymorphicInvocationInspection */
-				$subscriber->register_rest_config( $this );
-			}
-
-			$this->is_run     = true;
-			$this->run_result = null;
-		} else {
-			/* @noinspection PhpIncompatibleReturnTypeInspection */
-			return $this->log_event( 'The REST service has been run already.', array(), 'framework' )
-						->set_log_level( LogLevel::NOTICE )->doing_it_wrong( __FUNCTION__, '1.0.0' )
-						->return_exception( RunFailureException::class )->finalize();
+	public function run_local(): ?RunFailureException {
+		foreach ( $this->get_store()->get_all() as $subscriber ) {
+			/* @noinspection PhpPossiblePolymorphicInvocationInspection */
+			$subscriber->register_rest_config( $this );
 		}
 
-		return $this->run_result;
+		return null;
 	}
 
 	// endregion

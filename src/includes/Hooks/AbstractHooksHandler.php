@@ -2,9 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResettableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunnableTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 
@@ -21,8 +21,8 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 abstract class AbstractHooksHandler extends AbstractHandler implements HooksHandlerInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
-	use RunnableTrait;
-	use ResettableTrait;
+	use RunLocalTrait;
+	use ResetLocalTrait;
 
 	// endregion
 

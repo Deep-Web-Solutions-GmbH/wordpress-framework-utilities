@@ -1,6 +1,6 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Actions\Initializable;
+namespace DeepWebSolutions\Framework\Utilities\Dependencies\Actions;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
@@ -14,14 +14,14 @@ use Psr\Container\NotFoundExceptionInterface;
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Trait for initializing a dependencies handler on the using instance.
+ * Trait for initializing one or more dependencies handlers on the using instance.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Initializable
+ * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies\Actions
  */
-trait InitializeDependenciesHandlerTrait {
+trait InitializeDependenciesHandlersTrait {
 	// region TRAITS
 
 	use InitializableExtensionTrait;
@@ -31,7 +31,7 @@ trait InitializeDependenciesHandlerTrait {
 	// region METHODS
 
 	/**
-	 * Try to automagically register an default instance checker with the dependencies service.
+	 * Try to automagically register one or more dependencies handlers with the dependencies service.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -41,28 +41,31 @@ trait InitializeDependenciesHandlerTrait {
 	 *
 	 * @return  InitializationFailureException|null
 	 */
-	public function initialize_dependencies_handler(): ?InitializationFailureException {
+	protected function initialize_dependencies_handlers(): ?InitializationFailureException {
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
 			$service = $this->get_dependencies_service();
 		} elseif ( $this instanceof ContainerAwareInterface ) {
 			$service = $this->get_container()->get( DependenciesService::class );
 		} else {
-			return new InitializationFailureException( 'Dependencies handler initialization scenario not supported' );
+			return new InitializationFailureException( 'Dependencies handlers initialization scenario not supported' );
 		}
 
-		$service->register_handler( $this->get_dependencies_handler() );
+		foreach ( $this->get_dependencies_handlers() as $handler ) {
+			$service->register_handler( $handler );
+		}
+
 		return null;
 	}
 
 	/**
-	 * Using classes should instantiate a dependencies handler in here.
+	 * Using classes should instantiate one or more dependencies handlers in here.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  DependenciesHandlerInterface
+	 * @return  DependenciesHandlerInterface[]
 	 */
-	abstract public function get_dependencies_handler(): DependenciesHandlerInterface;
+	abstract protected function get_dependencies_handlers(): array;
 
 	// endregion
 }

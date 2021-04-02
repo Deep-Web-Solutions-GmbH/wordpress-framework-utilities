@@ -14,7 +14,7 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\MultiCheckerHandler;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\SingleCheckerHandler;
-use DeepWebSolutions\Framework\Utilities\States\Activeable\ActiveDependenciesTrait;
+use DeepWebSolutions\Framework\Utilities\Dependencies\States\ActiveDependenciesTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -51,7 +51,7 @@ trait DependenciesAdminNoticesTrait {
 	 * @throws  NotImplementedException         Thrown when using this function in an unsupported context.
 	 */
 	public function register_admin_notices( AdminNoticesService $notices_service ): void {
-		$handler_id = ( $this instanceof PluginComponentInterface ) ? $this->get_id() : \get_class( $this );
+		$handler_id = ( $this instanceof PluginComponentInterface ? $this->get_id() : \get_class( $this ) ) . '_active';
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
 			$handler = $this->get_dependencies_service()->get_handler( $handler_id );

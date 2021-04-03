@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\Assets;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Logging\LoggingService;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlers;
+use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlersTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
@@ -29,7 +29,7 @@ class AssetsService extends AbstractMultiHandlerService implements HooksServiceR
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;
-	use RunHandlers;
+	use RunHandlersTrait;
 
 	// endregion
 

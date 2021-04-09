@@ -3,8 +3,7 @@
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\AbstractStoreable;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\AbstractStorable;
 use DeepWebSolutions\Framework\Helpers\Security\Validation;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
@@ -21,7 +20,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Notices
  */
-abstract class AbstractNotice extends AbstractStoreable implements AdminNoticeInterface {
+abstract class AbstractNotice extends AbstractStorable implements AdminNoticeInterface {
 	// region FIELDS AND CONSTANTS
 
 	/**

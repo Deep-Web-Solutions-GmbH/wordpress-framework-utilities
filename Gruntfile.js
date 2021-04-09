@@ -16,7 +16,17 @@ module.exports = function( grunt ) {
 				code : 'src'
 			},
 
-			makepot : {
+			glotpress_download : {
+				dist : {
+					options : {
+						domainPath : '<%= dirs.lang %>',
+						url		   : 'https://translate.deep-web-solutions.com/glotpress/',
+						slug 	   : 'dws-wp-framework/utilities',
+						textdomain : 'dws-wp-framework-utilities'
+					}
+				}
+			},
+			makepot 		   : {
 				dist : {
 					options : {
 						cwd				: '<%= dirs.code %>',
@@ -48,23 +58,36 @@ module.exports = function( grunt ) {
 					}
 				}
 			},
-			potomo  : {
-				dist : {
-					options : {
-						poDel : false
-					},
-					files   : [ {
-						expand : true,
-						cwd    : '<%= dirs.lang %>',
-						src    : [ '*.po' ],
-						dest   : '<%= dirs.lang %>',
-						ext    : '.mo',
-						nonull : true
-					} ]
+
+			replace 		   : {
+				readme_md     : {
+					src 	     : [ 'README.md' ],
+					overwrite    : true,
+					replacements : [
+						{
+							from : /\*\*Stable tag:\*\* (.*)/,
+							to   : "**Stable tag:** <%= package.version %>  "
+						}
+					]
+				},
+				bootstrap_php : {
+					src 		 : [ 'bootstrap.php' ],
+					overwrite 	 : true,
+					replacements : [
+						{
+							from : /Version:(\s*)(.*)/,
+							to   : "Version:$1<%= package.version %>"
+						},
+						{
+							from : /define\( __NAMESPACE__ \. '\\DWS_WP_FRAMEWORK_UTILITIES_VERSION', '(.*)' \);/,
+							to   : "define( __NAMESPACE__ . '\\DWS_WP_FRAMEWORK_UTILITIES_VERSION', '<%= package.version %>' );"
+						}
+					]
 				}
 			}
 		}
 	);
 
-	grunt.registerTask( 'i18n', ['makepot', 'potomo'] );
+	grunt.registerTask( 'i18n', [ 'makepot', 'glotpress_download' ] );
+	grunt.registerTask( 'version_number', [ 'replace:readme_md', 'replace:bootstrap_php' ] );
 }

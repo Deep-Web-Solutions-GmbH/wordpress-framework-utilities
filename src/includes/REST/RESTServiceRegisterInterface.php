@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\REST;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreableInterface;
+use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StorableInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreableInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\REST
  */
-interface RESTServiceRegisterInterface extends StoreableInterface {
+interface RESTServiceRegisterInterface extends StorableInterface {
 	/**
 	 * Using classes should define their REST configuration in here.
 	 *

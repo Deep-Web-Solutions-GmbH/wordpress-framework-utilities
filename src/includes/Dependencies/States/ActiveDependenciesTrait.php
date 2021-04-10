@@ -3,6 +3,7 @@
 namespace DeepWebSolutions\Framework\Utilities\Dependencies\States;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
+use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\States\ActiveableInterface;
@@ -49,7 +50,14 @@ trait ActiveDependenciesTrait {
 		$is_active = true;
 
 		if ( $this instanceof ActiveableInterface ) {
-			$handler_id = ( $this instanceof PluginComponentInterface ? $this->get_id() : \get_class( $this ) ) . '_active';
+			$handler_id = '%s_active';
+			if ( $this instanceof PluginComponentInterface ) {
+				$handler_id = \sprintf( $handler_id, $this->get_id() );
+			} elseif ( $this instanceof PluginInterface ) {
+				$handler_id = \sprintf( $handler_id, $this->get_plugin_slug() );
+			} else {
+				$handler_id = \sprintf( $handler_id, \get_class( $this ) );
+			}
 
 			if ( $this instanceof DependenciesServiceAwareInterface ) {
 				$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );

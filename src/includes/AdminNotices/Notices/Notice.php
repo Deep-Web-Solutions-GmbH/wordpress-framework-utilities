@@ -44,7 +44,7 @@ class Notice extends AbstractNotice {
 	 * @return  OutputFailureException|null
 	 */
 	public function output(): ?OutputFailureException {
-		$this->message = Validation::validate_boolean( $args['html'] ?? false, false )
+		$this->message = Validation::validate_boolean( $this->args['html'] ?? false, false )
 			? $this->message : "<p>{$this->message}</p>";
 
 		return parent::output();

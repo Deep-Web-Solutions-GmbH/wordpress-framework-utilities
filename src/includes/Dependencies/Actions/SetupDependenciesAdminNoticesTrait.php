@@ -2,6 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies\Actions;
 
+use DeepWebSolutions\Framework\Foundations\Actions\Initializable\Integrations\SetupableInactiveTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
@@ -38,6 +39,7 @@ trait SetupDependenciesAdminNoticesTrait {
 	use AdminNoticesHelpersTrait;
 	use AdminNoticesServiceAwareTrait;
 	use SetupableExtensionTrait;
+	use SetupableInactiveTrait;
 
 	// endregion
 

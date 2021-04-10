@@ -154,7 +154,7 @@ class TemplatingService extends AbstractService implements HooksHelpersAwareInte
 	 * @return  string
 	 */
 	public function locate_template( string $template_name, string $template_path, string $default_path, string $constant_name = 'TEMPLATE_DEBUG' ): string {
-		$template = Request::has_debug( $constant_name ) ? '' : locate_template(
+		$template = Request::has_debug( $constant_name ) ? '' : \locate_template(
 			array(
 				\trailingslashit( $template_path ) . $template_name,
 				$template_name,
@@ -188,7 +188,7 @@ class TemplatingService extends AbstractService implements HooksHelpersAwareInte
 			if ( ! $this->get_wp_filesystem()->exists( $filtered_template ) ) {
 				return $this->log_event(
 					/* translators: %s: Path to template file */
-					\sprintf( __( 'The file %s does not exist.', 'dws-wp-framework-utilities' ), '<code>' . $filtered_template . '</code>' ),
+					\sprintf( 'The file %s does not exist.', $filtered_template ),
 					array(),
 					'framework'
 				)

@@ -24,7 +24,6 @@ interface ValidationHandlerInterface extends HandlerInterface {
 	 *
 	 * @param   string      $key    The key to retrieve the default value for.
 	 *
-	 * @noinspection PhpMissingReturnTypeInspection
 	 * @return  InexistentPropertyException|mixed
 	 */
 	public function get_default_value( string $key );

@@ -3,6 +3,7 @@
 namespace DeepWebSolutions\Framework\Utilities\REST\Helpers;
 
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 
 \defined( 'ABSPATH' ) || exit;
@@ -31,6 +32,8 @@ trait RESTHelpersTrait {
 			$namespace = \join( '/', array( $this->get_plugin()->get_plugin_slug(), $this->get_safe_name() ) );
 		} elseif ( $this instanceof PluginAwareInterface ) {
 			$namespace = $this->get_plugin()->get_plugin_slug();
+		} elseif ( $this instanceof PluginInterface ) {
+			$namespace = $this->get_plugin_slug();
 		} else {
 			$namespace = self::class;
 		}

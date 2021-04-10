@@ -37,6 +37,8 @@ trait AdminNoticesHelpersTrait {
 			$root = \join( '_', array( $this->get_plugin()->get_plugin_slug(), $root ?: $this->get_name() ) ); // phpcs:ignore
 		} elseif ( $this instanceof PluginAwareInterface ) {
 			$root = $this->get_plugin()->get_plugin_slug();
+		} elseif ( $this instanceof PluginInterface ) {
+			$root = $this->get_plugin_slug();
 		}
 
 		return Strings::to_safe_string(

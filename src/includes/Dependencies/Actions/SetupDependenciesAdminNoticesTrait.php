@@ -1,13 +1,16 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\States\Activeable\Dependencies;
+namespace DeepWebSolutions\Framework\Utilities\Dependencies\Actions;
 
+use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesService;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceRegisterTrait;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceAwareTrait;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesHelpersTrait;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\Notice;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
@@ -21,37 +24,39 @@ use Psr\Container\NotFoundExceptionInterface;
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Trait for working with the dependencies service and outputting potential error notices on the admin side.
+ * Trait for registering admin notices of missing dependencies of using instances.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\States\Activeable\Dependencies
+ * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies\Actions
  */
-trait DependenciesAdminNoticesTrait {
+trait SetupDependenciesAdminNoticesTrait {
 	// region TRAITS
 
-	use AdminNoticesServiceRegisterTrait;
 	use ActiveDependenciesTrait;
+	use AdminNoticesHelpersTrait;
+	use AdminNoticesServiceAwareTrait;
+	use SetupableExtensionTrait;
 
 	// endregion
 
-	// region INHERITED METHODS
+	// region METHODS
 
 	/**
-	 * Register any potential notices for failed dependencies.
+	 * Try to automagically register admin notices if dependencies are not fulfilled.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   AdminNoticesService     $notices_service        Instance of the admin notices service.
-	 *
 	 * @throws  NotFoundExceptionInterface      Thrown if the container can't find an entry.
-	 * @throws  ContainerExceptionInterface     Thrown if the container encounters any other error.
-	 * @throws  NotImplementedException         Thrown when using this function in an unsupported context.
+	 * @throws  ContainerExceptionInterface     Thrown if the container encounters some other error.
+	 *
+	 * @return  SetupFailureException|null
 	 */
-	public function register_admin_notices( AdminNoticesService $notices_service ): void {
-		$handler_id = ( $this instanceof PluginComponentInterface ? $this->get_id() : \get_class( $this ) ) . '_active';
+	public function setup_dependencies_admin_notices(): ?SetupFailureException {
+		$notices_service = $this->get_admin_notices_service();
+		$handler_id      = ( $this instanceof PluginComponentInterface ? $this->get_id() : \get_class( $this ) ) . '_active';
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
 			$handler = $this->get_dependencies_service()->get_handler( $handler_id );
@@ -71,6 +76,8 @@ trait DependenciesAdminNoticesTrait {
 		} elseif ( $handler instanceof SingleCheckerHandler ) {
 			$this->register_missing_dependencies_admin_notices( $notices_service, $missing_dependencies, $handler->get_checker()->get_type() );
 		}
+
+		return null;
 	}
 
 	// endregion
@@ -246,7 +253,7 @@ trait DependenciesAdminNoticesTrait {
 				\esc_html( $this->get_registrant_name() )
 			) . '<ul>';
 			$message .= $this->format_incompatible_settings_list( $php_settings );
-			$message .= '</ul>' . __( 'Please contact your hosting provider or server administrator to configure these settings. The plugin will attempt to run despite this warning.', 'dws-wp-framework-utilities' );
+			$message .= '</ul>' . \__( 'Please contact your hosting provider or server administrator to configure these settings. The plugin will attempt to run despite this warning.', 'dws-wp-framework-utilities' );
 		} else {
 			$message = \sprintf(
 				/* translators: Plugin name or identifiable name. */
@@ -321,7 +328,7 @@ trait DependenciesAdminNoticesTrait {
 					case 'min':
 						$setting_message = \sprintf(
 							/* translators: PHP settings value. */
-							__( '%s or higher', 'dws-wp-framework-utilities' ),
+							\__( '%s or higher', 'dws-wp-framework-utilities' ),
 							$setting_message
 						);
 						break;
@@ -357,7 +364,7 @@ trait DependenciesAdminNoticesTrait {
 			if ( isset( $missing_plugin['version'] ) ) {
 				$formatted_version = \sprintf(
 					/* translators: %s: Installed version of the dependant plugin */
-					__( 'You\'re running version %s', 'dws-wp-framework-utilities' ),
+					\__( 'You\'re running version %s', 'dws-wp-framework-utilities' ),
 					$missing_plugin['version']
 				);
 				$plugin_name .= ' <em>(' . \esc_html( $formatted_version ) . ')</em>';

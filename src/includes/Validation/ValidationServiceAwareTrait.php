@@ -74,7 +74,6 @@ trait ValidationServiceAwareTrait {
 	 * @param   string  $key    The key inside the container.
 	 * @param   string  $handler_id     The ID of the handler to retrieve the value from.
 	 *
-	 * @noinspection PhpMissingReturnTypeInspection
 	 * @return  InexistentPropertyException|mixed
 	 */
 	public function get_default_value( string $key, string $handler_id = 'default' ) {

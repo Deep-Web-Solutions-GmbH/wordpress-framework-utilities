@@ -57,7 +57,6 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @param   string      $key    The key to retrieve the default value for.
 	 *
-	 * @noinspection PhpMissingReturnTypeInspection
 	 * @return  InexistentPropertyException|mixed
 	 */
 	public function get_default_value( string $key ) {
@@ -215,7 +214,6 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @param   string  $key    Composite key of the value to retrieve.
 	 *
-	 * @noinspection PhpMissingReturnTypeInspection
 	 * @return  InexistentPropertyException|mixed
 	 */
 	protected function get_container_value( string $key ) {
@@ -248,7 +246,6 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the containers.
 	 *
-	 * @noinspection PhpMissingReturnTypeInspection
 	 * @return  mixed
 	 */
 	protected function get_default_value_or_throw( string $key ) {

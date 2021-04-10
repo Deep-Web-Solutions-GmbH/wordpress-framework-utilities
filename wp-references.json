@@ -27,6 +27,8 @@
         "wp_schedule_event",
         "wp_schedule_single_event",
         "wp_unschedule_event",
+        "_n",
+        "esc_html",
         "size_format",
         "get_option",
         "is_multisite",
@@ -38,8 +40,6 @@
         "wp_parse_args",
         "add_shortcode",
         "remove_shortcode",
-        "_n",
-        "esc_html",
         "do_action",
         "load_template",
         "locate_template"

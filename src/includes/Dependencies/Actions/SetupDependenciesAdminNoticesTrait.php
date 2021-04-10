@@ -6,6 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Initializable\Integrations\Se
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
+use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesService;
@@ -57,8 +58,14 @@ trait SetupDependenciesAdminNoticesTrait {
 	 * @return  SetupFailureException|null
 	 */
 	public function setup_dependencies_admin_notices(): ?SetupFailureException {
-		$notices_service = $this->get_admin_notices_service();
-		$handler_id      = ( $this instanceof PluginComponentInterface ? $this->get_id() : \get_class( $this ) ) . '_active';
+		$handler_id = '%s_active';
+		if ( $this instanceof PluginComponentInterface ) {
+			$handler_id = \sprintf( $handler_id, $this->get_id() );
+		} elseif ( $this instanceof PluginInterface ) {
+			$handler_id = \sprintf( $handler_id, $this->get_plugin_slug() );
+		} else {
+			$handler_id = \sprintf( $handler_id, \get_class( $this ) );
+		}
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {
 			$handler = $this->get_dependencies_service()->get_handler( $handler_id );
@@ -68,6 +75,7 @@ trait SetupDependenciesAdminNoticesTrait {
 			throw new NotImplementedException( 'Dependencies admin notices scenario not supported' );
 		}
 
+		$notices_service      = $this->get_admin_notices_service();
 		$missing_dependencies = $handler->get_missing_dependencies();
 		if ( $handler instanceof MultiCheckerHandler ) {
 			foreach ( $missing_dependencies as $type => $dependencies ) {

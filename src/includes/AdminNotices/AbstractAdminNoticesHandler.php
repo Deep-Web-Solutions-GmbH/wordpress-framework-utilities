@@ -132,7 +132,7 @@ abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterfa
 	 *
 	 * @return  OutputFailureException|null
 	 */
-	public function output_local(): ?OutputFailureException {
+	protected function output_local(): ?OutputFailureException {
 		foreach ( $this->get_store()->get_all() as $admin_notices_store ) {
 			if ( $admin_notices_store instanceof StoreInterface ) {
 				foreach ( $this->get_notices( $admin_notices_store->get_id() ) as $notice ) {

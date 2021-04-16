@@ -3,13 +3,14 @@
 namespace DeepWebSolutions\Framework\Utilities\Dependencies\States;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
-use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\States\Disableable\DisableableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\States\DisableableInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesContextsEnum;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -26,6 +27,7 @@ use Psr\Container\NotFoundExceptionInterface;
 trait DisabledDependenciesTrait {
 	// region TRAITS
 
+	use DependenciesHelpersTrait;
 	use DisableableExtensionTrait;
 
 	// endregion
@@ -33,8 +35,7 @@ trait DisabledDependenciesTrait {
 	// region METHODS
 
 	/**
-	 * If the using class is activeable, prevent its activation if required dependencies are not fulfilled.
-	 * Optional dependencies can be marked by including the word 'optional' in the key of the result.
+	 * If the using class is disableable, disable it if required dependencies are not fulfilled.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -49,29 +50,13 @@ trait DisabledDependenciesTrait {
 		$is_disabled = false;
 
 		if ( $this instanceof DisableableInterface ) {
-			$handler_id = ( $this instanceof PluginComponentInterface ? $this->get_id() : \get_class( $this ) ) . '_disabled';
-
-			if ( $this instanceof DependenciesServiceAwareInterface ) {
-				$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );
-			} elseif ( $this instanceof ContainerAwareInterface ) {
-				$are_deps_fulfilled = $this->get_container()->get( DependenciesService::class )->are_dependencies_fulfilled( $handler_id );
-			} else {
+			$handler = $this->get_dependencies_handler( DependenciesContextsEnum::DISABLED_STATE );
+			if ( \is_null( $handler ) ) {
 				throw new NotImplementedException( 'Dependency checking scenario not supported' );
 			}
 
-			if ( \is_array( \reset( $are_deps_fulfilled ) ) ) { // MultiCheckerHandler
-				foreach ( $are_deps_fulfilled as $dependencies_status ) {
-					$unfulfilled = Arrays::search_values( $dependencies_status, false, false );
-					if ( false === \is_null( $unfulfilled ) ) {
-						$are_deps_fulfilled = false;
-						break;
-					}
-				}
-
-				$is_disabled = ! \is_array( $are_deps_fulfilled );
-			} else { // SingleCheckerHandler
-				$is_disabled = ! \reset( $are_deps_fulfilled );
-			}
+			$are_deps_fulfilled = $handler->are_dependencies_fulfilled();
+			$is_disabled        = ! $this->check_fulfillment_status( $are_deps_fulfilled );
 		}
 
 		return $is_disabled;

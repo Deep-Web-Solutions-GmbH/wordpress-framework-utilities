@@ -71,7 +71,7 @@ class DependenciesService extends AbstractMultiHandlerService {
 	 *
 	 * @param   string      $handler_id   The ID of the handler to retrieve the dependencies status from.
 	 *
-	 * @return  mixed
+	 * @return  bool|bool[]|bool[][]
 	 */
 	public function are_dependencies_fulfilled( string $handler_id ) {
 		return $this->get_handler( $handler_id )->are_dependencies_fulfilled();

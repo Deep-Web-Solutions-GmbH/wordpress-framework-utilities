@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -15,6 +15,12 @@ use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterf
  * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies
  */
 trait DependenciesServiceAwareTrait {
+	// region TRAITS
+
+	use DependenciesHelpersTrait;
+
+	// endregion
+
 	// region FIELDS AND CONSTANTS
 
 	/**
@@ -75,7 +81,7 @@ trait DependenciesServiceAwareTrait {
 	 * @return  array
 	 */
 	public function get_dependencies( ?string $handler_id = null ): array {
-		$handler_id = $this->parse_dependencies_handler_id( $handler_id );
+		$handler_id = $handler_id ?? $this->get_dependencies_handler_id( $handler_id );
 		return $this->get_dependencies_service()->get_dependencies( $handler_id );
 	}
 
@@ -90,7 +96,7 @@ trait DependenciesServiceAwareTrait {
 	 * @return  array
 	 */
 	public function get_missing_dependencies( ?string $handler_id = null ): array {
-		$handler_id = $this->parse_dependencies_handler_id( $handler_id );
+		$handler_id = $handler_id ?? $this->get_dependencies_handler_id( $handler_id );
 		return $this->get_dependencies_service()->get_missing_dependencies( $handler_id );
 	}
 
@@ -102,33 +108,11 @@ trait DependenciesServiceAwareTrait {
 	 *
 	 * @param   string|null     $handler_id     The checker to retrieve the dependencies status from.
 	 *
-	 * @return  mixed
+	 * @return  bool|bool[]|bool[][]
 	 */
 	public function are_dependencies_fulfilled( ?string $handler_id = null ) {
-		$handler_id = $this->parse_dependencies_handler_id( $handler_id );
+		$handler_id = $handler_id ?? $this->get_dependencies_handler_id( $handler_id );
 		return $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );
-	}
-
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * Provides some sensible defaults to the handler ID if not specified outright.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string|null     $handler_id     The handler ID to parse.
-	 *
-	 * @return  string
-	 */
-	protected function parse_dependencies_handler_id( ?string $handler_id ): string {
-		if ( \is_null( $handler_id ) && $this instanceof PluginComponentInterface ) {
-			$handler_id = $this->get_id();
-		}
-
-		return $handler_id ?? '';
 	}
 
 	// endregion

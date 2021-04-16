@@ -3,14 +3,14 @@
 namespace DeepWebSolutions\Framework\Utilities\Dependencies\States;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\States\ActiveableInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesContextsEnum;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -28,6 +28,7 @@ trait ActiveDependenciesTrait {
 	// region TRAITS
 
 	use ActiveableExtensionTrait;
+	use DependenciesHelpersTrait;
 
 	// endregion
 
@@ -50,36 +51,13 @@ trait ActiveDependenciesTrait {
 		$is_active = true;
 
 		if ( $this instanceof ActiveableInterface ) {
-			$handler_id = '%s_active';
-			if ( $this instanceof PluginComponentInterface ) {
-				$handler_id = \sprintf( $handler_id, $this->get_id() );
-			} elseif ( $this instanceof PluginInterface ) {
-				$handler_id = \sprintf( $handler_id, $this->get_plugin_slug() );
-			} else {
-				$handler_id = \sprintf( $handler_id, \get_class( $this ) );
-			}
-
-			if ( $this instanceof DependenciesServiceAwareInterface ) {
-				$are_deps_fulfilled = $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );
-			} elseif ( $this instanceof ContainerAwareInterface ) {
-				$are_deps_fulfilled = $this->get_container()->get( DependenciesService::class )->are_dependencies_fulfilled( $handler_id );
-			} else {
+			$handler = $this->get_dependencies_handler( DependenciesContextsEnum::ACTIVE_STATE );
+			if ( \is_null( $handler ) ) {
 				throw new NotImplementedException( 'Dependency checking scenario not supported' );
 			}
 
-			if ( \is_array( \reset( $are_deps_fulfilled ) ) ) { // MultiCheckerHandler
-				foreach ( $are_deps_fulfilled as $dependencies_status ) {
-					$required_status = $this->is_active_required_dependencies( $dependencies_status );
-					if ( false === $required_status ) {
-						$are_deps_fulfilled = false;
-						break;
-					}
-				}
-
-				$is_active = \is_array( $are_deps_fulfilled );
-			} else { // SingleCheckerHandler
-				$is_active = $this->is_active_required_dependencies( $are_deps_fulfilled );
-			}
+			$are_deps_fulfilled = $handler->are_dependencies_fulfilled();
+			$is_active          = $this->check_fulfillment_status( $are_deps_fulfilled, array( $this, 'is_active_required_dependencies' ) );
 		}
 
 		return $is_active;
@@ -98,9 +76,9 @@ trait ActiveDependenciesTrait {
 	 *
 	 * @param   bool[]      $dependencies_status    Array to evaluate.
 	 *
-	 * @return  bool    Whether all required dependencies are true or not.
+	 * @return  null|false  Null if all required dependencies are true or false otherwise.
 	 */
-	protected function is_active_required_dependencies( array $dependencies_status ): bool {
+	protected function is_active_required_dependencies( array $dependencies_status ): ?bool {
 		$unfulfilled        = Arrays::search_values( $dependencies_status, false, false );
 		$are_deps_fulfilled = \is_null( $unfulfilled );
 
@@ -116,7 +94,7 @@ trait ActiveDependenciesTrait {
 			$are_deps_fulfilled   = ( \count( $unfulfilled ) === \count( $optional_unfulfilled ) );
 		}
 
-		return $are_deps_fulfilled;
+		return $are_deps_fulfilled ? null : false;
 	}
 
 	// endregion

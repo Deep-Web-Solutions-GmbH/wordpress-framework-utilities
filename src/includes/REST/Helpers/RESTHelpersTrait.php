@@ -2,9 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\REST\Helpers;
 
+use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Plugin\PluginInterface;
-use DeepWebSolutions\Framework\Foundations\PluginComponent\PluginComponentInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -25,17 +25,17 @@ trait RESTHelpersTrait {
 	 *
 	 * @param   int     $version    The version of the route.
 	 *
+	 * @throws  NotImplementedException     Thrown when the namespace generation context is unsupported.
+	 *
 	 * @return  string
 	 */
 	public function get_rest_namespace( int $version = 1 ): string {
-		if ( $this instanceof PluginComponentInterface ) {
-			$namespace = \join( '/', array( $this->get_plugin()->get_plugin_slug(), $this->get_safe_name() ) );
-		} elseif ( $this instanceof PluginAwareInterface ) {
+		if ( $this instanceof PluginAwareInterface ) {
 			$namespace = $this->get_plugin()->get_plugin_slug();
 		} elseif ( $this instanceof PluginInterface ) {
 			$namespace = $this->get_plugin_slug();
 		} else {
-			$namespace = self::class;
+			throw new NotImplementedException( 'Namespace generation context is not implemented.' );
 		}
 
 		return "{$namespace}/v{$version}";

@@ -147,7 +147,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	public function add_notice( AdminNoticeInterface $notice, string $store = 'dynamic' ): bool {
 		try {
 			$result = $this->get_admin_notices_store( $store )->add( $notice );
-			return \is_null( $result ) || \boolval( $result );
+			return \is_null( $result ) || $result;
 		} catch ( ContainerExceptionInterface $exception ) {
 			return false;
 		}
@@ -186,7 +186,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	public function update_notice( AdminNoticeInterface $notice, string $store = 'dynamic' ): bool {
 		try {
 			$result = $this->get_admin_notices_store( $store )->update( $notice );
-			return \is_null( $result ) || \boolval( $result );
+			return \is_null( $result ) || $result;
 		} catch ( ContainerExceptionInterface $exception ) {
 			return false;
 		}
@@ -206,7 +206,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	public function remove_notice( string $handle, string $store = 'dynamic' ): bool {
 		try {
 			$result = $this->get_admin_notices_store( $store )->remove( $handle );
-			return \is_null( $result ) || \boolval( $result );
+			return \is_null( $result ) || $result;
 		} catch ( NotFoundExceptionInterface $exception ) {
 			return true;
 		} catch ( ContainerExceptionInterface $exception ) {

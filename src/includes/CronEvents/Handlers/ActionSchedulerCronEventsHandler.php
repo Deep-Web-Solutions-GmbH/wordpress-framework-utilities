@@ -34,7 +34,7 @@ class ActionSchedulerCronEventsHandler extends AbstractCronEventsHandler impleme
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run_local(): ?RunFailureException {
+	protected function run_local(): ?RunFailureException {
 		$run_result = null;
 
 		$events = \array_merge( $this->single_events, $this->recurring_events );
@@ -66,7 +66,7 @@ class ActionSchedulerCronEventsHandler extends AbstractCronEventsHandler impleme
 	 *
 	 * @return  ResetFailureException|null
 	 */
-	public function reset_local(): ?ResetFailureException {
+	protected function reset_local(): ?ResetFailureException {
 		$reset_result = null;
 
 		$events = \array_merge( $this->single_events, $this->recurring_events );

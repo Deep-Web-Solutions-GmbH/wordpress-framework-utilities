@@ -108,7 +108,7 @@ class RESTService extends AbstractService implements HooksServiceRegisterInterfa
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run_local(): ?RunFailureException {
+	protected function run_local(): ?RunFailureException {
 		foreach ( $this->get_store()->get_all() as $subscriber ) {
 			/* @noinspection PhpPossiblePolymorphicInvocationInspection */
 			$subscriber->register_rest_config( $this );

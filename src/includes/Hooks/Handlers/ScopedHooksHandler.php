@@ -106,15 +106,9 @@ class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInt
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run_local(): ?RunFailureException {
+	protected function run_local(): ?RunFailureException {
 		\array_walk( $this->filters['added'], array( $this, 'array_walk_add_hook' ) );
-		$this->filters['removed'] = \array_filter(
-			$this->filters['removed'],
-			array(
-				$this,
-				'array_walk_remove_hook',
-			)
-		);
+		$this->filters['removed'] = \array_filter( $this->filters['removed'], array( $this, 'array_walk_remove_hook' ) );
 
 		\array_walk( $this->actions['added'], array( $this, 'array_walk_add_hook' ) );
 		$this->actions['removed'] = \array_filter( $this->actions['removed'], array( $this, 'array_walk_remove_hook' ) );
@@ -130,7 +124,7 @@ class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInt
 	 *
 	 * @return  ResetFailureException|null
 	 */
-	public function reset_local(): ?ResetFailureException {
+	protected function reset_local(): ?ResetFailureException {
 		\array_walk( $this->filters['added'], array( $this, 'array_walk_remove_hook' ) );
 		\array_walk( $this->filters['removed'], array( $this, 'array_walk_add_hook' ) );
 

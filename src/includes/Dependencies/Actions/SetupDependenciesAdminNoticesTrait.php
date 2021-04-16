@@ -19,6 +19,7 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\MultiCheckerHandler;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\SingleCheckerHandler;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesContextsEnum;
 use DeepWebSolutions\Framework\Utilities\Dependencies\States\ActiveDependenciesTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -58,33 +59,21 @@ trait SetupDependenciesAdminNoticesTrait {
 	 * @return  SetupFailureException|null
 	 */
 	public function setup_dependencies_admin_notices(): ?SetupFailureException {
-		$handler_id = '%s_active';
-		if ( $this instanceof PluginComponentInterface ) {
-			$handler_id = \sprintf( $handler_id, $this->get_id() );
-		} elseif ( $this instanceof PluginInterface ) {
-			$handler_id = \sprintf( $handler_id, $this->get_plugin_slug() );
-		} else {
-			$handler_id = \sprintf( $handler_id, \get_class( $this ) );
-		}
-
-		if ( $this instanceof DependenciesServiceAwareInterface ) {
-			$handler = $this->get_dependencies_service()->get_handler( $handler_id );
-		} elseif ( $this instanceof ContainerAwareInterface ) {
-			$handler = $this->get_container()->get( DependenciesService::class )->get_handler( $handler_id );
-		} else {
+		$notices_service = $this->get_admin_notices_service();
+		$deps_handler    = $this->get_dependencies_handler( DependenciesContextsEnum::ACTIVE_STATE );
+		if ( \is_null( $deps_handler ) ) {
 			throw new NotImplementedException( 'Dependencies admin notices scenario not supported' );
 		}
 
-		$notices_service      = $this->get_admin_notices_service();
-		$missing_dependencies = $handler->get_missing_dependencies();
-		if ( $handler instanceof MultiCheckerHandler ) {
+		$missing_dependencies = $deps_handler->get_missing_dependencies();
+		if ( $deps_handler instanceof MultiCheckerHandler ) {
 			foreach ( $missing_dependencies as $type => $dependencies ) {
 				if ( ! empty( $dependencies ) ) {
 					$this->register_missing_dependencies_admin_notices( $notices_service, $dependencies, $type );
 				}
 			}
-		} elseif ( $handler instanceof SingleCheckerHandler ) {
-			$this->register_missing_dependencies_admin_notices( $notices_service, $missing_dependencies, $handler->get_checker()->get_type() );
+		} elseif ( $deps_handler instanceof SingleCheckerHandler ) {
+			$this->register_missing_dependencies_admin_notices( $notices_service, $missing_dependencies, $deps_handler->get_checker()->get_type() );
 		}
 
 		return null;
@@ -107,14 +96,14 @@ trait SetupDependenciesAdminNoticesTrait {
 	protected function register_missing_dependencies_admin_notices( AdminNoticesService $notices_service, array $missing_dependencies, string $type ): void {
 		foreach ( $missing_dependencies as $checker_id => $dependencies ) {
 			if ( ! empty( $dependencies ) ) {
-				$is_optional_handler = ( \strpos( $checker_id, 'optional' ) !== false );
-				$store               = $is_optional_handler ? 'options' : 'dynamic';
+				$is_optional_checker = ( \strpos( $checker_id, 'optional' ) !== false );
+				$store               = $is_optional_checker ? 'options' : 'dynamic';
 
 				$notice_handle  = $this->get_admin_notice_handle( "missing-{$type}", array( \md5( \wp_json_encode( $dependencies ) ) ) );
-				$notice_message = $this->compose_message( $type, $dependencies, $is_optional_handler );
+				$notice_message = $this->compose_message( $type, $dependencies, $is_optional_checker );
 				$notice_params  = array( 'capability' => 'activate_plugins' );
 
-				$notice = $is_optional_handler
+				$notice = $is_optional_checker
 					? new DismissibleNotice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params + array( 'persistent' => true ) )
 					: new Notice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params );
 

@@ -1,12 +1,13 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Validation;
+namespace DeepWebSolutions\Framework\Utilities\Validation\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareTrait;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\Security\Validation;
+use DeepWebSolutions\Framework\Utilities\Validation\AbstractValidationHandler;
 use Psr\Container\ContainerInterface;
 
 \defined( 'ABSPATH' ) || exit;
@@ -17,7 +18,7 @@ use Psr\Container\ContainerInterface;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\Validation
+ * @package DeepWebSolutions\WP-Framework\Utilities\Validation\Handlers
  */
 class ContainerValidationHandler extends AbstractValidationHandler implements ContainerAwareInterface {
 	// region TRAITS
@@ -37,7 +38,7 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 * @param   string                      $handler_id     The ID of the handler instance.
 	 * @param   ContainerInterface|null     $container      PSR-11 container with the validation values.
 	 */
-	public function __construct( string $handler_id, ?ContainerInterface $container ) {
+	public function __construct( string $handler_id, ?ContainerInterface $container = null ) {
 		parent::__construct( $handler_id );
 
 		if ( ! \is_null( $container ) ) {
@@ -226,7 +227,7 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 		}
 
 		foreach ( $boom as $key ) {
-			if ( isset( $value[ $key ] ) || array_key_exists( $key, $value ) ) {
+			if ( isset( $value[ $key ] ) || \array_key_exists( $key, $value ) ) {
 				$value = $value[ $key ];
 			} else {
 				return new InexistentPropertyException( \sprintf( 'Inexistent container entry: %s', $key ) );

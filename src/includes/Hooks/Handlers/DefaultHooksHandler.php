@@ -48,7 +48,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run_local(): ?RunFailureException {
+	protected function run_local(): ?RunFailureException {
 		$this->array_walk_hooks( 'array_walk_add_hook' );
 		return null;
 	}
@@ -61,7 +61,7 @@ class DefaultHooksHandler extends AbstractHooksHandler {
 	 *
 	 * @return  ResetFailureException|null
 	 */
-	public function reset_local(): ?ResetFailureException {
+	protected function reset_local(): ?ResetFailureException {
 		$this->array_walk_hooks( 'array_walk_remove_hook' );
 		return null;
 	}

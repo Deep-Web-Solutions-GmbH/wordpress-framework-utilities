@@ -132,7 +132,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run_local(): ?RunFailureException {
+	protected function run_local(): ?RunFailureException {
 		$this->scripts = Request::is_type( RequestTypesEnum::FRONTEND_REQUEST ) ? $this->scripts['public'] : $this->scripts['admin'];
 		\array_walk( $this->scripts['register'], array( $this, 'array_walk_register_script' ) );
 		\array_walk( $this->scripts['enqueue'], array( $this, 'array_walk_enqueue_script' ) );
@@ -162,7 +162,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function register_public_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->scripts['public']['register'] = $this->add_script( $this->scripts['public']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
+		$this->scripts['public']['register'] = $this->add_script( $this->scripts['public']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, null, $constant_name );
 	}
 
 	/**
@@ -193,7 +193,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
 	public function enqueue_public_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->scripts['public']['enqueue'] = $this->add_script( $this->scripts['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
+		$this->scripts['public']['enqueue'] = $this->add_script( $this->scripts['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, null, $constant_name );
 	}
 
 	/**
@@ -221,10 +221,11 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   bool            $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
+	 * @param   array|null      $hook_suffixes          The admin pages to enqueue on. Null to enqueue everywhere.
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function register_admin_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->scripts['admin']['register'] = $this->add_script( $this->scripts['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
+	public function register_admin_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, ?array $hook_suffixes = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
+		$this->scripts['admin']['register'] = $this->add_script( $this->scripts['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $hook_suffixes, $constant_name );
 	}
 
 	/**
@@ -252,10 +253,11 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   bool            $in_footer              Whether the script asset should be loaded in the footer or the header of the page.
+	 * @param   array|null      $hook_suffixes          The admin pages to enqueue on. Null to enqueue everywhere.
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function enqueue_admin_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->scripts['admin']['enqueue'] = $this->add_script( $this->scripts['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $constant_name );
+	public function enqueue_admin_script( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), bool $in_footer = true, ?array $hook_suffixes = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
+		$this->scripts['admin']['enqueue'] = $this->add_script( $this->scripts['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $in_footer, $hook_suffixes, $constant_name );
 	}
 
 	/**
@@ -322,20 +324,22 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   string|null     $fallback_version   The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array           $deps               Array of dependent CSS handles that should be loaded first.
 	 * @param   bool            $in_footer          Whether the script asset should be loaded in the footer or the header of the page.
+	 * @param   array|null      $hook_suffixes      The admin pages to enqueue on. Null for public pages.
 	 * @param   string          $constant_name      The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 *
 	 * @return  array
 	 */
-	protected function add_script( array $assets, string $handle, string $relative_path, ?string $fallback_version, array $deps, bool $in_footer, string $constant_name ): array {
+	protected function add_script( array $assets, string $handle, string $relative_path, ?string $fallback_version, array $deps, bool $in_footer, ?array $hook_suffixes, string $constant_name ): array {
 		$absolute_path = $this->resolve_absolute_file_path( $relative_path, $constant_name );
 
 		if ( ! \is_null( $absolute_path ) ) {
 			$assets[] = array(
-				'handle'    => $handle,
-				'src'       => $relative_path,
-				'deps'      => $deps,
-				'ver'       => $this->maybe_generate_mtime_version_string( $absolute_path, $fallback_version ),
-				'in_footer' => $in_footer,
+				'handle'        => $handle,
+				'src'           => $relative_path,
+				'deps'          => $deps,
+				'ver'           => $this->maybe_generate_mtime_version_string( $absolute_path, $fallback_version ),
+				'in_footer'     => $in_footer,
+				'hook_suffixes' => $hook_suffixes,
 			);
 		}
 
@@ -350,16 +354,14 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 *
 	 * @param   array   $script     Script to register.
 	 *
-	 * @return  bool    Whether registration was successful or not.
+	 * @return  bool|null   Whether registration was successful or not.
 	 */
-	protected function array_walk_register_script( array $script ): bool {
-		return \wp_register_script(
-			$script['handle'],
-			$script['src'],
-			$script['deps'],
-			$script['ver'],
-			$script['in_footer'],
-		);
+	protected function array_walk_register_script( array $script ): ?bool {
+		if ( \is_null( $script['hook_suffixes'] ) || \in_array( $GLOBALS['hook_suffix'] ?? '', $script['hook_suffixes'], true ) ) {
+			return \wp_register_script( $script['handle'], $script['src'], $script['deps'], $script['ver'], $script['in_footer'] );
+		}
+
+		return null;
 	}
 
 	/**
@@ -371,13 +373,9 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @param   array   $script     Script to register.
 	 */
 	protected function array_walk_enqueue_script( array $script ): void {
-		\wp_enqueue_script(
-			$script['handle'],
-			$script['src'],
-			$script['deps'],
-			$script['ver'],
-			$script['in_footer'],
-		);
+		if ( \is_null( $script['hook_suffixes'] ) || \in_array( $GLOBALS['hook_suffix'] ?? '', $script['hook_suffixes'], true ) ) {
+			\wp_enqueue_script( $script['handle'], $script['src'], $script['deps'], $script['ver'], $script['in_footer'] );
+		}
 	}
 
 	/**
@@ -391,11 +389,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  bool
 	 */
 	protected function array_walk_add_inline_script( array $script ): bool {
-		return \wp_add_inline_script(
-			$script['handle'],
-			$script['data'],
-			$script['position']
-		);
+		return \wp_add_inline_script( $script['handle'], $script['data'], $script['position'] );
 	}
 
 	/**
@@ -409,11 +403,7 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  bool    Whether registration was successful or not.
 	 */
 	protected function array_walk_localize_script( array $localization ): bool {
-		return \wp_localize_script(
-			$localization['handle'],
-			$localization['object_name'],
-			$localization['object']
-		);
+		return \wp_localize_script( $localization['handle'], $localization['object_name'], $localization['object'] );
 	}
 
 	// endregion

@@ -1,9 +1,10 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
+namespace DeepWebSolutions\Framework\Utilities\Shortcodes\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
+use DeepWebSolutions\Framework\Utilities\Shortcodes\AbstractShortcodesHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -47,7 +48,7 @@ class DefaultShortcodesHandler extends AbstractShortcodesHandler {
 	 *
 	 * @return  RunFailureException|null
 	 */
-	public function run_local(): ?RunFailureException {
+	protected function run_local(): ?RunFailureException {
 		foreach ( $this->shortcodes as $hook ) {
 			if ( empty( $hook['component'] ) ) {
 				\add_shortcode( $hook['tag'], $hook['callback'] );
@@ -67,7 +68,7 @@ class DefaultShortcodesHandler extends AbstractShortcodesHandler {
 	 *
 	 * @return  ResetFailureException|null
 	 */
-	public function reset_local(): ?ResetFailureException {
+	protected function reset_local(): ?ResetFailureException {
 		foreach ( $this->shortcodes as $shortcode ) {
 			\remove_shortcode( $shortcode );
 		}

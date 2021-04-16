@@ -35,10 +35,12 @@ trait AdminNoticesHelpersTrait {
 		if ( $this instanceof PluginComponentInterface ) {
 			$root = ( 'dws-framework-utilities' === $root ) ? '' : $root;
 			$root = \join( '_', array( $this->get_plugin()->get_plugin_slug(), $root ?: $this->get_name() ) ); // phpcs:ignore
-		} elseif ( $this instanceof PluginAwareInterface ) {
-			$root = $this->get_plugin()->get_plugin_slug();
-		} elseif ( $this instanceof PluginInterface ) {
-			$root = $this->get_plugin_slug();
+		} elseif ( 'dws-framework-utilities' === $root ) {
+			if ( $this instanceof PluginAwareInterface ) {
+				$root = $this->get_plugin()->get_plugin_slug();
+			} elseif ( $this instanceof PluginInterface ) {
+				$root = $this->get_plugin_slug();
+			}
 		}
 
 		return Strings::to_safe_string(
@@ -53,8 +55,8 @@ trait AdminNoticesHelpersTrait {
 			),
 			array(
 				' '  => '-',
-				'/'  => '',
-				'\\' => '_',
+				'/'  => '-',
+				'\\' => '-',
 			)
 		);
 	}

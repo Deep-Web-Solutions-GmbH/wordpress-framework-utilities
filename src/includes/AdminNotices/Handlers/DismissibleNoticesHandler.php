@@ -147,7 +147,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 		$notice->set_dismissed( true );
 		$result = $store->update( $notice );
 
-		return \is_null( $result ) || boolval( $result );
+		return \is_null( $result ) || $result;
 	}
 
 	/**

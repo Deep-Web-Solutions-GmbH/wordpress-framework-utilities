@@ -4,6 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\ResetHandlersTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlersTrait;
+use DeepWebSolutions\Framework\Utilities\Shortcodes\Handlers\DefaultShortcodesHandler;
 use DeepWebSolutions\Framework\Foundations\Actions\{ ResettableInterface, RunnableInterface };
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractHandlerService;
 

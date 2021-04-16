@@ -81,7 +81,7 @@ trait DependenciesServiceAwareTrait {
 	 * @return  array
 	 */
 	public function get_dependencies( ?string $handler_id = null ): array {
-		$handler_id = $handler_id ?? $this->get_dependencies_handler_id( $handler_id );
+		$handler_id = $this->get_dependencies_handler_id( $handler_id );
 		return $this->get_dependencies_service()->get_dependencies( $handler_id );
 	}
 
@@ -96,7 +96,7 @@ trait DependenciesServiceAwareTrait {
 	 * @return  array
 	 */
 	public function get_missing_dependencies( ?string $handler_id = null ): array {
-		$handler_id = $handler_id ?? $this->get_dependencies_handler_id( $handler_id );
+		$handler_id = $this->get_dependencies_handler_id( $handler_id );
 		return $this->get_dependencies_service()->get_missing_dependencies( $handler_id );
 	}
 
@@ -111,7 +111,7 @@ trait DependenciesServiceAwareTrait {
 	 * @return  bool|bool[]|bool[][]
 	 */
 	public function are_dependencies_fulfilled( ?string $handler_id = null ) {
-		$handler_id = $handler_id ?? $this->get_dependencies_handler_id( $handler_id );
+		$handler_id = $this->get_dependencies_handler_id( $handler_id );
 		return $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );
 	}
 

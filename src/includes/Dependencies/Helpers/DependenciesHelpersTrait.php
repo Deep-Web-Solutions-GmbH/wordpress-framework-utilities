@@ -60,12 +60,12 @@ trait DependenciesHelpersTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string|null     $handler_id     The ID of the handler to return. A dependencies context is also accepted.
+	 * @param   string|null     $context    The context of the dependencies handler.
 	 *
 	 * @return  DependenciesHandlerInterface|null
 	 */
-	protected function get_dependencies_handler( ?string $handler_id = null ): ?DependenciesHandlerInterface {
-		$handler_id = $handler_id ?? $this->get_dependencies_handler_id( $handler_id );
+	protected function get_dependencies_handler( ?string $context = null ): ?DependenciesHandlerInterface {
+		$handler_id = $this->get_dependencies_handler_id( $context );
 		$handler    = null;
 
 		if ( $this instanceof DependenciesServiceAwareInterface ) {

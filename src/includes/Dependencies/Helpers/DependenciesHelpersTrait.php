@@ -93,13 +93,18 @@ trait DependenciesHelpersTrait {
 			$are_deps_fulfilled = \is_null( $func ) ? $are_deps_fulfilled : \call_user_func( $func, $are_deps_fulfilled );
 		} elseif ( \is_array( \reset( $are_deps_fulfilled ) ) ) { // MultiCheckerHandler
 			foreach ( $are_deps_fulfilled as $dependencies_status ) {
-				$unfulfilled = \is_null( $func )
-					? Arrays::search_values( $dependencies_status, false, false )
-					: \call_user_func( $func, $are_deps_fulfilled );
-
-				if ( ! \is_null( $unfulfilled ) ) {
-					$are_deps_fulfilled = false;
-					break;
+				if ( \is_null( $func ) ) {
+					$unfulfilled = Arrays::search_values( $dependencies_status, false, false );
+					if ( ! \is_null( $unfulfilled ) ) {
+						$are_deps_fulfilled = false;
+						break;
+					}
+				} else {
+					$fulfilled = \call_user_func( $func, $dependencies_status );
+					if ( false === $fulfilled ) {
+						$are_deps_fulfilled = false;
+						break;
+					}
 				}
 			}
 

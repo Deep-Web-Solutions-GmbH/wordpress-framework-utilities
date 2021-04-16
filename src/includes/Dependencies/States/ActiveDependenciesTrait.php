@@ -76,9 +76,9 @@ trait ActiveDependenciesTrait {
 	 *
 	 * @param   bool[]      $dependencies_status    Array to evaluate.
 	 *
-	 * @return  null|false  Null if all required dependencies are true or false otherwise.
+	 * @return  bool    Whether all required dependencies are fulfilled or not.
 	 */
-	protected function is_active_required_dependencies( array $dependencies_status ): ?bool {
+	protected function is_active_required_dependencies( array $dependencies_status ): bool {
 		$unfulfilled        = Arrays::search_values( $dependencies_status, false, false );
 		$are_deps_fulfilled = \is_null( $unfulfilled );
 
@@ -94,7 +94,7 @@ trait ActiveDependenciesTrait {
 			$are_deps_fulfilled   = ( \count( $unfulfilled ) === \count( $optional_unfulfilled ) );
 		}
 
-		return $are_deps_fulfilled ? null : false;
+		return $are_deps_fulfilled;
 	}
 
 	// endregion

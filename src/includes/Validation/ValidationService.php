@@ -41,11 +41,13 @@ class ValidationService extends AbstractMultiHandlerService {
 	/**
 	 * Validates a value based on passed parameters.
 	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @param   mixed   $value              The value to validate.
-	 * @param   string  $default_key        The key of the default value in the container.
+	 * @param   string  $default_key        The key of the default value in the within the handler.
 	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
 	 * @param   array   $params             Additional params needed for the validation type.
 	 * @param   string  $handler_id         The ID of the handler to use for validation.
@@ -66,6 +68,8 @@ class ValidationService extends AbstractMultiHandlerService {
 				return $this->validate_callback_value( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::OPTION:
 				return $this->validate_supported_value( $value, $params['options_key'] ?? '', $default_key, $handler_id );
+			case ValidationTypesEnum::OPTION_ARRAY:
+				return $this->validate_supported_value_list( (array) $value, $params['options_key'] ?? '', $default_key, $handler_id );
 			case ValidationTypesEnum::CUSTOM:
 				if ( isset( $params['callable'] ) && \is_callable( $params['callable'] ) ) {
 					return \call_user_func_array( $params['callable'], array( $value, $default_key, $this->get_handler( $handler_id ) ) + ( $params['args'] ?? array() ) );
@@ -87,7 +91,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	 * @param   string  $key            The composite key to retrieve the default value.
 	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
 	 *
 	 * @return  bool
 	 */
@@ -105,7 +109,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	 * @param   string  $key            The composite key to retrieve the default value.
 	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
 	 *
 	 * @return  int
 	 */
@@ -123,7 +127,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	 * @param   string  $key            The composite key to retrieve the default value.
 	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
 	 *
 	 * @return  float
 	 */
@@ -138,7 +142,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	 * @param   string  $key            The composite key to retrieve the default value.
 	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the container.
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
 	 *
 	 * @return  callable
 	 */
@@ -154,12 +158,36 @@ class ValidationService extends AbstractMultiHandlerService {
 	 * @param   string  $default_key    The composite key to retrieve the default value.
 	 * @param   string  $handler_id     The ID of the handler to use for validation.
 	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the containers.
+	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the handler.
 	 *
 	 * @return  mixed
 	 */
 	public function validate_supported_value( $value, string $options_key, string $default_key, string $handler_id = 'default' ) {
 		return $this->get_handler( $handler_id )->validate_supported_value( $value, $options_key, $default_key );
+	}
+
+	/**
+	 * Validates each value inside an array as being a valid option using the given handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $values         The array of values to compare.
+	 * @param   string  $options_key    The composite key to retrieve the supported values.
+	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
+	 *
+	 * @return  array
+	 */
+	public function validate_supported_value_list( array $values, string $options_key, string $default_key, string $handler_id = 'default' ): array {
+		return \array_filter(
+			\array_map(
+				function( $value ) use ( $options_key, $default_key, $handler_id ) {
+					return $this->validate_supported_value( $value, $options_key, $default_key, $handler_id );
+				},
+				$values
+			)
+		);
 	}
 
 	// endregion

@@ -138,10 +138,10 @@ class CronIntervalsEnum {
 	/**
 	 * Converts an interval's slug into a WP-compatible cron schedule definition.
 	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 *
 	 * @param   string  $interval_slug  Slug of the interval to convert.
 	 *

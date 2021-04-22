@@ -227,7 +227,7 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 		}
 
 		foreach ( $boom as $key ) {
-			if ( isset( $value[ $key ] ) || \array_key_exists( $key, $value ) ) {
+			if ( isset( $value[ $key ] ) || \array_key_exists( $key, $value ) ) { // This will support entries containing literal NULL.
 				$value = $value[ $key ];
 			} else {
 				return new InexistentPropertyException( \sprintf( 'Inexistent container entry: %s', $key ) );

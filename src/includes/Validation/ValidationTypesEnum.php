@@ -69,6 +69,17 @@ class ValidationTypesEnum {
 	public const OPTION = 'option';
 
 	/**
+	 * Validate an array of options against a list.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @access  public
+	 * @var     string
+	 */
+	public const OPTION_ARRAY = 'option_array';
+
+	/**
 	 * Validate using a custom callback.
 	 *
 	 * @since   1.0.0

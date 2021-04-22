@@ -38,11 +38,11 @@ class PHPIncompatibleSettingsChecker extends AbstractDependenciesChecker {
 	/**
 	 * Returns a list of incompatible PHP settings.
 	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 * @see     https://github.com/skyverge/wc-plugin-framework/blob/de7f429af153a17a0fd84cf9a1c56c6ac5ffbc08/woocommerce/class-sv-wc-plugin-dependencies.php
-	 *
-	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 *
 	 * @return  array
 	 */

@@ -26,7 +26,7 @@
     "deep-web-solutions/wp-framework-foundations": "^1.4.2"
   },
   "require-dev": {
-    "woocommerce/action-scheduler": ">=3.1.6",
+    "woocommerce/action-scheduler": "^3.1",
 
     "deep-web-solutions/wordpress-configs": "master@dev",
     "php-stubs/wordpress-stubs": "5.5.*",
@@ -39,8 +39,6 @@
     "phpcompatibility/phpcompatibility-wp": "*",
     "wp-coding-standards/wpcs": "*"
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
 
   "autoload": {
     "psr-4": {

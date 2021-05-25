@@ -403,6 +403,12 @@ class ScriptsHandler extends AbstractAssetsHandler {
 	 * @return  bool    Whether registration was successful or not.
 	 */
 	protected function array_walk_localize_script( array $localization ): bool {
+		\array_walk(
+			$localization['object'],
+			function( &$value ) {
+				$value = \is_callable( $value ) ? \call_user_func( $value ) : $value;
+			}
+		);
 		return \wp_localize_script( $localization['handle'], $localization['object_name'], $localization['object'] );
 	}
 

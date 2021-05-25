@@ -115,7 +115,7 @@ interface ValidationHandlerInterface extends HandlerInterface {
 	 *
 	 * @return  callable
 	 */
-	public function validate_callback_value( $value, string $key ): callable;
+	public function validate_callable_value( $value, string $key ): callable;
 
 	/**
 	 * Validates a given value as a valid option.

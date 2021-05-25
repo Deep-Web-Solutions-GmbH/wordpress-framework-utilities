@@ -65,7 +65,7 @@ class ValidationService extends AbstractMultiHandlerService {
 			case ValidationTypesEnum::FLOAT:
 				return $this->validate_float_value( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::CALLBACK:
-				return $this->validate_callback_value( $value, $default_key, $handler_id );
+				return $this->validate_callable_value( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::OPTION:
 				return $this->validate_supported_value( $value, $params['options_key'] ?? '', $default_key, $handler_id );
 			case ValidationTypesEnum::OPTION_ARRAY:
@@ -146,8 +146,8 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  callable
 	 */
-	public function validate_callback_value( $value, string $key, string $handler_id = 'default' ): callable {
-		return $this->get_handler( $handler_id )->validate_callback_value( $value, $key );
+	public function validate_callable_value( $value, string $key, string $handler_id = 'default' ): callable {
+		return $this->get_handler( $handler_id )->validate_callable_value( $value, $key );
 	}
 
 	/**

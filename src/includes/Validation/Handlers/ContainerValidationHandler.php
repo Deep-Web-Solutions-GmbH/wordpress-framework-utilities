@@ -172,16 +172,11 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @return  callable
 	 */
-	public function validate_callback_value( $value, string $key ): callable {
+	public function validate_callable_value( $value, string $key ): callable {
 		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_callable( $default ) ? $default : Validation::validate_callback(
-			$default,
-			function( $value ) {
-				return $value;
-			}
-		);
+		$default = \is_callable( $default ) ? $default : Validation::validate_callable( $default, fn( $value ) => $value );
 
-		return Validation::validate_callback( $value, $default );
+		return Validation::validate_callable( $value, $default );
 	}
 
 	/**

@@ -82,16 +82,16 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 		?>
 
 		( function( $ ) {
-			$( '.dws-framework-notice-<?php echo \esc_js( $this->get_plugin()->get_plugin_slug() ); ?>' ).on( 'click.wp-dismiss-notice', '.notice-dismiss', function( e ) {
+			$( '.dws-framework-notice-%plugin_slug%' ).on( 'click.wp-dismiss-notice', '.notice-dismiss', function( e ) {
 				var notice = $( this ).closest( '.dws-framework-notice' );
 				$.ajax( {
 					url: ajaxurl,
 					method: 'POST',
-						data: {
-						action: '<?php echo \esc_js( $this->get_hook_tag( 'dismiss_notice' ) ); ?>',
+					data: {
+						action: '%action%',
 						handle: $( notice ).data( 'handle' ),
 						store: $( notice ).data( 'store' ),
-						_wpnonce: '<?php echo \esc_js( \wp_create_nonce( $this->get_plugin()->get_plugin_slug() . '-dws-dismiss-notice' ) ); ?>'
+						_wpnonce: '%nonce%'
 					}
 				} );
 			} );
@@ -99,7 +99,16 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 
 		<?php
 
-		echo Assets::wrap_string_in_script_tags( \ob_get_clean() ); // phpcs:ignore
+		echo Assets::wrap_string_in_script_tags( // phpcs:ignore
+			Strings::replace_placeholders(
+				array(
+					'%plugin_slug%' => \esc_js( $this->get_plugin()->get_plugin_slug() ),
+					'%action%'      => \esc_js( $this->get_hook_tag( 'dismiss_notice' ) ),
+					'%nonce%'       => \esc_js( \wp_create_nonce( $this->get_plugin()->get_plugin_safe_slug() . '_dismiss_notice' ) ),
+				),
+				\ob_get_clean()
+			)
+		);
 	}
 
 	/**
@@ -111,7 +120,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 	 * @throws  ContainerExceptionInterface     Thrown when an error occurs while dismissing the notice.
 	 */
 	public function handle_ajax_dismiss(): void {
-		if ( \is_user_logged_in() && \check_ajax_referer( $this->get_plugin()->get_plugin_slug() . '-dws-dismiss-notice' ) ) {
+		if ( \is_user_logged_in() && \check_ajax_referer( $this->get_plugin()->get_plugin_safe_slug() . '_dismiss_notice' ) ) {
 			$handle = \sanitize_key( $_POST['handle'] ?? '' );
 			$store  = \sanitize_key( $_POST['store'] ?? '' );
 			$this->dismiss_notice( $handle, $store );

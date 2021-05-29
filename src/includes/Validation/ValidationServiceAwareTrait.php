@@ -111,8 +111,8 @@ trait ValidationServiceAwareTrait {
 	 *
 	 * @return  mixed
 	 */
-	public function validate_value( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
-		return $this->get_validation_service()->validate_value( $value, $default_key, $validation_type, $params, $handler_id );
+	public function validate( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
+		return $this->get_validation_service()->validate( $value, $default_key, $validation_type, $params, $handler_id );
 	}
 
 	// endregion

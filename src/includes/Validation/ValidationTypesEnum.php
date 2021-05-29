@@ -47,7 +47,7 @@ class ValidationTypesEnum {
 	public const FLOAT = 'float';
 
 	/**
-	 * Validate a callback.
+	 * Validate a callable.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -55,29 +55,7 @@ class ValidationTypesEnum {
 	 * @access  public
 	 * @var     string
 	 */
-	public const CALLBACK = 'callback';
-
-	/**
-	 * Validate an option against a list.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @access  public
-	 * @var     string
-	 */
-	public const OPTION = 'option';
-
-	/**
-	 * Validate an array of options against a list.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @access  public
-	 * @var     string
-	 */
-	public const OPTION_ARRAY = 'option_array';
+	public const CALLABLE = 'callable';
 
 	/**
 	 * Validate using a custom callback.

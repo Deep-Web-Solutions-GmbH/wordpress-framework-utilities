@@ -56,20 +56,16 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  mixed
 	 */
-	public function validate_value( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
+	public function validate( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
 		switch ( $validation_type ) {
 			case ValidationTypesEnum::BOOLEAN:
-				return $this->validate_boolean_value( $value, $default_key, $handler_id );
+				return $this->validate_boolean( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::INTEGER:
-				return $this->validate_integer_value( $value, $default_key, $handler_id );
+				return $this->validate_integer( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::FLOAT:
-				return $this->validate_float_value( $value, $default_key, $handler_id );
-			case ValidationTypesEnum::CALLBACK:
-				return $this->validate_callable_value( $value, $default_key, $handler_id );
-			case ValidationTypesEnum::OPTION:
-				return $this->validate_supported_value( $value, $params['options_key'] ?? '', $default_key, $handler_id );
-			case ValidationTypesEnum::OPTION_ARRAY:
-				return $this->validate_supported_value_list( (array) $value, $params['options_key'] ?? '', $default_key, $handler_id );
+				return $this->validate_float( $value, $default_key, $handler_id );
+			case ValidationTypesEnum::CALLABLE:
+				return $this->validate_callable( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::CUSTOM:
 				if ( isset( $params['callable'] ) && \is_callable( $params['callable'] ) ) {
 					return \call_user_func_array( $params['callable'], array( $value, $default_key, $this->get_handler( $handler_id ) ) + ( $params['args'] ?? array() ) );
@@ -95,8 +91,8 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  bool
 	 */
-	public function validate_boolean_value( $value, string $key, string $handler_id = 'default' ): bool {
-		return $this->get_handler( $handler_id )->validate_boolean_value( $value, $key );
+	public function validate_boolean( $value, string $key, string $handler_id = 'default' ): bool {
+		return $this->get_handler( $handler_id )->validate_boolean( $value, $key );
 	}
 
 	/**
@@ -113,8 +109,8 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  int
 	 */
-	public function validate_integer_value( $value, string $key, string $handler_id = 'default' ): int {
-		return $this->get_handler( $handler_id )->validate_integer_value( $value, $key );
+	public function validate_integer( $value, string $key, string $handler_id = 'default' ): int {
+		return $this->get_handler( $handler_id )->validate_integer( $value, $key );
 	}
 
 	/**
@@ -131,8 +127,8 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  float
 	 */
-	public function validate_float_value( $value, string $key, string $handler_id = 'default' ): float {
-		return $this->get_handler( $handler_id )->validate_float_value( $value, $key );
+	public function validate_float( $value, string $key, string $handler_id = 'default' ): float {
+		return $this->get_handler( $handler_id )->validate_float( $value, $key );
 	}
 
 	/**
@@ -146,48 +142,8 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  callable
 	 */
-	public function validate_callable_value( $value, string $key, string $handler_id = 'default' ): callable {
-		return $this->get_handler( $handler_id )->validate_callable_value( $value, $key );
-	}
-
-	/**
-	 * Validates a given value as a valid option using the given handler.
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $options_key    The composite key to retrieve the supported values.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found inside the handler.
-	 *
-	 * @return  mixed
-	 */
-	public function validate_supported_value( $value, string $options_key, string $default_key, string $handler_id = 'default' ) {
-		return $this->get_handler( $handler_id )->validate_supported_value( $value, $options_key, $default_key );
-	}
-
-	/**
-	 * Validates each value inside an array as being a valid option using the given handler.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   array   $values         The array of values to compare.
-	 * @param   string  $options_key    The composite key to retrieve the supported values.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @return  array
-	 */
-	public function validate_supported_value_list( array $values, string $options_key, string $default_key, string $handler_id = 'default' ): array {
-		return \array_filter(
-			\array_map(
-				function( $value ) use ( $options_key, $default_key, $handler_id ) {
-					return $this->validate_supported_value( $value, $options_key, $default_key, $handler_id );
-				},
-				$values
-			)
-		);
+	public function validate_callable( $value, string $key, string $handler_id = 'default' ): callable {
+		return $this->get_handler( $handler_id )->validate_callable( $value, $key );
 	}
 
 	// endregion

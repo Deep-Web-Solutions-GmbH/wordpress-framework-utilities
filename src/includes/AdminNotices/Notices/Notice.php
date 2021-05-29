@@ -3,7 +3,7 @@
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
-use DeepWebSolutions\Framework\Helpers\Security\Validation;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
 use DeepWebSolutions\Framework\Helpers\WordPress\Users;
 
 \defined( 'ABSPATH' ) || exit;
@@ -44,7 +44,7 @@ class Notice extends AbstractNotice {
 	 * @return  OutputFailureException|null
 	 */
 	public function output(): ?OutputFailureException {
-		$this->message = Validation::validate_boolean( $this->args['html'] ?? false, false )
+		$this->message = Booleans::maybe_cast( $this->args['html'] ?? false, false )
 			? $this->message : "<p>{$this->message}</p>";
 
 		return parent::output();

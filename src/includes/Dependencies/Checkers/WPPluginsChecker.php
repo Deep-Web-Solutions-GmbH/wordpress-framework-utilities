@@ -3,8 +3,8 @@
 namespace DeepWebSolutions\Framework\Utilities\Dependencies\Checkers;
 
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
-use DeepWebSolutions\Framework\Helpers\Security\Validation;
 use DeepWebSolutions\Framework\Utilities\Dependencies\AbstractDependenciesChecker;
 
 \defined( 'ABSPATH' ) || exit;
@@ -112,7 +112,7 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 	 */
 	protected function is_plugin_active( string $plugin, array $plugin_config ): bool {
 		if ( isset( $plugin_config['active_checker'] ) && \is_callable( $plugin_config['active_checker'] ) ) {
-			$is_active = Validation::validate_boolean( \call_user_func( $plugin_config['active_checker'] ), false );
+			$is_active = Booleans::maybe_cast( \call_user_func( $plugin_config['active_checker'] ), false );
 		} else {
 			$is_active = \in_array( $plugin, \apply_filters( 'active_plugins', \get_option( 'active_plugins' ) ), true ); // phpcs:ignore
 			if ( \is_multisite() && ! $is_active ) {

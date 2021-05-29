@@ -5,8 +5,10 @@ namespace DeepWebSolutions\Framework\Utilities\Validation\Handlers;
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareTrait;
-use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
-use DeepWebSolutions\Framework\Helpers\Security\Validation;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Callables;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Floats;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Integers;
 use DeepWebSolutions\Framework\Utilities\Validation\AbstractValidationHandler;
 use Psr\Container\ContainerInterface;
 
@@ -115,11 +117,11 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @return  bool
 	 */
-	public function validate_boolean_value( $value, string $key ): bool {
+	public function validate_boolean( $value, string $key ): bool {
 		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_bool( $default ) ? $default : Validation::validate_boolean( $default, false );
+		$default = Booleans::validate( $default, Booleans::maybe_cast( $default, false ) );
 
-		return Validation::validate_boolean( $value, $default );
+		return Booleans::maybe_cast( $value, $default );
 	}
 
 	/**
@@ -135,11 +137,11 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @return  int
 	 */
-	public function validate_integer_value( $value, string $key ): int {
+	public function validate_integer( $value, string $key ): int {
 		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_int( $default ) ? $default : Validation::validate_integer( $default, 0 );
+		$default = Integers::validate( $default, Integers::maybe_cast( $default, 0 ) );
 
-		return Validation::validate_integer( $value, $default );
+		return Integers::maybe_cast( $value, $default );
 	}
 
 	/**
@@ -155,11 +157,11 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @return  float
 	 */
-	public function validate_float_value( $value, string $key ): float {
+	public function validate_float( $value, string $key ): float {
 		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_float( $default ) ? $default : Validation::validate_float( $default, 0.0 );
+		$default = Floats::validate( $default, Floats::maybe_cast( $default, 0.0 ) );
 
-		return Validation::validate_float( $value, $default );
+		return Floats::maybe_cast( $value, $default );
 	}
 
 	/**
@@ -172,33 +174,11 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 *
 	 * @return  callable
 	 */
-	public function validate_callable_value( $value, string $key ): callable {
+	public function validate_callable( $value, string $key ): callable {
 		$default = $this->get_default_value_or_throw( $key );
-		$default = \is_callable( $default ) ? $default : Validation::validate_callable( $default, fn( $value ) => $value );
+		$default = Callables::validate( $default, fn( $value ) => $value );
 
-		return Validation::validate_callable( $value, $default );
-	}
-
-	/**
-	 * Validates a given value as a valid option.
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $options_key    The composite key to retrieve the supported values.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found.
-	 *
-	 * @return  mixed
-	 */
-	public function validate_supported_value( $value, string $options_key, string $default_key ) {
-		$default          = $this->get_default_value_or_throw( $default_key );
-		$supported_values = $this->get_supported_options_or_throw( $options_key );
-
-		if ( Arrays::has_string_keys( $supported_values ) ) {
-			$supported_values = \array_keys( $supported_values );
-		}
-
-		return Validation::validate_allowed_value( $value, $supported_values, $default );
+		return Callables::validate( $value, $default );
 	}
 
 	// endregion

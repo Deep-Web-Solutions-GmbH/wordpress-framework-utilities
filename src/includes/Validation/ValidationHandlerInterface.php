@@ -73,7 +73,7 @@ interface ValidationHandlerInterface extends HandlerInterface {
 	 *
 	 * @return  bool
 	 */
-	public function validate_boolean_value( $value, string $key ): bool;
+	public function validate_boolean( $value, string $key ): bool;
 
 	/**
 	 * Validates a given value as an int.
@@ -88,7 +88,7 @@ interface ValidationHandlerInterface extends HandlerInterface {
 	 *
 	 * @return  int
 	 */
-	public function validate_integer_value( $value, string $key ): int;
+	public function validate_integer( $value, string $key ): int;
 
 	/**
 	 * Validates a given value as a float.
@@ -103,7 +103,7 @@ interface ValidationHandlerInterface extends HandlerInterface {
 	 *
 	 * @return  float
 	 */
-	public function validate_float_value( $value, string $key ): float;
+	public function validate_float( $value, string $key ): float;
 
 	/**
 	 * Validates a given value as a callable.
@@ -115,18 +115,5 @@ interface ValidationHandlerInterface extends HandlerInterface {
 	 *
 	 * @return  callable
 	 */
-	public function validate_callable_value( $value, string $key ): callable;
-
-	/**
-	 * Validates a given value as a valid option.
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $options_key    The composite key to retrieve the supported values.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported values were not found.
-	 *
-	 * @return  mixed
-	 */
-	public function validate_supported_value( $value, string $options_key, string $default_key );
+	public function validate_callable( $value, string $key ): callable;
 }

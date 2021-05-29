@@ -4,7 +4,8 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Utilities\Storage\AbstractStorable;
-use DeepWebSolutions\Framework\Helpers\Security\Validation;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
 
@@ -82,8 +83,8 @@ abstract class AbstractNotice extends AbstractStorable implements AdminNoticeInt
 		parent::__construct( $handle );
 
 		$this->message       = $message;
-		$this->type          = Validation::validate_allowed_value( $type, AdminNoticeTypesEnum::get_all(), AdminNoticeTypesEnum::ERROR );
-		$this->is_persistent = Validation::validate_boolean( $args['persistent'] ?? false, false );
+		$this->type          = Strings::validate_allowed( $type, AdminNoticeTypesEnum::get_all(), AdminNoticeTypesEnum::ERROR );
+		$this->is_persistent = Booleans::maybe_cast( $args['persistent'] ?? false, false );
 		$this->args          = $args;
 	}
 

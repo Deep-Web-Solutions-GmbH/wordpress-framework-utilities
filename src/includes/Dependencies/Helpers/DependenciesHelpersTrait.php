@@ -94,7 +94,7 @@ trait DependenciesHelpersTrait {
 		} elseif ( \is_array( \reset( $are_deps_fulfilled ) ) ) { // MultiCheckerHandler
 			foreach ( $are_deps_fulfilled as $dependencies_status ) {
 				if ( \is_null( $func ) ) {
-					$unfulfilled = Arrays::search_values( $dependencies_status, false, false );
+					$unfulfilled = Arrays::search_values( $dependencies_status, false, null, false );
 					if ( ! \is_null( $unfulfilled ) ) {
 						$are_deps_fulfilled = false;
 						break;

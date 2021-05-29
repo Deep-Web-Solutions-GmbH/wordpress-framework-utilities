@@ -79,17 +79,14 @@ trait ActiveDependenciesTrait {
 	 * @return  bool    Whether all required dependencies are fulfilled or not.
 	 */
 	protected function is_active_required_dependencies( array $dependencies_status ): bool {
-		$unfulfilled        = Arrays::search_values( $dependencies_status, false, false );
+		$unfulfilled        = Arrays::search_values( $dependencies_status, false, null, false );
 		$are_deps_fulfilled = \is_null( $unfulfilled );
 
 		if ( ! $are_deps_fulfilled && Arrays::has_string_keys( $dependencies_status ) ) {
 			$optional_unfulfilled = Arrays::search_keys(
 				$unfulfilled,
 				true,
-				true,
-				function( string $key ) {
-					return strpos( $key, 'optional' ) !== false;
-				}
+				fn( string $key ) => \strpos( $key, 'optional' ) !== false
 			) ?? array();
 			$are_deps_fulfilled   = ( \count( $unfulfilled ) === \count( $optional_unfulfilled ) );
 		}

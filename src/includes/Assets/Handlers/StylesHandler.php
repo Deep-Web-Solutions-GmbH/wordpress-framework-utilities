@@ -3,6 +3,7 @@
 namespace DeepWebSolutions\Framework\Utilities\Assets\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
 use DeepWebSolutions\Framework\Helpers\WordPress\Request;
 use DeepWebSolutions\Framework\Helpers\WordPress\RequestTypesEnum;
 use DeepWebSolutions\Framework\Utilities\Assets\AbstractAssetsHandler;
@@ -133,10 +134,11 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string          $media                  The media query that the CSS asset should be active at.
+	 * @param   callable|null   $conditions             Function that should evaluate to true for the style to be registered.
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function register_public_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->styles['public']['register'] = $this->add_style( $this->styles['public']['register'], $handle, $relative_path, $fallback_version, $deps, $media, null, $constant_name );
+	public function register_public_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', ?callable $conditions = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
+		$this->styles['public']['register'] = $this->add_style( $this->styles['public']['register'], $handle, $relative_path, $fallback_version, $deps, $media, null, $conditions, $constant_name );
 	}
 
 	/**
@@ -162,10 +164,11 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   string|null     $fallback_version       The string to be used as a cache-busting fallback if everything else fails.
 	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string          $media                  The media query that the CSS asset should be active at.
+	 * @param   callable|null   $conditions             Function that should evaluate to true for the style to be enqueued.
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function enqueue_public_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->styles['public']['enqueue'] = $this->add_style( $this->styles['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, null, $constant_name );
+	public function enqueue_public_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', ?callable $conditions = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
+		$this->styles['public']['enqueue'] = $this->add_style( $this->styles['public']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, null, $conditions, $constant_name );
 	}
 
 	/**
@@ -192,10 +195,11 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string          $media                  The media query that the CSS asset should be active at.
 	 * @param   array|null      $hook_suffixes          The admin pages to enqueue on. Null to enqueue everywhere.
+	 * @param   callable|null   $conditions             Function that should evaluate to true for the style to be registered.
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function register_admin_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', ?array $hook_suffixes = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->styles['admin']['register'] = $this->add_style( $this->styles['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $media, $hook_suffixes, $constant_name );
+	public function register_admin_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', ?array $hook_suffixes = null, ?callable $conditions = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
+		$this->styles['admin']['register'] = $this->add_style( $this->styles['admin']['register'], $handle, $relative_path, $fallback_version, $deps, $media, $hook_suffixes, $conditions, $constant_name );
 	}
 
 	/**
@@ -222,10 +226,11 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   array           $deps                   Array of dependent CSS handles that should be loaded first.
 	 * @param   string          $media                  The media query that the CSS asset should be active at.
 	 * @param   array|null      $hook_suffixes          The admin pages to enqueue on. Null to enqueue everywhere.
+	 * @param   callable|null   $conditions             Function that should evaluate to true for the style to be enqueued.
 	 * @param   string          $constant_name          The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 */
-	public function enqueue_admin_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', ?array $hook_suffixes = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
-		$this->styles['admin']['enqueue'] = $this->add_style( $this->styles['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, $hook_suffixes, $constant_name );
+	public function enqueue_admin_style( string $handle, string $relative_path, ?string $fallback_version, array $deps = array(), string $media = 'all', ?array $hook_suffixes = null, ?callable $conditions = null, string $constant_name = 'SCRIPT_DEBUG' ): void {
+		$this->styles['admin']['enqueue'] = $this->add_style( $this->styles['admin']['enqueue'], $handle, $relative_path, $fallback_version, $deps, $media, $hook_suffixes, $conditions, $constant_name );
 	}
 
 	/**
@@ -273,11 +278,12 @@ class StylesHandler extends AbstractAssetsHandler {
 	 * @param   array           $deps               Array of dependent CSS handles that should be loaded first.
 	 * @param   string          $media              The media query that the CSS asset should be active at.
 	 * @param   array|null      $hook_suffixes      The admin pages to enqueue on. Null for public pages.
+	 * @param   callable|null   $conditions         Function that should evaluate to true for the style to be enqueued/registered.
 	 * @param   string          $constant_name      The name of the constant to check for truthful values in case the assets should be loaded in a non-minified state.
 	 *
 	 * @return  array
 	 */
-	protected function add_style( array $assets, string $handle, string $relative_path, ?string $fallback_version, array $deps, string $media, ?array $hook_suffixes, string $constant_name ): array {
+	protected function add_style( array $assets, string $handle, string $relative_path, ?string $fallback_version, array $deps, string $media, ?array $hook_suffixes, ?callable $conditions, string $constant_name ): array {
 		$absolute_path = $this->resolve_absolute_file_path( $relative_path, $constant_name );
 
 		if ( ! \is_null( $absolute_path ) ) {
@@ -288,6 +294,7 @@ class StylesHandler extends AbstractAssetsHandler {
 				'ver'           => $this->maybe_generate_mtime_version_string( $absolute_path, $fallback_version ),
 				'media'         => $media,
 				'hook_suffixes' => $hook_suffixes,
+				'conditions'    => $conditions,
 			);
 		}
 
@@ -306,7 +313,9 @@ class StylesHandler extends AbstractAssetsHandler {
 	 */
 	protected function array_walk_register_style( array $style ): ?bool {
 		if ( \is_null( $style['hook_suffixes'] ) || \in_array( $GLOBALS['hook_suffix'] ?? '', $style['hook_suffixes'], true ) ) {
-			return \wp_register_style( $style['handle'], $style['src'], $style['deps'], $style['ver'], $style['media'] );
+			if ( ! \is_callable( $style['conditions'] ) || Booleans::maybe_cast( \call_user_func( $style['conditions'], $style ), false ) ) {
+				return \wp_register_style( $style['handle'], $style['src'], $style['deps'], $style['ver'], $style['media'] );
+			}
 		}
 
 		return null;
@@ -322,7 +331,9 @@ class StylesHandler extends AbstractAssetsHandler {
 	 */
 	protected function array_walk_enqueue_style( array $style ): void {
 		if ( \is_null( $style['hook_suffixes'] ) || \in_array( $GLOBALS['hook_suffix'] ?? '', $style['hook_suffixes'], true ) ) {
-			\wp_enqueue_style( $style['handle'], $style['src'], $style['deps'], $style['ver'], $style['media'] );
+			if ( ! \is_callable( $style['conditions'] ) || Booleans::maybe_cast( \call_user_func( $style['conditions'], $style ), false ) ) {
+				\wp_enqueue_style( $style['handle'], $style['src'], $style['deps'], $style['ver'], $style['media'] );
+			}
 		}
 	}
 

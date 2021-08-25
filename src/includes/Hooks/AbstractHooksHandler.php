@@ -2,10 +2,6 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetLocalTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
@@ -18,14 +14,7 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks
  */
-abstract class AbstractHooksHandler extends AbstractHandler implements HooksHandlerInterface, RunnableInterface, ResettableInterface {
-	// region TRAITS
-
-	use RunLocalTrait;
-	use ResetLocalTrait;
-
-	// endregion
-
+abstract class AbstractHooksHandler extends AbstractHandler implements HooksHandlerInterface {
 	// region FIELDS AND CONSTANTS
 
 	/**

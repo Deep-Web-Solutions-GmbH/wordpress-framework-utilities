@@ -11,7 +11,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Modified version of the Hooks handler that differs by keeping the hooks registered only within a certain scope
+ * Modified version of the Hooks default handler that differs by keeping the hooks registered only within a certain scope
  * delimited by certain start and end hooks, respectively.
  *
  * @see     https://github.com/andykeith/barn2-lib/blob/master/lib/class-wp-scoped-hooks.php

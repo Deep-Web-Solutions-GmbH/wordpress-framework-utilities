@@ -3,7 +3,11 @@
 namespace DeepWebSolutions\Framework\Utilities\Hooks\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetLocalTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\AbstractHooksHandler;
 
 \defined( 'ABSPATH' ) || exit;
@@ -21,7 +25,14 @@ use DeepWebSolutions\Framework\Utilities\Hooks\AbstractHooksHandler;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks\Handlers
  */
-class DefaultHooksHandler extends AbstractHooksHandler {
+class DefaultHooksHandler extends AbstractHooksHandler implements RunnableInterface, ResettableInterface {
+	// region TRAITS
+
+	use RunLocalTrait;
+	use ResetLocalTrait;
+
+	// endregion
+
 	// region MAGIC METHODS
 
 	/**

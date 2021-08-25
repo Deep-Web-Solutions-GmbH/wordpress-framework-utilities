@@ -6,7 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\ResetHandlersTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlersTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractHandlerService;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\DefaultHooksHandler;
 
 \defined( 'ABSPATH' ) || exit;
@@ -19,7 +19,7 @@ use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\DefaultHooksHandler;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks
  */
-class HooksService extends AbstractHandlerService implements RunnableInterface, ResettableInterface {
+class HooksService extends AbstractMultiHandlerService implements RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use ResetHandlersTrait;
@@ -35,11 +35,13 @@ class HooksService extends AbstractHandlerService implements RunnableInterface, 
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
+	 * @param   string  $handler_id     The ID of the handler to retrieve.
+	 *
 	 * @return  HooksHandlerInterface
 	 */
-	public function get_handler(): HooksHandlerInterface { // phpcs:ignore
+	public function get_handler( string $handler_id ): ?HooksHandlerInterface { // phpcs:ignore
 		/* @noinspection PhpIncompatibleReturnTypeInspection */
-		return parent::get_handler();
+		return parent::get_handler( $handler_id );
 	}
 
 	// endregion
@@ -57,9 +59,10 @@ class HooksService extends AbstractHandlerService implements RunnableInterface, 
 	 * @param    string         $callback       The name of the function definition on the $component.
 	 * @param    int            $priority       Optional. he priority at which the function should be fired. Default is 10.
 	 * @param    int            $accepted_args  Optional. The number of arguments that should be passed to the $callback. Default is 1.
+	 * @param    string         $handler_id     The ID of the handler to use.
 	 */
-	public function add_action( string $hook, ?object $component, string $callback, int $priority = 10, int $accepted_args = 1 ): void {
-		$this->get_handler()->add_action( $hook, $component, $callback, $priority, $accepted_args );
+	public function add_action( string $hook, ?object $component, string $callback, int $priority = 10, int $accepted_args = 1, string $handler_id = 'default' ): void {
+		$this->get_handler( $handler_id )->add_action( $hook, $component, $callback, $priority, $accepted_args );
 	}
 
 	/**
@@ -72,9 +75,10 @@ class HooksService extends AbstractHandlerService implements RunnableInterface, 
 	 * @param    object|null    $component      A reference to the instance of the object on which the action is defined.
 	 * @param    string         $callback       The name of the function definition on the $component.
 	 * @param    int            $priority       Optional. he priority at which the function should be fired. Default is 10.
+	 * @param    string         $handler_id     The ID of the handler to use.
 	 */
-	public function remove_action( string $hook, ?object $component, string $callback, int $priority = 10 ): void {
-		$this->get_handler()->remove_action( $hook, $component, $callback, $priority );
+	public function remove_action( string $hook, ?object $component, string $callback, int $priority = 10, string $handler_id = 'default' ): void {
+		$this->get_handler( $handler_id )->remove_action( $hook, $component, $callback, $priority );
 	}
 
 	/**
@@ -82,9 +86,11 @@ class HooksService extends AbstractHandlerService implements RunnableInterface, 
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
+	 *
+	 * @param    string     $handler_id     The ID of the handler to use.
 	 */
-	public function remove_all_actions(): void {
-		$this->get_handler()->remove_all_actions();
+	public function remove_all_actions( string $handler_id = 'default' ): void {
+		$this->get_handler( $handler_id )->remove_all_actions();
 	}
 
 	/**
@@ -98,9 +104,10 @@ class HooksService extends AbstractHandlerService implements RunnableInterface, 
 	 * @param   string          $callback       The name of the function definition on the $component.
 	 * @param   int             $priority       Optional. he priority at which the function should be fired. Default is 10.
 	 * @param   int             $accepted_args  Optional. The number of arguments that should be passed to the $callback. Default is 1.
+	 * @param    string         $handler_id     The ID of the handler to use.
 	 */
-	public function add_filter( string $hook, ?object $component, string $callback, int $priority = 10, int $accepted_args = 1 ): void {
-		$this->get_handler()->add_filter( $hook, $component, $callback, $priority, $accepted_args );
+	public function add_filter( string $hook, ?object $component, string $callback, int $priority = 10, int $accepted_args = 1, string $handler_id = 'default' ): void {
+		$this->get_handler( $handler_id )->add_filter( $hook, $component, $callback, $priority, $accepted_args );
 	}
 
 	/**
@@ -113,9 +120,10 @@ class HooksService extends AbstractHandlerService implements RunnableInterface, 
 	 * @param    object|null    $component      A reference to the instance of the object on which the filter is defined.
 	 * @param    string         $callback       The name of the function definition on the $component.
 	 * @param    int            $priority       Optional. he priority at which the function should be fired. Default is 10.
+	 * @param    string         $handler_id     The ID of the handler to use.
 	 */
-	public function remove_filter( string $hook, ?object $component, string $callback, int $priority = 10 ): void {
-		$this->get_handler()->remove_filter( $hook, $component, $callback, $priority );
+	public function remove_filter( string $hook, ?object $component, string $callback, int $priority = 10, string $handler_id = 'default' ): void {
+		$this->get_handler( $handler_id )->remove_filter( $hook, $component, $callback, $priority );
 	}
 
 	/**
@@ -123,9 +131,11 @@ class HooksService extends AbstractHandlerService implements RunnableInterface, 
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
+	 *
+	 * @param    string     $handler_id     The ID of the handler to use.
 	 */
-	public function remove_all_filters(): void {
-		$this->get_handler()->remove_all_filters();
+	public function remove_all_filters( string $handler_id = 'default' ): void {
+		$this->get_handler( $handler_id )->remove_all_filters();
 	}
 
 	// endregion

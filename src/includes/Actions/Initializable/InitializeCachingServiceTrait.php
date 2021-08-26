@@ -43,7 +43,7 @@ trait InitializeCachingServiceTrait {
 	 *
 	 * @return  InitializationFailureException|null
 	 */
-	public function initialize_templating_service(): ?InitializationFailureException {
+	public function initialize_caching_service(): ?InitializationFailureException {
 		if ( $this instanceof ChildInterface && $this->get_parent() instanceof CachingServiceAwareInterface ) {
 			/* @noinspection PhpUndefinedMethodInspection */
 			$service = $this->get_parent()->get_caching_service();

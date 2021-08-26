@@ -57,7 +57,7 @@ class CachingService extends AbstractService {
 
 		$suffix = \wp_cache_get( $suffix_key );
 		if ( false === $suffix ) {
-			\wp_cache_set( $suffix, 1 );
+			\wp_cache_set( $suffix_key, 1 );
 		}
 
 		return Integers::maybe_cast( $suffix, 1 );

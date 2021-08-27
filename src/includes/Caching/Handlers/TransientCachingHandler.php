@@ -59,7 +59,7 @@ class TransientCachingHandler extends AbstractCachingHandler {
 	 * @return  string
 	 */
 	public function get_keys_prefix(): string {
-		return $this->prefix ?: $this->get_plugin()->get_plugin_safe_slug();
+		return $this->prefix ?: $this->get_plugin()->get_plugin_safe_slug(); // phpcs:ignore
 	}
 
 	/**
@@ -78,7 +78,7 @@ class TransientCachingHandler extends AbstractCachingHandler {
 			\update_option( $suffix_key, 1, true );
 		}
 
-		return Integers::maybe_cast_input( $suffix, 1 );
+		return Integers::maybe_cast( $suffix, 1 );
 	}
 
 	/**

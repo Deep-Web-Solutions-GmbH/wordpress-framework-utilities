@@ -143,15 +143,15 @@ class HooksService extends AbstractMultiHandlerService implements RunnableInterf
 	// region HELPERS
 
 	/**
-	 * Returns the class name of the default handler.
+	 * Returns the class name of the default handlers.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  string
+	 * @return  array
 	 */
-	protected function get_default_handler_class(): string {
-		return DefaultHooksHandler::class;
+	protected function get_default_handlers_classes(): array {
+		return array( DefaultHooksHandler::class );
 	}
 
 	/**

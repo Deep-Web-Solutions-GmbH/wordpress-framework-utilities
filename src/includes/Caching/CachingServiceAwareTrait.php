@@ -70,14 +70,14 @@ trait CachingServiceAwareTrait {
 	 *
 	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
 	 *
-	 * @param   string      $key        The key under which the cache contents are stored.
-	 * @param   bool        $force      Whether to force an update of the local cache from the persistent cache.
-	 * @param   bool|null   $found      Whether the key was found in the cache (passed by reference). Disambiguates a return of false, a storable value.
+	 * @param   string      $key            The key under which the cache contents are stored.
+	 * @param   bool|null   $found          Whether the key was found in the cache (passed by reference). Disambiguates a return of false, a storable value.
+	 * @param   string      $handler_id     ID of the handler to return the value from.
 	 *
 	 * @return  false|mixed
 	 */
-	public function get_cache_value( string $key, bool $force = false, ?bool &$found = null ) {
-		return $this->get_caching_service()->get_cache_value( $key, $force, $found );
+	public function get_cache_value( string $key, ?bool &$found = null, string $handler_id = 'object' ) {
+		return $this->get_caching_service()->get_value( $key, $found, $handler_id );
 	}
 
 	/**
@@ -86,14 +86,30 @@ trait CachingServiceAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $key        The cache key to use for retrieval later.
-	 * @param   mixed   $data       The contents to store in the cache.
-	 * @param   int     $expire     When to expire the cache contents, in seconds. Default 0 (no expiration).
+	 * @param   string  $key            The cache key to use for retrieval later.
+	 * @param   mixed   $data           The contents to store in the cache.
+	 * @param   int     $expire         When to expire the cache contents, in seconds. Default 0 (no expiration).
+	 * @param   string  $handler_id     ID of the handler to set the value with.
 	 *
 	 * @return  bool    True on success, false on failure.
 	 */
-	public function set_cache_value( string $key, $data, int $expire = 0 ): bool {
-		return $this->get_caching_service()->set_cache_value( $key, $data, $expire );
+	public function set_cache_value( string $key, $data, int $expire = 0, string $handler_id = 'object' ): bool {
+		return $this->get_caching_service()->set_value( $key, $data, $expire, $handler_id );
+	}
+
+	/**
+	 * Wrapper around the service's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $key            The name of the cached value.
+	 * @param   string  $handler_id     ID of the handler to set the value from.
+	 *
+	 * @return  bool
+	 */
+	public function delete_cache_value( string $key, string $handler_id = 'object' ): bool {
+		return $this->get_caching_service()->delete_value( $key, $handler_id );
 	}
 
 	// endregion

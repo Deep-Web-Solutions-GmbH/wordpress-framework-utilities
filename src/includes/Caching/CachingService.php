@@ -2,8 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Caching;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractService;
-use DeepWebSolutions\Framework\Helpers\DataTypes\Integers;
+use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
+use DeepWebSolutions\Framework\Utilities\Caching\Handlers\ObjectCacheHandler;
+use DeepWebSolutions\Framework\Utilities\Caching\Handlers\TransientCachingHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -17,147 +18,116 @@ use DeepWebSolutions\Framework\Helpers\DataTypes\Integers;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Caching
  */
-class CachingService extends AbstractService {
+class CachingService extends AbstractMultiHandlerService {
+	// region INHERITED METHODS
+
+	/**
+	 * Returns the instance of a given handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $handler_id     The ID of the handler to retrieve.
+	 *
+	 * @return  CachingHandlerInterface
+	 */
+	public function get_handler( string $handler_id ): ?CachingHandlerInterface { // phpcs:ignore
+		/* @noinspection PhpIncompatibleReturnTypeInspection */
+		return parent::get_handler( $handler_id );
+	}
+
+	// endregion
+
 	// region METHODS
 
 	/**
-	 * Returns the group that the cache contents should be added/read/deleted to/from.
+	 * Returns a cached value from the given handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  string
+	 * @param   string      $key            The name of the cached value.
+	 * @param   bool|null   $found          Whether the value was found or not. Disambiguates between a stored value of false and simply failure.
+	 * @param   string      $handler_id     ID of the handler to return the value from.
+	 *
+	 * @return  mixed
 	 */
-	public function get_caching_group(): string {
-		return $this->get_plugin()->get_plugin_safe_slug();
+	public function get_value( string $key, ?bool $found = null, string $handler_id = 'object' ) {
+		return $this->get_handler( $handler_id )->get_value( $key, $found );
 	}
 
 	/**
-	 * Returns the key of the cache entry holding the cache invalidation suffix.
+	 * Sets a cached value under a given name.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @return  string
-	 */
-	public function get_cache_keys_suffix_key(): string {
-		return "{$this->get_caching_group()}_invalidation_suffix_key";
-	}
-
-	/**
-	 * Returns the cache invalidation suffix.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  int
-	 */
-	public function get_cache_keys_suffix(): int {
-		$suffix_key = $this->get_cache_keys_suffix_key();
-
-		$suffix = \wp_cache_get( $suffix_key );
-		if ( false === $suffix ) {
-			\wp_cache_set( $suffix_key, 1 );
-		}
-
-		return Integers::maybe_cast( $suffix, 1 );
-	}
-
-	/**
-	 * Invalidates all the cached entries belonging to the current plugin's group.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
+	 * @param   string  $key            The name of the cached value.
+	 * @param   mixed   $value          The data to cache.
+	 * @param   int     $expire         When the data should expire. Default never.
+	 * @param   string  $handler_id     ID of the handler to set the value with.
 	 *
 	 * @return  bool
 	 */
-	public function clear_cache(): bool {
-		return ! ( ( false === \wp_cache_incr( $this->get_cache_keys_suffix_key() ) ) );
+	public function set_value( string $key, $value, int $expire = 0, string $handler_id = 'object' ): bool {
+		return $this->get_handler( $handler_id )->set_value( $key, $value, $expire );
 	}
 
 	/**
-	 * Returns a cache value.
+	 * Deletes a cached value.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+	 * @param   string  $key            The name of the cached value.
+	 * @param   string  $handler_id     ID of the handler to delete the value from.
 	 *
-	 * @param   string      $key        The key under which the cache contents are stored.
-	 * @param   bool        $force      Whether to force an update of the local cache from the persistent cache.
-	 * @param   bool|null   $found      Whether the key was found in the cache (passed by reference). Disambiguates a return of false, a storable value.
-	 *
-	 * @return  false|mixed
+	 * @return  bool
 	 */
-	public function get_cache_value( string $key, bool $force = false, ?bool &$found = null ) {
-		$key .= "__{$this->get_cache_keys_suffix()}";
-		return \wp_cache_get( $key, $this->get_plugin()->get_plugin_safe_slug(), $force, $found );
+	public function delete_value( string $key, string $handler_id = 'object' ): bool {
+		return $this->get_handler( $handler_id )->delete_value( $key );
 	}
 
 	/**
-	 * Adds data to the cache. If the key already exists, it overrides the existing data.
+	 * Deletes all the cached values using the given handler.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $key        The cache key to use for retrieval later.
-	 * @param   mixed   $data       The contents to store in the cache.
-	 * @param   int     $expire     When to expire the cache contents, in seconds. Default 0 (no expiration).
+	 * @param   string  $handler_id     ID of the handler to delete the values from.
 	 *
-	 * @return  bool    True on success, false on failure.
+	 * @return  bool
 	 */
-	public function set_cache_value( string $key, $data, int $expire = 0 ): bool {
-		$key .= "__{$this->get_cache_keys_suffix()}";
-		return \wp_cache_set( $key, $data, $this->get_caching_group(), $expire );
+	public function delete_all_values( string $handler_id = 'object' ): bool {
+		return $this->get_handler( $handler_id )->delete_all_values();
 	}
 
+	// endregion
+
+	// region HELPERS
+
 	/**
-	 * Replaces the contents of the cache with new data.
+	 * Returns the class name of the default handlers.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $key        The key for the cache data that should be replaced.
-	 * @param   mixed   $data       The new data to store in the cache.
-	 * @param   int     $expire     When to expire the cache contents, in seconds. Default 0 (no expiration).
-	 *
-	 * @return  bool    False if original value does not exist, true if contents were replaced.
+	 * @return  array
 	 */
-	public function replace_cache_value( string $key, $data, int $expire = 0 ): bool {
-		$key .= "__{$this->get_cache_keys_suffix()}";
-		return \wp_cache_replace( $key, $data, $this->get_caching_group(), $expire );
+	protected function get_default_handlers_classes(): array {
+		return array( ObjectCacheHandler::class, TransientCachingHandler::class );
 	}
 
 	/**
-	 * Adds data to the cache, if the cache key doesn't already exist.
+	 * Returns the class name of the used handler for better type-checking.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $key        The key for the cache data that should be replaced.
-	 * @param   mixed   $data       The new data to store in the cache.
-	 * @param   int     $expire     When to expire the cache contents, in seconds. Default 0 (no expiration).
-	 *
-	 * @return bool     True on success, false if cache key already exists.
+	 * @return  string
 	 */
-	public function add_cache_value( string $key, $data, int $expire = 0 ): bool {
-		$key .= "__{$this->get_cache_keys_suffix()}";
-		return \wp_cache_add( $key, $data, $this->get_caching_group(), $expire );
-	}
-
-	/**
-	 * Removes the cache contents matching key.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $key    What the contents in the cache are called.
-	 *
-	 * @return  bool    True on successful removal, false on failure.
-	 */
-	public function delete_cache_value( string $key ): bool {
-		$key .= "__{$this->get_cache_keys_suffix()}";
-		return \wp_cache_delete( $key, $this->get_caching_group() );
+	protected function get_handler_class(): string {
+		return CachingHandlerInterface::class;
 	}
 
 	// endregion

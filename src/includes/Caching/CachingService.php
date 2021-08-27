@@ -52,7 +52,7 @@ class CachingService extends AbstractMultiHandlerService {
 	 *
 	 * @return  mixed
 	 */
-	public function get_value( string $key, ?bool $found = null, string $handler_id = 'object' ) {
+	public function get_value( string $key, ?bool &$found = null, string $handler_id = 'object' ) {
 		return $this->get_handler( $handler_id )->get_value( $key, $found );
 	}
 

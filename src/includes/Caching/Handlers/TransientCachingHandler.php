@@ -158,10 +158,10 @@ class TransientCachingHandler extends AbstractCachingHandler {
 	 * @return  bool
 	 */
 	public function delete_all_values(): bool {
-		foreach ( $this->get_all_keys() as $key ) {
+		foreach ( $this->get_all_keys() as $full_key ) {
 			// If stored in the database, this will delete them.
 			// If stored in an external cache, incrementing the suffix will let the garbage collector deal with them.
-			$this->delete_value( $key );
+			\delete_transient( $full_key );
 		}
 
 		return \update_option( $this->get_keys_suffix_key(), $this->get_keys_suffix() + 1, true );

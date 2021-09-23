@@ -58,11 +58,11 @@ class TemplatingService extends AbstractService implements HooksHelpersAwareInte
 		}
 
 		// Load the found template part.
-		\do_action( $this->get_hook_tag( 'before_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'before_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name );
 
 		\load_template( $template, false, $args );
 
-		\do_action( $this->get_hook_tag( 'after_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'after_template_part' ), $slug, $name, $template_path, $template, $args, $constant_name );
 	}
 
 	/**
@@ -112,11 +112,11 @@ class TemplatingService extends AbstractService implements HooksHelpersAwareInte
 		}
 
 		// Load the found template.
-		\do_action( $this->get_hook_tag( 'before_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'before_template' ), $template_name, $template_path, $template, $args, $constant_name );
 
 		\load_template( $template, false, $args );
 
-		\do_action( $this->get_hook_tag( 'after_template' ), $template_name, $template_path, $template, $args, $constant_name ); // phpcs:ignore
+		\do_action( $this->get_hook_tag( 'after_template' ), $template_name, $template_path, $template, $args, $constant_name );
 	}
 
 	/**
@@ -165,7 +165,7 @@ class TemplatingService extends AbstractService implements HooksHelpersAwareInte
 			? \trailingslashit( $default_path ) . $template_name
 			: $template;
 
-		return \apply_filters( $this->get_hook_tag( 'locate_template' ), $template, $template_name, $template_path, $default_path, $constant_name ); // phpcs:ignore
+		return \apply_filters( $this->get_hook_tag( 'locate_template' ), $template, $template_name, $template_path, $default_path, $constant_name );
 	}
 
 	// endregion

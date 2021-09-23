@@ -16,6 +16,24 @@ use DeepWebSolutions\Framework\Utilities\Hooks\AbstractHooksHandler;
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks\Handlers
  */
 class DirectHooksHandler extends AbstractHooksHandler {
+	// region MAGIC METHODS
+
+	/**
+	 * DirectHooksHandler constructor.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string      $handler_id     The ID of the handler instance.
+	 */
+	public function __construct( string $handler_id = 'internal' ) { // phpcs:ignore
+		parent::__construct( $handler_id );
+	}
+
+	// endregion
+
+	// region INHERITED METHODS
+
 	/**
 	 * Registers a new action with WordPress.
 	 *
@@ -129,4 +147,6 @@ class DirectHooksHandler extends AbstractHooksHandler {
 
 		parent::remove_all_filters();
 	}
+
+	// endregion
 }

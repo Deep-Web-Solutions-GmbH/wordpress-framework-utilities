@@ -8,6 +8,7 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\ResetHandl
 use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\Actions\RunHandlersTrait;
 use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
 use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\DefaultHooksHandler;
+use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\DirectHooksHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -151,7 +152,7 @@ class HooksService extends AbstractMultiHandlerService implements RunnableInterf
 	 * @return  array
 	 */
 	protected function get_default_handlers_classes(): array {
-		return array( DefaultHooksHandler::class );
+		return array( DefaultHooksHandler::class, DirectHooksHandler::class );
 	}
 
 	/**

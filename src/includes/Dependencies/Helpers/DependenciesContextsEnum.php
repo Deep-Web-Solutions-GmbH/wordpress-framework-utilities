@@ -34,4 +34,16 @@ class DependenciesContextsEnum {
 	 * @var     string
 	 */
 	public const DISABLED_STATE = 'disabled';
+
+	/**
+	 * Returns an array of all valid dependencies handlers contexts.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @return  string[]
+	 */
+	public static function get_all(): array {
+		return array( self::ACTIVE_STATE, self::DISABLED_STATE );
+	}
 }

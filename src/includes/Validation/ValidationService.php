@@ -49,15 +49,18 @@ class ValidationService extends AbstractMultiHandlerService {
 	 * @param   mixed   $value              The value to validate.
 	 * @param   string  $default_key        The key of the default value in the within the handler.
 	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
-	 * @param   array   $params             Additional params needed for the validation type.
 	 * @param   string  $handler_id         The ID of the handler to use for validation.
 	 *
 	 * @throws  NotSupportedException   Thrown if the validation type requested is not supported.
 	 *
-	 * @return  mixed
+	 * @return  array|bool|callable|float|int|string
 	 */
-	public function validate( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
+	public function validate_value( $value, string $default_key, string $validation_type, string $handler_id = 'default' ) {
 		switch ( $validation_type ) {
+			case ValidationTypesEnum::STRING:
+				return $this->validate_string( $value, $default_key, $handler_id );
+			case ValidationTypesEnum::ARRAY:
+				return $this->validate_array( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::BOOLEAN:
 				return $this->validate_boolean( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::INTEGER:
@@ -66,15 +69,110 @@ class ValidationService extends AbstractMultiHandlerService {
 				return $this->validate_float( $value, $default_key, $handler_id );
 			case ValidationTypesEnum::CALLABLE:
 				return $this->validate_callable( $value, $default_key, $handler_id );
-			case ValidationTypesEnum::CUSTOM:
-				if ( isset( $params['callable'] ) && \is_callable( $params['callable'] ) ) {
-					return \call_user_func_array( $params['callable'], array( $value, $default_key, $this->get_handler( $handler_id ) ) + ( $params['args'] ?? array() ) );
-				} else {
-					throw new NotSupportedException( 'Custom validation requires a valid callable' );
-				}
 		}
 
 		throw new NotSupportedException( 'Validation type not supported' );
+	}
+
+	/**
+	 * Validates a value based on passed parameters.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value              The value to validate.
+	 * @param   string  $default_key        The key of the default value in the within the handler.
+	 * @param   string  $options_key        The key of the supported options within the handler.
+	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
+	 * @param   string  $handler_id         The ID of the handler to use for validation.
+	 *
+	 * @throws  NotSupportedException   Thrown if the validation type requested is not supported.
+	 *
+	 * @return  string|array
+	 */
+	public function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id = 'default' ) {
+		switch ( $validation_type ) {
+			case ValidationTypesEnum::STRING:
+				return $this->validate_allowed_string( $value, $default_key, $options_key, $handler_id );
+			case ValidationTypesEnum::ARRAY:
+				return $this->validate_allowed_array( $value, $default_key, $options_key, $handler_id );
+		}
+
+		throw new NotSupportedException( 'Validation type not supported' );
+	}
+
+	/**
+	 * Validates a given value as a string using the given handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $key            The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
+	 *
+	 * @return  string
+	 */
+	public function validate_string( $value, string $key, string $handler_id = 'default' ): string {
+		return $this->get_handler( $handler_id )->validate_string( $value, $key );
+	}
+
+	/**
+	 * Validates a given value against a list of supported options.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $options_key    The composite key to retrieve the supported options.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
+	 *
+	 * @return  string
+	 */
+	public function validate_allowed_string( $value, string $default_key, string $options_key, string $handler_id = 'default' ): string {
+		return $this->get_handler( $handler_id )->validate_allowed_string( $value, $default_key, $options_key );
+	}
+
+	/**
+	 * Validates a given value as an array using the given handler.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $key            The composite key to retrieve the default value.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
+	 *
+	 * @return  array
+	 */
+	public function validate_array( $value, string $key, string $handler_id = 'default' ): array {
+		return $this->get_handler( $handler_id )->validate_array( $value, $key );
+	}
+
+	/**
+	 * Validates an array of values against a list of supported options. Returns a new array containing only valid entries.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $options_key    The composite key to retrieve the supported options.
+	 * @param   string  $handler_id     The ID of the handler to use for validation.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
+	 *
+	 * @return  array
+	 */
+	public function validate_allowed_array( $value, string $default_key, string $options_key, string $handler_id = 'default' ): array {
+		return $this->get_handler( $handler_id )->validate_allowed_array( $value, $default_key, $options_key );
 	}
 
 	/**

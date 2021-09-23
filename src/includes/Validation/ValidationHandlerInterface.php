@@ -61,6 +61,68 @@ interface ValidationHandlerInterface extends HandlerInterface {
 	public function get_known_supported_options(): array;
 
 	/**
+	 * Validates a given value as a string.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value  The value to validate.
+	 * @param   string  $key    The composite key to retrieve the default value.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
+	 *
+	 * @return  string
+	 */
+	public function validate_string( $value, string $key ): string;
+
+	/**
+	 * Validates a given value against a list of supported options.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $options_key    The composite key to retrieve the supported options.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
+	 *
+	 * @return  string
+	 */
+	public function validate_allowed_string( $value, string $default_key, string $options_key ): string;
+
+	/**
+	 * Validates a given value as an array.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value  The value to validate.
+	 * @param   string  $key    The composite key to retrieve the default value.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
+	 *
+	 * @return  array
+	 */
+	public function validate_array( $value, string $key ): array;
+
+	/**
+	 * Validates an array of values against a list of supported options. Returns a new array containing only valid entries.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $options_key    The composite key to retrieve the supported options.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
+	 *
+	 * @return  array
+	 */
+	public function validate_allowed_array( $value, string $default_key, string $options_key ): array;
+
+	/**
 	 * Validates a given value as a boolean.
 	 *
 	 * @since   1.0.0

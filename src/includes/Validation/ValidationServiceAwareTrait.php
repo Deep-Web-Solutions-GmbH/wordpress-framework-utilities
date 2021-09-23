@@ -104,15 +104,32 @@ trait ValidationServiceAwareTrait {
 	 * @param   mixed   $value              The value to validate.
 	 * @param   string  $default_key        The key of the default value in the container.
 	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
-	 * @param   array   $params             Additional params needed for the validation type.
 	 * @param   string  $handler_id         The ID of the handler to validate against.
 	 *
 	 * @throws  NotSupportedException   Thrown if the validation type requested is not supported.
 	 *
-	 * @return  mixed
+	 * @return  array|bool|callable|float|int|string
 	 */
-	public function validate( $value, string $default_key, string $validation_type, array $params = array(), string $handler_id = 'default' ) {
-		return $this->get_validation_service()->validate( $value, $default_key, $validation_type, $params, $handler_id );
+	public function validate_value( $value, string $default_key, string $validation_type, string $handler_id = 'default' ) {
+		return $this->get_validation_service()->validate_value( $value, $default_key, $validation_type, $handler_id );
+	}
+
+	/**
+	 * Wrapper around the service's own method.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value              The value to validate.
+	 * @param   string  $default_key        The key of the default value in the within the handler.
+	 * @param   string  $options_key        The key of the supported options within the handler.
+	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
+	 * @param   string  $handler_id         The ID of the handler to use for validation.
+	 *
+	 * @return  array|string
+	 */
+	public function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id = 'default' ) {
+		return $this->get_validation_service()->validate_allowed_value( $value, $default_key, $options_key, $validation_type, $handler_id );
 	}
 
 	// endregion

@@ -14,6 +14,28 @@ namespace DeepWebSolutions\Framework\Utilities\Validation;
  */
 class ValidationTypesEnum {
 	/**
+	 * Validate a string value.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @access  public
+	 * @var     string
+	 */
+	public const STRING = 'string';
+
+	/**
+	 * Validate an array value.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @access  public
+	 * @var     string
+	 */
+	public const ARRAY = 'array';
+
+	/**
 	 * Validate a boolean value.
 	 *
 	 * @since   1.0.0
@@ -56,15 +78,4 @@ class ValidationTypesEnum {
 	 * @var     string
 	 */
 	public const CALLABLE = 'callable';
-
-	/**
-	 * Validate using a custom callback.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @access  public
-	 * @var     string
-	 */
-	public const CUSTOM = 'custom';
 }

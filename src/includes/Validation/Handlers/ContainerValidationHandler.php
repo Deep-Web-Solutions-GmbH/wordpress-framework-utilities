@@ -5,10 +5,12 @@ namespace DeepWebSolutions\Framework\Utilities\Validation\Handlers;
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareTrait;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Callables;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Floats;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Integers;
+use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 use DeepWebSolutions\Framework\Utilities\Validation\AbstractValidationHandler;
 use Psr\Container\ContainerInterface;
 
@@ -102,6 +104,100 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	 */
 	public function get_known_supported_options(): array {
 		return \array_keys( $this->get_container_value( 'options' ) );
+	}
+
+	/**
+	 * Validates a given value as a string.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value  The value to validate.
+	 * @param   string  $key    The composite key to retrieve the default value.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
+	 *
+	 * @return  string
+	 */
+	public function validate_string( $value, string $key ): string {
+		$default = $this->get_default_value_or_throw( $key );
+		$default = Strings::validate( $default, Strings::maybe_cast( $default, '' ) );
+
+		return Strings::maybe_cast( $value, $default );
+	}
+
+	/**
+	 * Validates a given value against a list of supported options.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $options_key    The composite key to retrieve the supported options.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
+	 *
+	 * @return  string
+	 */
+	public function validate_allowed_string( $value, string $default_key, string $options_key ): string {
+		$value   = $this->validate_string( $value, $default_key );
+		$options = $this->get_supported_options_or_throw( $options_key );
+
+		$result = Strings::validate_allowed( $value, $options );
+		if ( \is_null( $result ) && Arrays::has_string_keys( $options ) ) {
+			$result = Strings::validate_allowed( $value, \array_keys( $options ) );
+		}
+
+		return $this->validate_string( $result, $default_key );
+	}
+
+	/**
+	 * Validates a given value as an array.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value  The value to validate.
+	 * @param   string  $key    The composite key to retrieve the default value.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
+	 *
+	 * @return  array
+	 */
+	public function validate_array( $value, string $key ): array {
+		$default = $this->get_default_value_or_throw( $key );
+		$default = Arrays::validate( $default, Arrays::maybe_cast( $default, array() ) );
+
+		return Arrays::maybe_cast( $value, $default );
+	}
+
+	/**
+	 * Validates an array of values against a list of supported options. Returns a new array containing only valid entries.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   mixed   $value          The value to validate.
+	 * @param   string  $default_key    The composite key to retrieve the default value.
+	 * @param   string  $options_key    The composite key to retrieve the supported options.
+	 *
+	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
+	 *
+	 * @return  array
+	 */
+	public function validate_allowed_array( $value, string $default_key, string $options_key ): array {
+		if ( \is_null( Arrays::validate( $value ) ) ) {
+			return $this->validate_array( null, $default_key );
+		}
+
+		$options = $this->get_supported_options_or_throw( $options_key );
+		$result  = \array_filter( Arrays::validate_allowed( $value, $options, false ) );
+		if ( empty( $result ) && Arrays::has_string_keys( $options ) ) {
+			$result = \array_filter( Arrays::validate_allowed( $value, \array_keys( $options ), false ) );
+		}
+
+		return $result;
 	}
 
 	/**

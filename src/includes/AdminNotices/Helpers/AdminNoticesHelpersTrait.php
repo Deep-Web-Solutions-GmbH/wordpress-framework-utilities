@@ -34,7 +34,7 @@ trait AdminNoticesHelpersTrait {
 	public function get_admin_notice_handle( string $name = '', array $extra = array(), string $root = 'dws-framework-utilities' ): string {
 		if ( $this instanceof PluginComponentInterface ) {
 			$root = ( 'dws-framework-utilities' === $root ) ? '' : $root;
-			$root = \join( '_', array( $this->get_plugin()->get_plugin_slug(), $root ?: $this->get_name() ) ); // phpcs:ignore
+			$root = \join( '_', array( $this->get_plugin()->get_plugin_slug(), $root ?: $this->get_name() ) );
 		} elseif ( 'dws-framework-utilities' === $root ) {
 			if ( $this instanceof PluginAwareInterface ) {
 				$root = $this->get_plugin()->get_plugin_slug();

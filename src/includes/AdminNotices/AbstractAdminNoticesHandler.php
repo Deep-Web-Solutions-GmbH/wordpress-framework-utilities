@@ -116,9 +116,7 @@ abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterfa
 		return ( $store instanceof StoreInterface )
 			? \array_filter(
 				$store->get_all(),
-				function( AdminNoticeInterface $notice ) {
-					return \get_class( $notice ) === $this->get_id();
-				}
+				fn( AdminNoticeInterface $notice ) => \get_class( $notice ) === $this->get_id()
 			) : array();
 	}
 

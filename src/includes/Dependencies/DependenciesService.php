@@ -2,12 +2,12 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractMultiHandlerService;
 
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Queries a given handler for dependencies fulfillment status.
+ * Queries given handlers for dependencies fulfillment status.
  *
  * @since   1.0.0
  * @version 1.0.0
@@ -17,16 +17,12 @@ class DependenciesService extends AbstractMultiHandlerService {
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the instance of a given handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string  $handler_id     The ID of the handler to retrieve.
-	 *
-	 * @return  DependenciesHandlerInterface|null
 	 */
-	public function get_handler( string $handler_id ): ?DependenciesHandlerInterface { // phpcs:ignore
+	public function get_handler( string $handler_id ): ?DependenciesHandlerInterface { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		/* @noinspection PhpIncompatibleReturnTypeInspection */
 		return parent::get_handler( $handler_id );
 	}
@@ -82,12 +78,10 @@ class DependenciesService extends AbstractMultiHandlerService {
 	// region HELPERS
 
 	/**
-	 * Returns the class name of the used handler for better type-checking.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	protected function get_handler_class(): string {
 		return DependenciesHandlerInterface::class;

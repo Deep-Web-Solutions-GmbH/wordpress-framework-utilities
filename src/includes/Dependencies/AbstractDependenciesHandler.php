@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 

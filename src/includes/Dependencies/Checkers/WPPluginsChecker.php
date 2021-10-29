@@ -27,12 +27,10 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 	// region GETTERS
 
 	/**
-	 * Returns the type of dependencies the object checks for.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	public function get_type(): string {
 		return 'active_plugins';
@@ -43,12 +41,10 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 	// region METHODS
 
 	/**
-	 * Returns a list of missing active plugins.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_missing_dependencies(): array {
 		$missing = array();
@@ -74,26 +70,20 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 	// region HELPERS
 
 	/**
-	 * Checks whether the dependency is valid for the current handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $dependency     Dependency to check.
-	 *
-	 * @return  bool
 	 */
 	protected function is_dependency_valid( $dependency ): bool {
 		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency ) && isset( $dependency['plugin'] );
 	}
 
 	/**
-	 * Key to set the plugin's slug within the config array.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	protected function get_dependency_key(): string {
 		return 'plugin';
@@ -114,7 +104,7 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 		if ( isset( $plugin_config['active_checker'] ) && \is_callable( $plugin_config['active_checker'] ) ) {
 			$is_active = Booleans::maybe_cast( \call_user_func( $plugin_config['active_checker'] ), false );
 		} else {
-			$is_active = \in_array( $plugin, \apply_filters( 'active_plugins', \get_option( 'active_plugins' ) ), true ); // phpcs:ignore
+			$is_active = \in_array( $plugin, (array) \get_option( 'active_plugins', array() ), true );
 			if ( \is_multisite() && ! $is_active ) {
 				$is_active = isset( \get_site_option( 'active_sitewide_plugins', array() )[ $plugin ] );
 			}

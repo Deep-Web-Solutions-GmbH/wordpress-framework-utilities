@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -56,12 +56,10 @@ abstract class AbstractDependenciesChecker extends AbstractHandler implements De
 	// region GETTERS
 
 	/**
-	 * Returns a list of registered dependencies to check for.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_dependencies(): array {
 		return $this->dependencies;
@@ -72,14 +70,10 @@ abstract class AbstractDependenciesChecker extends AbstractHandler implements De
 	// region METHODS
 
 	/**
-	 * Adds a dependency to the list of dependencies to check for.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $dependency     The dependency to check for.
-	 *
-	 * @return  bool
 	 */
 	public function register_dependency( $dependency ): bool {
 		$validity = $this->is_dependency_valid( $dependency );
@@ -91,12 +85,10 @@ abstract class AbstractDependenciesChecker extends AbstractHandler implements De
 	}
 
 	/**
-	 * Returns whether the dependencies are fulfilled or not.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  bool
 	 */
 	public function are_dependencies_fulfilled(): bool {
 		return empty( $this->get_missing_dependencies() );
@@ -116,7 +108,9 @@ abstract class AbstractDependenciesChecker extends AbstractHandler implements De
 	 *
 	 * @return  bool
 	 */
-	abstract protected function is_dependency_valid( $dependency ): bool;
+	protected function is_dependency_valid( $dependency ): bool {
+		return \is_string( $dependency );
+	}
 
 	/**
 	 * For dependencies passed on as an associative array, this determines the name of the key's key within

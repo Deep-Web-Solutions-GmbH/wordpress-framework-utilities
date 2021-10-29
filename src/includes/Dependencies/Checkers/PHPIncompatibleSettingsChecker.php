@@ -20,12 +20,10 @@ class PHPIncompatibleSettingsChecker extends AbstractDependenciesChecker {
 	// region GETTERS
 
 	/**
-	 * Returns the type of dependencies the object checks for.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	public function get_type(): string {
 		return 'php_settings';
@@ -36,15 +34,13 @@ class PHPIncompatibleSettingsChecker extends AbstractDependenciesChecker {
 	// region METHODS
 
 	/**
-	 * Returns a list of incompatible PHP settings.
-	 *
-	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 * @see     https://github.com/skyverge/wc-plugin-framework/blob/de7f429af153a17a0fd84cf9a1c56c6ac5ffbc08/woocommerce/class-sv-wc-plugin-dependencies.php
 	 *
-	 * @return  array
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 */
 	public function get_missing_dependencies(): array {
 		$missing = array();
@@ -84,26 +80,20 @@ class PHPIncompatibleSettingsChecker extends AbstractDependenciesChecker {
 	// region HELPERS
 
 	/**
-	 * Checks whether the dependency is valid for the current handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $dependency     Dependency to check.
-	 *
-	 * @return  bool
 	 */
 	protected function is_dependency_valid( $dependency ): bool {
 		return \is_array( $dependency ) && Arrays::has_string_keys( $dependency ) && isset( $dependency['option_name'], $dependency['expected_value'] );
 	}
 
 	/**
-	 * Key to set the PHP setting's name within the config array.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	protected function get_dependency_key(): string {
 		return 'option_name';

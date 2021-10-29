@@ -72,14 +72,14 @@ class MultiCheckerHandler extends AbstractDependenciesHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   DependenciesCheckerInterface[]      $dependencies_checkers      Checkers to use from now on.
+	 * @param   DependenciesCheckerInterface[]  $checkers   Checkers to use from now on.
 	 *
 	 * @return  MultiCheckerHandler
 	 */
-	public function set_checkers( array $dependencies_checkers ): MultiCheckerHandler {
+	public function set_checkers( array $checkers ): MultiCheckerHandler {
 		$this->checkers = array();
 
-		foreach ( $dependencies_checkers as $checker ) {
+		foreach ( $checkers as $checker ) {
 			if ( $checker instanceof DependenciesCheckerInterface ) {
 				$this->register_checker( $checker );
 			}
@@ -112,36 +112,30 @@ class MultiCheckerHandler extends AbstractDependenciesHandler {
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the dependencies checked for.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_dependencies(): array {
 		return $this->walk_checkers( 'get_dependencies' );
 	}
 
 	/**
-	 * Returns the unfulfilled dependencies of the checker.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_missing_dependencies(): array {
 		return $this->walk_checkers( 'get_missing_dependencies' );
 	}
 
 	/**
-	 * Returns whether the dependencies are fulfilled or not according to the checker.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  bool[][]
 	 */
 	public function are_dependencies_fulfilled(): array {
 		return $this->walk_checkers( 'are_dependencies_fulfilled' );
@@ -165,11 +159,9 @@ class MultiCheckerHandler extends AbstractDependenciesHandler {
 		$result = array();
 
 		foreach ( $this->checkers as $checker ) {
-			$checker_type = $checker->get_type();
-			$checker_id   = $checker->get_id();
-
-			$result[ $checker_type ]                = $result[ $checker_type ] ?? array();
-			$result[ $checker_type ][ $checker_id ] = \method_exists( $checker, $method ) ? \call_user_func( array( $checker, $method ) ) : null;
+			if ( \method_exists( $checker, $method ) ) {
+				$result[ $checker->get_type() ][ $checker->get_id() ] = \call_user_func( array( $checker, $method ) );
+			}
 		}
 
 		return $result;

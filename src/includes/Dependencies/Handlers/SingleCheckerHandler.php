@@ -86,36 +86,30 @@ class SingleCheckerHandler extends AbstractDependenciesHandler {
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the dependencies checked for.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_dependencies(): array {
 		return array( $this->checker->get_id() => $this->checker->get_dependencies() );
 	}
 
 	/**
-	 * Returns the unfulfilled dependencies of the checker.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_missing_dependencies(): array {
 		return array( $this->checker->get_id() => $this->checker->get_missing_dependencies() );
 	}
 
 	/**
-	 * Returns whether the dependencies are fulfilled or not according to the checker.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  bool[]
 	 */
 	public function are_dependencies_fulfilled(): array {
 		return array( $this->checker->get_id() => $this->checker->are_dependencies_fulfilled() );

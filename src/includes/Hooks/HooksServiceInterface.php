@@ -2,8 +2,6 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Hooks;
 
-use DeepWebSolutions\Framework\Foundations\Services\ServiceInterface;
-
 \defined( 'ABSPATH' ) || exit;
 
 /**

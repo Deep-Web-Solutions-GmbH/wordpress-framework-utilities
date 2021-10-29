@@ -3,7 +3,6 @@
 namespace DeepWebSolutions\Framework\Utilities\Validation;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
-use DeepWebSolutions\Framework\Foundations\Services\ServiceInterface;
 
 \defined( 'ABSPATH' ) || exit;
 

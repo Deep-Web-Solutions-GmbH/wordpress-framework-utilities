@@ -3,7 +3,6 @@
 namespace DeepWebSolutions\Framework\Utilities\Caching;
 
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotFoundException;
-use DeepWebSolutions\Framework\Foundations\Services\ServiceInterface;
 
 \defined( 'ABSPATH' ) || exit;
 

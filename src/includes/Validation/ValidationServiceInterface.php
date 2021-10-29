@@ -15,7 +15,7 @@ use DeepWebSolutions\Framework\Foundations\Services\ServiceInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
-interface ValidationServiceInterface extends ServiceInterface {
+interface ValidationServiceInterface {
 	/**
 	 * Validates a given value as a string.
 	 *

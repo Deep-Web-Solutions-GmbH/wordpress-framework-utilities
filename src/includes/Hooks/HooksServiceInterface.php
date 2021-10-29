@@ -14,7 +14,7 @@ use DeepWebSolutions\Framework\Foundations\Services\ServiceInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks
  */
-interface HooksServiceInterface extends ServiceInterface {
+interface HooksServiceInterface {
 	/**
 	 * Registers a new action with the handler.
 	 *

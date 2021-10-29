@@ -15,7 +15,7 @@ use DeepWebSolutions\Framework\Foundations\Services\ServiceInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Caching
  */
-interface CachingServiceInterface extends ServiceInterface {
+interface CachingServiceInterface {
 	/**
 	 * Returns a cached value.
 	 *

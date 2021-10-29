@@ -9,7 +9,7 @@ use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesHelpers;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesHelpersTrait;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleAdminNotice;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\SimpleAdminNotice;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependencyContextsEnum;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\MultiCheckerHandler;
@@ -112,7 +112,7 @@ trait SetupActiveStateDependenciesAdminNoticesTrait {
 			$notice_params  = array( 'capability' => 'activate_plugins' );
 
 			$notice = $is_optional_checker
-				? new DismissibleNotice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params + array( 'persistent' => true ) )
+				? new DismissibleAdminNotice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params + array( 'persistent' => true ) )
 				: new SimpleAdminNotice( $notice_handle, $notice_message, AdminNoticeTypesEnum::ERROR, $notice_params );
 
 			$notices_service->add_notice( $notice, $store_id );

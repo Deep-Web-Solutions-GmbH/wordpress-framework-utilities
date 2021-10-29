@@ -10,7 +10,7 @@ use DeepWebSolutions\Framework\Helpers\Assets;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
 use DeepWebSolutions\Framework\Helpers\HooksHelpersAwareInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleAdminNotice;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
@@ -46,7 +46,7 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 	 * @return  string
 	 */
 	public function get_id(): string {
-		return DismissibleNotice::class;
+		return DismissibleAdminNotice::class;
 	}
 
 	/**
@@ -147,7 +147,7 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 	public function dismiss_notice( string $handle, string $store_id ): ?bool {
 		$store  = $this->get_store_entry( $store_id );
 		$notice = $this->get_notice( $store_id, $handle );
-		if ( ! $store instanceof StoreInterface || ! \is_a( $notice, DismissibleNotice::class ) ) {
+		if ( ! $store instanceof StoreInterface || ! \is_a( $notice, DismissibleAdminNotice::class ) ) {
 			return null;
 		}
 
@@ -172,7 +172,7 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 	 */
 	public function is_dismissed_notice( string $handle, string $store_id ): ?bool {
 		$notice = $this->get_notice( $store_id, $handle );
-		return \is_a( $notice, DismissibleNotice::class ) ? $notice->is_dismissed() : null;
+		return \is_a( $notice, DismissibleAdminNotice::class ) ? $notice->is_dismissed() : null;
 	}
 
 	/**
@@ -185,12 +185,12 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 	 *
 	 * @throws  ContainerExceptionInterface     Error while retrieving the entries.
 	 *
-	 * @return  DismissibleNotice[]
+	 * @return  DismissibleAdminNotice[]
 	 */
 	public function get_dismissed_notices( string $store_id ): array {
 		return \array_filter(
 			$this->get_notices( $store_id ),
-			fn ( DismissibleNotice $notice ) => $notice->is_dismissed()
+			fn ( DismissibleAdminNotice $notice ) => $notice->is_dismissed()
 		);
 	}
 

@@ -12,7 +12,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Notices
  */
-class DismissibleNotice extends SimpleAdminNotice {
+class DismissibleAdminNotice extends SimpleAdminNotice {
 	// region FIELDS AND CONSTANTS
 
 	/**

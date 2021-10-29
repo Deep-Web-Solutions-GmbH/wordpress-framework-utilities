@@ -5,9 +5,8 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\States;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\States\ActiveableInterface;
-use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependencyContextsEnum;
-use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\Dependencies;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpers;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -55,41 +54,10 @@ trait ActiveDependenciesTrait {
 			}
 
 			$are_deps_fulfilled = $handler->are_dependencies_fulfilled();
-			$is_active          = Dependencies::status_to_boolean( $are_deps_fulfilled, array( $this, 'is_active_required_dependencies' ) );
+			$is_active          = DependenciesHelpers::status_to_boolean( $are_deps_fulfilled, false );
 		}
 
 		return $is_active;
-	}
-
-	// endregion
-
-	// region HELPERS
-
-	/**
-	 * Returns whether an array of booleans denoting dependencies status evaluates to 'true' as far as required dependencies
-	 * are concerned. Optional dependencies should be marked by including the work 'optional' in the key of the boolean.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   bool[]      $dependencies_status    Array to evaluate.
-	 *
-	 * @return  bool    Whether all required dependencies are fulfilled or not.
-	 */
-	protected function is_active_required_dependencies( array $dependencies_status ): bool {
-		$unfulfilled        = Arrays::search_values( $dependencies_status, false, null, false );
-		$are_deps_fulfilled = \is_null( $unfulfilled );
-
-		if ( ! $are_deps_fulfilled && Arrays::has_string_keys( $dependencies_status ) ) {
-			$optional_unfulfilled = Arrays::search_keys(
-				$unfulfilled,
-				true,
-				fn( string $key ) => \strpos( $key, 'optional' ) !== false
-			) ?? array();
-			$are_deps_fulfilled   = ( \count( $unfulfilled ) === \count( $optional_unfulfilled ) );
-		}
-
-		return $are_deps_fulfilled;
 	}
 
 	// endregion

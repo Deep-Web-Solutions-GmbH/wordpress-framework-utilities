@@ -120,13 +120,13 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @version 1.0.0
 	 *
 	 * @param   AdminNoticeInterface    $notice     Notice to add to the store.
-	 * @param   string                  $store      Name of the store to add the notice to.
+	 * @param   string                  $store_id   The ID of the store to add the notice to.
 	 *
 	 * @return  bool
 	 */
-	public function add_notice( AdminNoticeInterface $notice, string $store = 'dynamic' ): bool {
+	public function add_notice( AdminNoticeInterface $notice, string $store_id = 'dynamic' ): bool {
 		try {
-			$result = $this->get_notices_store( $store )->add( $notice );
+			$result = $this->get_notices_store( $store_id )->add( $notice );
 			return \is_null( $result ) || $result;
 		} catch ( ContainerExceptionInterface $exception ) {
 			return false;
@@ -140,13 +140,13 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @version 1.0.0
 	 *
 	 * @param   string  $handle     Handle of the notice to retrieve.
-	 * @param   string  $store      Name of the store to add the notice to.
+	 * @param   string  $store_id   The ID of the store to add the notice to.
 	 *
 	 * @return  AdminNoticeInterface|null
 	 */
-	public function get_notice( string $handle, string $store = 'dynamic' ): ?AdminNoticeInterface {
+	public function get_notice( string $handle, string $store_id = 'dynamic' ): ?AdminNoticeInterface {
 		try {
-			return $this->get_notices_store( $store )->get( $handle );
+			return $this->get_notices_store( $store_id )->get( $handle );
 		} catch ( ContainerExceptionInterface $exception ) {
 			return null;
 		}
@@ -159,13 +159,13 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @version 1.0.0
 	 *
 	 * @param   AdminNoticeInterface    $notice     Notice to add to the store.
-	 * @param   string                  $store      Name of the store to add the notice to.
+	 * @param   string                  $store_id   The ID of the store to add the notice to.
 	 *
 	 * @return  bool
 	 */
-	public function update_notice( AdminNoticeInterface $notice, string $store = 'dynamic' ): bool {
+	public function update_notice( AdminNoticeInterface $notice, string $store_id = 'dynamic' ): bool {
 		try {
-			$result = $this->get_notices_store( $store )->update( $notice );
+			$result = $this->get_notices_store( $store_id )->update( $notice );
 			return \is_null( $result ) || $result;
 		} catch ( ContainerExceptionInterface $exception ) {
 			return false;
@@ -179,13 +179,13 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 	 * @version 1.0.0
 	 *
 	 * @param   string  $handle         Handle of the notice to remove.
-	 * @param   string  $store          The name of the store to remove the notice from.
+	 * @param   string  $store_id       The ID of the store to remove the notice from.
 	 *
 	 * @return  bool    Whether the operation was successful or not.
 	 */
-	public function remove_notice( string $handle, string $store = 'dynamic' ): bool {
+	public function remove_notice( string $handle, string $store_id = 'dynamic' ): bool {
 		try {
-			$result = $this->get_notices_store( $store )->remove( $handle );
+			$result = $this->get_notices_store( $store_id )->remove( $handle );
 			return \is_null( $result ) || $result;
 		} catch ( NotFoundExceptionInterface $exception ) {
 			return true;

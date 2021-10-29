@@ -6,7 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\States\Disableable\DisableableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\States\DisableableInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependencyContextsEnum;
-use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\Dependencies;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpers;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -53,7 +53,7 @@ trait DisabledDependenciesTrait {
 			}
 
 			$are_deps_fulfilled = $handler->are_dependencies_fulfilled();
-			$is_disabled        = ! Dependencies::status_to_boolean( $are_deps_fulfilled );
+			$is_disabled        = ! DependenciesHelpers::status_to_boolean( $are_deps_fulfilled, false );
 		}
 
 		return $is_disabled;

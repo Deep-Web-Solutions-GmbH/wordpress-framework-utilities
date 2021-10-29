@@ -4,7 +4,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StorableInterface;
+use DeepWebSolutions\Framework\Foundations\Storage\StorableInterface;
 
 \defined( 'ABSPATH' ) || exit;
 

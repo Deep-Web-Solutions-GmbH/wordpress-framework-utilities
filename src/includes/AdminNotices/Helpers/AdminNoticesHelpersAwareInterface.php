@@ -5,7 +5,7 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers;
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Describes an object that has helpers for working with admin notices.
+ * Describes an admin-notices-helpers-aware object.
  *
  * @since   1.0.0
  * @version 1.0.0
@@ -19,11 +19,11 @@ interface AdminNoticesHelpersAwareInterface {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   string  $name   The actual descriptor of the notice's purpose.
-	 * @param   array   $extra  Further descriptor of the notice's purpose.
-	 * @param   string  $root   Prepended to all notice handles inside the same class.
+	 * @param   string              $name   The actual descriptor of the notice's purpose.
+	 * @param   string|string[]     $extra  Further descriptor of the notice's purpose.
+	 * @param   string              $root   Prepended to all notice handles inside the same class.
 	 *
 	 * @return  string
 	 */
-	public function get_admin_notice_handle( string $name, array $extra, string $root ): string;
+	public function get_admin_notice_handle( string $name, $extra, string $root ): string;
 }

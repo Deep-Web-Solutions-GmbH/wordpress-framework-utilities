@@ -3,8 +3,8 @@
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\OutputtableInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreAwareInterface;
+use DeepWebSolutions\Framework\Foundations\Services\HandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Storage\StoreAwareInterface;
 
 \defined( 'ABSPATH' ) || exit;
 

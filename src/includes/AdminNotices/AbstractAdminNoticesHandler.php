@@ -4,10 +4,9 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputLocalTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreAwareTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\Stores\MemoryStore;
-use Psr\Container\ContainerExceptionInterface;
+use DeepWebSolutions\Framework\Foundations\Storage\StoreAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Storage\StoreInterface;
+use DeepWebSolutions\Framework\Foundations\Storage\Stores\MemoryStore;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -63,29 +62,20 @@ abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterfa
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the type of the handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	public function get_type(): string {
 		return 'admin-notices';
 	}
 
 	/**
-	 * Returns a given notice from a given store as long as it's of the handler's type.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string  $store_id   The ID of the store holding the notice.
-	 * @param   string  $handle     The ID of the notice to retrieve.
-	 *
-	 * @throws  ContainerExceptionInterface     Error while retrieving the entries.
-	 *
-	 * @return  AdminNoticeInterface|null
 	 */
 	public function get_notice( string $store_id, string $handle ): ?AdminNoticeInterface {
 		$store = $this->get_store_entry( $store_id );
@@ -99,16 +89,10 @@ abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterfa
 	}
 
 	/**
-	 * Returns all the stored notices of the handler's type within a given store.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string  $store_id   The name of the store to retrieve the notices from.
-	 *
-	 * @throws  ContainerExceptionInterface     Error while retrieving the entries.
-	 *
-	 * @return  AdminNoticeInterface[]
 	 */
 	public function get_notices( string $store_id ): array {
 		$store = $this->get_store_entry( $store_id );
@@ -125,8 +109,6 @@ abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterfa
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @throws  ContainerExceptionInterface     Error while retrieving the entries.
 	 *
 	 * @return  OutputFailureException|null
 	 */
@@ -155,7 +137,7 @@ abstract class AbstractAdminNoticesHandler implements AdminNoticesHandlerInterfa
 	// region HELPERS
 
 	/**
-	 * Allows notice output manipulation by inheriting handlers. By default just calls the output method of the notice.
+	 * Allows notice output manipulation by inheriting handlers. By default, just calls the output method of the notice.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0

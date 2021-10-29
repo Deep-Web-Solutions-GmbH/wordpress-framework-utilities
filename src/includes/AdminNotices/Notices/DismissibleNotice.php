@@ -5,14 +5,14 @@ namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
 \defined( 'ABSPATH' ) || exit;
 
 /**
- * Definition of a dismissible notice.
+ * Models dismissible notice.
  *
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Notices
  */
-class DismissibleNotice extends Notice {
+class DismissibleNotice extends SimpleAdminNotice {
 	// region FIELDS AND CONSTANTS
 
 	/**
@@ -60,31 +60,23 @@ class DismissibleNotice extends Notice {
 
 	// endregion
 
-	// region METHODS
+	// region INHERITED METHODS
 
 	/**
-	 * Checks whether the notice should be outputted or not.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  bool    Whether the notice should be outputted or not.
 	 */
 	public function should_output(): bool {
 		return parent::should_output() && ! $this->is_dismissed();
 	}
 
-	// endregion
-
-	// region HELPERS
-
 	/**
-	 * Returns a list of CSS classes to include on the notice.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string[]
 	 */
 	protected function get_classes(): array {
 		return \array_merge( parent::get_classes(), array( 'is-dismissible' ) );

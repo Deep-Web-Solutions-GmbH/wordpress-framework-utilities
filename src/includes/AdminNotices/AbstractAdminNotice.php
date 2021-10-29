@@ -1,13 +1,11 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Notices;
+namespace DeepWebSolutions\Framework\Utilities\AdminNotices;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\AbstractStorable;
+use DeepWebSolutions\Framework\Foundations\Storage\AbstractStorable;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -19,9 +17,9 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Notices
+ * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices
  */
-abstract class AbstractNotice extends AbstractStorable implements AdminNoticeInterface {
+abstract class AbstractAdminNotice extends AbstractStorable implements AdminNoticeInterface {
 	// region FIELDS AND CONSTANTS
 
 	/**
@@ -90,31 +88,23 @@ abstract class AbstractNotice extends AbstractStorable implements AdminNoticeInt
 
 	// endregion
 
-	// region GETTERS
+	// region INHERITED METHODS
 
 	/**
-	 * Returns whether the notice is persistent or not.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  bool
 	 */
 	public function is_persistent(): bool {
 		return $this->is_persistent;
 	}
 
-	// endregion
-
-	// region METHODS
-
 	/**
-	 * By default, a notice should always output.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  bool
 	 */
 	public function should_output(): bool {
 		return true;
@@ -156,7 +146,7 @@ abstract class AbstractNotice extends AbstractStorable implements AdminNoticeInt
 	protected function get_classes(): array {
 		return array(
 			'notice',
-			'notice-' . $this->type,
+			"notice-$this->type",
 			'dws-framework-notice',
 		);
 	}

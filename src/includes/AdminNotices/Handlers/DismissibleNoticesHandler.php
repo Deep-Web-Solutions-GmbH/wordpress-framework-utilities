@@ -3,12 +3,12 @@
 namespace DeepWebSolutions\Framework\Utilities\AdminNotices\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Outputtable\OutputFailureException;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Storage\StoreInterface;
+use DeepWebSolutions\Framework\Foundations\PluginAwareInterface;
+use DeepWebSolutions\Framework\Foundations\PluginAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Storage\StoreInterface;
+use DeepWebSolutions\Framework\Helpers\Assets;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Strings;
-use DeepWebSolutions\Framework\Helpers\WordPress\Assets;
-use DeepWebSolutions\Framework\Helpers\WordPress\Hooks\HooksHelpersAwareInterface;
+use DeepWebSolutions\Framework\Helpers\HooksHelpersAwareInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeInterface;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleNotice;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
@@ -26,19 +26,19 @@ use Psr\Container\ContainerExceptionInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\AdminNotices\Handlers
  */
-class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAwareInterface, HooksServiceRegisterInterface, PluginAwareInterface {
+class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAwareInterface, HooksHelpersAwareInterface, HooksServiceRegisterInterface {
 	// region TRAITS
 
-	use HooksServiceRegisterTrait;
 	use PluginAwareTrait;
+	use HooksServiceRegisterTrait;
 
 	// endregion
 
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the ID of the handler. Since there should be only one handler per type of admin notices,
-	 * this is safe.
+	 * Returns the ID of the handler as the dismissible notice model class. Since there should be only one handler per type
+	 * of admin notices, this is safe.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
@@ -50,15 +50,13 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 	}
 
 	/**
-	 * Registers hooks with the hooks service.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   HooksService    $hooks_service      Instance of the hooks service.
 	 */
 	public function register_hooks( HooksService $hooks_service ): void {
-		$hooks_service->add_action( 'admin_footer', $this, 'output_admin_notices_dismiss_js' );
+		$hooks_service->add_action( 'admin_footer', $this, 'output_dismiss_js' );
 		$hooks_service->add_action( 'wp_ajax_' . $this->get_hook_tag( 'dismiss_notice' ), $this, 'handle_ajax_dismiss' );
 	}
 
@@ -72,7 +70,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 */
-	public function output_admin_notices_dismiss_js(): void {
+	public function output_dismiss_js(): void {
 		if ( false === $this->has_output ) {
 			return;
 		}
@@ -99,7 +97,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 
 		<?php
 
-		echo Assets::wrap_string_in_script_tags( // phpcs:ignore
+		echo Assets::wrap_string_in_script_tags( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			Strings::replace_placeholders(
 				array(
 					'%plugin_slug%' => \esc_js( $this->get_plugin()->get_plugin_slug() ),
@@ -120,7 +118,7 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 	 * @throws  ContainerExceptionInterface     Thrown when an error occurs while dismissing the notice.
 	 */
 	public function handle_ajax_dismiss(): void {
-		if ( \is_user_logged_in() && \check_ajax_referer( $this->get_plugin()->get_plugin_safe_slug() . '_dismiss_notice' ) ) {
+		if ( \is_user_logged_in() && \check_ajax_referer( $this->get_plugin()->get_plugin_safe_slug() . '_dismiss_notice', false, false ) ) {
 			$handle = \sanitize_key( $_POST['handle'] ?? '' );
 			$store  = \sanitize_key( $_POST['store'] ?? '' );
 			$this->dismiss_notice( $handle, $store );
@@ -190,13 +188,9 @@ class DismissibleNoticesHandler extends NoticesHandler implements HooksHelpersAw
 	 * @return  DismissibleNotice[]
 	 */
 	public function get_dismissed_notices( string $store_id ): array {
-		$notices = $this->get_notices( $store_id );
-
 		return \array_filter(
-			$notices,
-			function ( DismissibleNotice $notice ) {
-				return $notice->is_dismissed();
-			}
+			$this->get_notices( $store_id ),
+			fn ( DismissibleNotice $notice ) => $notice->is_dismissed()
 		);
 	}
 

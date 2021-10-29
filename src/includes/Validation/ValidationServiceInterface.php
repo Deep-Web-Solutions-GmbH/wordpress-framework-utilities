@@ -2,7 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Validation;
 
-use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
+use DeepWebSolutions\Framework\Foundations\Exceptions\NotSupportedException;
+use DeepWebSolutions\Framework\Foundations\Services\ServiceInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -14,123 +15,39 @@ use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyExceptio
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
-interface ValidationServiceInterface {
+interface ValidationServiceInterface extends ServiceInterface, ValidationAdapterInterface {
 	/**
-	 * Validates a given value as a string.
+	 * Validates a value based on passed parameters.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
+	 * @param   mixed   $value              The value to validate.
+	 * @param   string  $default_key        The key of the default value in the within the handler.
+	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
+	 * @param   string  $handler_id         The ID of the handler to use for validation.
 	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
+	 * @throws  NotSupportedException   Thrown if the validation type requested is not supported.
 	 *
-	 * @return  string
+	 * @return  array|bool|callable|float|int|string
 	 */
-	public function validate_string( $value, string $key ): string;
+	public function validate_value( $value, string $default_key, string $validation_type, string $handler_id );
 
 	/**
-	 * Validates a given value against a list of supported options.
+	 * Validates a value based on passed parameters.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $options_key    The composite key to retrieve the supported options.
+	 * @param   mixed   $value              The value to validate.
+	 * @param   string  $default_key        The key of the default value in the within the handler.
+	 * @param   string  $options_key        The key of the supported options within the handler.
+	 * @param   string  $validation_type    The type of validation to perform. Valid values are listed in the ValidationTypesEnum class.
+	 * @param   string  $handler_id         The ID of the handler to use for validation.
 	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
+	 * @throws  NotSupportedException   Thrown if the validation type requested is not supported.
 	 *
-	 * @return  string
+	 * @return  string|array
 	 */
-	public function validate_allowed_string( $value, string $default_key, string $options_key ): string;
-
-	/**
-	 * Validates a given value as an array.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  array
-	 */
-	public function validate_array( $value, string $key ): array;
-
-	/**
-	 * Validates an array of values against a list of supported options. Returns a new array containing only valid entries.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $options_key    The composite key to retrieve the supported options.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
-	 *
-	 * @return  array
-	 */
-	public function validate_allowed_array( $value, string $default_key, string $options_key ): array;
-
-	/**
-	 * Validates a given value as a boolean.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  bool
-	 */
-	public function validate_boolean( $value, string $key ): bool;
-
-	/**
-	 * Validates a given value as an int.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  int
-	 */
-	public function validate_integer( $value, string $key ): int;
-
-	/**
-	 * Validates a given value as a float.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  float
-	 */
-	public function validate_float( $value, string $key ): float;
-
-	/**
-	 * Validates a given value as a callable.
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  callable
-	 */
-	public function validate_callable( $value, string $key ): callable;
+	public function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id );
 }

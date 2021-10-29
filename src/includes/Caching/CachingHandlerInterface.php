@@ -14,6 +14,6 @@ use DeepWebSolutions\Framework\Foundations\Services\HandlerInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Caching
  */
-interface CachingHandlerInterface extends HandlerInterface, CachingServiceInterface {
+interface CachingHandlerInterface extends HandlerInterface, CachingAdapterInterface {
 	/* empty on purpose */
 }

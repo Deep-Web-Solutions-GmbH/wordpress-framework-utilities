@@ -15,7 +15,7 @@ use DeepWebSolutions\Framework\Foundations\Services\HandlerInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
-interface ValidationHandlerInterface extends HandlerInterface, ValidationServiceInterface {
+interface ValidationHandlerInterface extends HandlerInterface, ValidationAdapterInterface {
 	/**
 	 * Retrieves the default value for a given key.
 	 *

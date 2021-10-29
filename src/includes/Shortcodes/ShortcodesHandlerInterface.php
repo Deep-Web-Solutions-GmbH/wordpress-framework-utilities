@@ -14,6 +14,6 @@ use DeepWebSolutions\Framework\Foundations\Services\HandlerInterface;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-interface ShortcodesHandlerInterface extends HandlerInterface, ShortcodesServiceInterface {
+interface ShortcodesHandlerInterface extends HandlerInterface, ShortcodesAdapterInterface {
 	/* empty on purpose */
 }

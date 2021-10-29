@@ -1,6 +1,6 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Dependencies\Helpers;
+namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -10,9 +10,9 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Helpers;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies\Helpers
+ * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies
  */
-class DependenciesContextsEnum {
+class DependencyContextsEnum {
 	/**
 	 * Denotes that the handler is for checking the activation state.
 	 *

@@ -2,8 +2,6 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Dependencies;
 
-use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
-
 \defined( 'ABSPATH' ) || exit;
 
 /**
@@ -15,12 +13,6 @@ use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelper
  * @package DeepWebSolutions\WP-Framework\Utilities\Dependencies
  */
 trait DependenciesServiceAwareTrait {
-	// region TRAITS
-
-	use DependenciesHelpersTrait;
-
-	// endregion
-
 	// region FIELDS AND CONSTANTS
 
 	/**
@@ -64,55 +56,6 @@ trait DependenciesServiceAwareTrait {
 	 */
 	public function set_dependencies_service( DependenciesService $service ) {
 		$this->dependencies_service = $service;
-	}
-
-	// endregion
-
-	// region METHODS
-
-	/**
-	 * Wrapper around the service's own method.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string|null     $handler_id     The checker to retrieve the dependencies status from.
-	 *
-	 * @return  array
-	 */
-	public function get_dependencies( ?string $handler_id = null ): array {
-		$handler_id = $this->get_dependencies_handler_id( $handler_id );
-		return $this->get_dependencies_service()->get_dependencies( $handler_id );
-	}
-
-	/**
-	 * Wrapper around the service's own method.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string|null     $handler_id     The checker to retrieve the dependencies status from.
-	 *
-	 * @return  array
-	 */
-	public function get_missing_dependencies( ?string $handler_id = null ): array {
-		$handler_id = $this->get_dependencies_handler_id( $handler_id );
-		return $this->get_dependencies_service()->get_missing_dependencies( $handler_id );
-	}
-
-	/**
-	 * Wrapper around the service's own method.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string|null     $handler_id     The checker to retrieve the dependencies status from.
-	 *
-	 * @return  bool|bool[]|bool[][]
-	 */
-	public function are_dependencies_fulfilled( ?string $handler_id = null ) {
-		$handler_id = $this->get_dependencies_handler_id( $handler_id );
-		return $this->get_dependencies_service()->are_dependencies_fulfilled( $handler_id );
 	}
 
 	// endregion

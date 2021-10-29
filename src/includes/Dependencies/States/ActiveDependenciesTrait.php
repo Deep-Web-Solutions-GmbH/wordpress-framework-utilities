@@ -5,11 +5,9 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\States;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\States\ActiveableInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
-use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
-use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesContextsEnum;
+use DeepWebSolutions\Framework\Utilities\Dependencies\DependencyContextsEnum;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\Dependencies;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -51,13 +49,13 @@ trait ActiveDependenciesTrait {
 		$is_active = true;
 
 		if ( $this instanceof ActiveableInterface ) {
-			$handler = $this->get_dependencies_handler( DependenciesContextsEnum::ACTIVE_STATE );
+			$handler = $this->get_dependencies_handler( DependencyContextsEnum::ACTIVE_STATE );
 			if ( \is_null( $handler ) ) {
 				throw new NotImplementedException( 'Dependency checking scenario not supported' );
 			}
 
 			$are_deps_fulfilled = $handler->are_dependencies_fulfilled();
-			$is_active          = $this->check_fulfillment_status( $are_deps_fulfilled, array( $this, 'is_active_required_dependencies' ) );
+			$is_active          = Dependencies::status_to_boolean( $are_deps_fulfilled, array( $this, 'is_active_required_dependencies' ) );
 		}
 
 		return $is_active;

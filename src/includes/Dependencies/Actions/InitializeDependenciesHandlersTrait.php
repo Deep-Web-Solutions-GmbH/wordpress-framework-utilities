@@ -4,7 +4,8 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Actions;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\PluginAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesHandlerInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesService;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependenciesServiceAwareInterface;
@@ -46,12 +47,17 @@ trait InitializeDependenciesHandlersTrait {
 			$service = $this->get_dependencies_service();
 		} elseif ( $this instanceof ContainerAwareInterface ) {
 			$service = $this->get_container()->get( DependenciesService::class );
+		} elseif ( $this instanceof PluginAwareInterface && $this->get_plugin() instanceof ContainerAwareInterface ) {
+			/* @noinspection PhpUndefinedMethodInspection */
+			$service = $this->get_plugin()->get_container()->get( DependenciesService::class );
 		} else {
 			return new InitializationFailureException( 'Dependencies handlers initialization scenario not supported' );
 		}
 
 		foreach ( $this->get_dependencies_handlers() as $handler ) {
-			$service->register_handler( $handler );
+			if ( $handler instanceof DependenciesHandlerInterface ) {
+				$service->register_handler( $handler );
+			}
 		}
 
 		return null;

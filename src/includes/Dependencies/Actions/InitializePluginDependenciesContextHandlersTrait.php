@@ -4,8 +4,8 @@ namespace DeepWebSolutions\Framework\Utilities\Dependencies\Actions;
 
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Checkers\WPPluginsChecker;
+use DeepWebSolutions\Framework\Utilities\Dependencies\DependencyContextsEnum;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\SingleCheckerHandler;
-use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesContextsEnum;
 use DeepWebSolutions\Framework\Utilities\Dependencies\States\ActiveDependenciesTrait;
 use DeepWebSolutions\Framework\Utilities\Dependencies\States\DisabledDependenciesTrait;
 
@@ -31,20 +31,18 @@ trait InitializePluginDependenciesContextHandlersTrait {
 	// region INHERITED METHODS
 
 	/**
-	 * Returns a dependencies handler that checks for given installed and active plugins.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  SingleCheckerHandler[]
 	 */
 	protected function get_dependencies_handlers(): array {
 		static $handlers = null;
 
-		if ( \is_null( Arrays::validate( $handlers ) ) ) {
+		if ( \is_null( $handlers ) ) {
 			$handlers = array();
 
-			foreach ( DependenciesContextsEnum::get_all() as $context ) {
+			foreach ( DependencyContextsEnum::get_all() as $context ) {
 				$plugin_dependencies = $this->get_plugin_dependencies( $context );
 				$plugin_dependencies = Arrays::has_string_keys( $plugin_dependencies )
 					? array( $plugin_dependencies ) : $plugin_dependencies;

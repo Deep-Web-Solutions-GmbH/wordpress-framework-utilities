@@ -76,7 +76,7 @@ trait ValidationServiceAwareTrait {
 	 *
 	 * @return  InexistentPropertyException|mixed
 	 */
-	public function get_default_value( string $key, string $handler_id = 'default' ) {
+	protected function get_default_value( string $key, string $handler_id = 'settings' ) {
 		return $this->get_validation_service()->get_handler( $handler_id )->get_default_value( $key );
 	}
 
@@ -91,7 +91,7 @@ trait ValidationServiceAwareTrait {
 	 *
 	 * @return  InexistentPropertyException|array
 	 */
-	public function get_supported_options( string $key, string $handler_id = 'default' ) {
+	protected function get_supported_options( string $key, string $handler_id = 'settings' ) {
 		return $this->get_validation_service()->get_handler( $handler_id )->get_supported_options( $key );
 	}
 
@@ -110,7 +110,7 @@ trait ValidationServiceAwareTrait {
 	 *
 	 * @return  array|bool|callable|float|int|string
 	 */
-	public function validate_value( $value, string $default_key, string $validation_type, string $handler_id = 'default' ) {
+	protected function validate_value( $value, string $default_key, string $validation_type, string $handler_id = 'settings' ) {
 		return $this->get_validation_service()->validate_value( $value, $default_key, $validation_type, $handler_id );
 	}
 
@@ -128,7 +128,7 @@ trait ValidationServiceAwareTrait {
 	 *
 	 * @return  array|string
 	 */
-	public function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id = 'default' ) {
+	protected function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id = 'settings' ) {
 		return $this->get_validation_service()->validate_allowed_value( $value, $default_key, $options_key, $validation_type, $handler_id );
 	}
 

@@ -2,9 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Validation\Handlers;
 
+use DeepWebSolutions\Framework\Foundations\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\DependencyInjection\ContainerAwareTrait;
 use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareTrait;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Booleans;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Callables;
@@ -55,69 +55,50 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	// region METHODS
 
 	/**
-	 * Retrieves the default value for a given key.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string      $key    The key to retrieve the default value for.
-	 *
-	 * @return  InexistentPropertyException|mixed
 	 */
 	public function get_default_value( string $key ) {
 		return $this->get_container_value( 'defaults/' . $key );
 	}
 
 	/**
-	 * Retrieves a list of all default values.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_known_default_values(): array {
 		return \array_keys( $this->get_container_value( 'defaults' ) );
 	}
 
 	/**
-	 * Retrieves the supported options for a given key.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string  $key    The key to retrieve the supported options for.
-	 *
-	 * @return  InexistentPropertyException|array
 	 */
 	public function get_supported_options( string $key ) {
 		return $this->get_container_value( 'options/' . $key );
 	}
 
 	/**
-	 * Retrieves a list of all supported options configurations.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  array
 	 */
 	public function get_known_supported_options(): array {
 		return \array_keys( $this->get_container_value( 'options' ) );
 	}
 
 	/**
-	 * Validates a given value as a string.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  string
 	 */
 	public function validate_string( $value, string $key ): string {
 		$default = $this->get_default_value_or_throw( $key );
@@ -127,18 +108,10 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	}
 
 	/**
-	 * Validates a given value against a list of supported options.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $options_key    The composite key to retrieve the supported options.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
-	 *
-	 * @return  string
 	 */
 	public function validate_allowed_string( $value, string $default_key, string $options_key ): string {
 		$value   = $this->validate_string( $value, $default_key );
@@ -153,17 +126,10 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	}
 
 	/**
-	 * Validates a given value as an array.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  array
 	 */
 	public function validate_array( $value, string $key ): array {
 		$default = $this->get_default_value_or_throw( $key );
@@ -173,18 +139,10 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	}
 
 	/**
-	 * Validates an array of values against a list of supported options. Returns a new array containing only valid entries.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $options_key    The composite key to retrieve the supported options.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
-	 *
-	 * @return  array
 	 */
 	public function validate_allowed_array( $value, string $default_key, string $options_key ): array {
 		if ( \is_null( Arrays::validate( $value ) ) ) {
@@ -201,17 +159,10 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	}
 
 	/**
-	 * Validates a given value as a boolean.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  bool
 	 */
 	public function validate_boolean( $value, string $key ): bool {
 		$default = $this->get_default_value_or_throw( $key );
@@ -221,17 +172,10 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	}
 
 	/**
-	 * Validates a given value as an int.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  int
 	 */
 	public function validate_integer( $value, string $key ): int {
 		$default = $this->get_default_value_or_throw( $key );
@@ -241,17 +185,10 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	}
 
 	/**
-	 * Validates a given value as a float.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  float
 	 */
 	public function validate_float( $value, string $key ): float {
 		$default = $this->get_default_value_or_throw( $key );
@@ -261,14 +198,10 @@ class ContainerValidationHandler extends AbstractValidationHandler implements Co
 	}
 
 	/**
-	 * Validates a given value as a callable.
+	 * {@inheritDoc}
 	 *
-	 * @param   mixed   $value  The value to validate.
-	 * @param   string  $key    The composite key to retrieve the default value.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found.
-	 *
-	 * @return  callable
+	 * @since   1.0.0
+	 * @version 1.0.0
 	 */
 	public function validate_callable( $value, string $key ): callable {
 		$default = $this->get_default_value_or_throw( $key );

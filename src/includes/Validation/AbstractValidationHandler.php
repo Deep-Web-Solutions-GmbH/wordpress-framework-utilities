@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Validation;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -25,7 +25,7 @@ abstract class AbstractValidationHandler extends AbstractHandler implements Vali
 	 *
 	 * @param   string      $handler_id     The ID of the handler instance.
 	 */
-	public function __construct( string $handler_id = 'default' ) { // phpcs:ignore
+	public function __construct( string $handler_id = 'settings' ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		parent::__construct( $handler_id );
 	}
 
@@ -34,12 +34,10 @@ abstract class AbstractValidationHandler extends AbstractHandler implements Vali
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the type of the handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	public function get_type(): string {
 		return 'validation';

@@ -24,7 +24,7 @@ use DeepWebSolutions\Framework\Utilities\Shortcodes\Handlers\BufferedShortcodesH
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-class ShortcodesService extends AbstractMultiHandlerService implements HooksServiceRegisterInterface, RunnableInterface, ResettableInterface {
+class ShortcodesService extends AbstractMultiHandlerService implements ShortcodesServiceInterface, HooksServiceRegisterInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use HooksServiceRegisterTrait;

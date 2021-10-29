@@ -20,7 +20,7 @@ use DeepWebSolutions\Framework\Utilities\Hooks\Handlers\DirectHooksHandler;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks
  */
-class HooksService extends AbstractMultiHandlerService implements RunnableInterface, ResettableInterface {
+class HooksService extends AbstractMultiHandlerService implements HooksServiceInterface, RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use ResetHandlersTrait;

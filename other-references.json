@@ -1,9 +1,0 @@
-{
-  "classes": [],
-  "functions": [
-    "as_next_scheduled_action",
-    "as_schedule_recurring_action",
-    "as_schedule_single_action",
-    "as_unschedule_action"
-  ]
-}

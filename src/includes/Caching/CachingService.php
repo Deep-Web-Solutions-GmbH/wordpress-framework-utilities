@@ -18,7 +18,7 @@ use DeepWebSolutions\Framework\Utilities\Caching\Handlers\TransientCachingHandle
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Caching
  */
-class CachingService extends AbstractMultiHandlerService {
+class CachingService extends AbstractMultiHandlerService implements CachingServiceInterface {
 	// region INHERITED METHODS
 
 	/**

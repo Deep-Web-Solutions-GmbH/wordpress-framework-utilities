@@ -1,11 +1,12 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Actions\Initializable;
+namespace DeepWebSolutions\Framework\Utilities\Validation\Actions;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Initializable\InitializationFailureException;
+use DeepWebSolutions\Framework\Foundations\DependencyInjection\ContainerAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Hierarchy\ChildInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\PluginAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Validation\ValidationService;
 use DeepWebSolutions\Framework\Utilities\Validation\ValidationServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Validation\ValidationServiceAwareTrait;
@@ -49,6 +50,9 @@ trait InitializeValidationServiceTrait {
 			$service = $this->get_parent()->get_validation_service();
 		} elseif ( $this instanceof ContainerAwareInterface ) {
 			$service = $this->get_container()->get( ValidationService::class );
+		} elseif ( $this instanceof PluginAwareInterface && $this->get_plugin() instanceof ContainerAwareInterface ) {
+			/* @noinspection PhpUndefinedMethodInspection */
+			$service = $this->get_plugin()->get_container()->get( ValidationService::class );
 		} else {
 			return new InitializationFailureException( 'Validation service initialization scenario not supported' );
 		}

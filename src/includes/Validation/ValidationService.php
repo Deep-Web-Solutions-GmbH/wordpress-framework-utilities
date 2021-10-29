@@ -2,9 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Validation;
 
-use DeepWebSolutions\Framework\Foundations\Exceptions\InexistentPropertyException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotSupportedException;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandlerService;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractMultiHandlerService;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -16,20 +15,16 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractMultiHandl
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Validation
  */
-class ValidationService extends AbstractMultiHandlerService {
+class ValidationService extends AbstractMultiHandlerService implements ValidationServiceInterface {
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the instance of a given handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string  $handler_id     The ID of the handler to retrieve.
-	 *
-	 * @return  ValidationHandlerInterface|null
 	 */
-	public function get_handler( string $handler_id ): ?ValidationHandlerInterface { // phpcs:ignore
+	public function get_handler( string $handler_id ): ?ValidationHandlerInterface { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		/* @noinspection PhpIncompatibleReturnTypeInspection */
 		return parent::get_handler( $handler_id );
 	}
@@ -55,7 +50,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  array|bool|callable|float|int|string
 	 */
-	public function validate_value( $value, string $default_key, string $validation_type, string $handler_id = 'default' ) {
+	public function validate_value( $value, string $default_key, string $validation_type, string $handler_id = 'settings' ) {
 		switch ( $validation_type ) {
 			case ValidationTypesEnum::STRING:
 				return $this->validate_string( $value, $default_key, $handler_id );
@@ -90,7 +85,7 @@ class ValidationService extends AbstractMultiHandlerService {
 	 *
 	 * @return  string|array
 	 */
-	public function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id = 'default' ) {
+	public function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id = 'settings' ) {
 		switch ( $validation_type ) {
 			case ValidationTypesEnum::STRING:
 				return $this->validate_allowed_string( $value, $default_key, $options_key, $handler_id );
@@ -102,145 +97,82 @@ class ValidationService extends AbstractMultiHandlerService {
 	}
 
 	/**
-	 * Validates a given value as a string using the given handler.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $key            The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
-	 *
-	 * @return  string
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_string( $value, string $key, string $handler_id = 'default' ): string {
+	public function validate_string( $value, string $key, string $handler_id = 'settings' ): string {
 		return $this->get_handler( $handler_id )->validate_string( $value, $key );
 	}
 
 	/**
-	 * Validates a given value against a list of supported options.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $options_key    The composite key to retrieve the supported options.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
-	 *
-	 * @return  string
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_allowed_string( $value, string $default_key, string $options_key, string $handler_id = 'default' ): string {
+	public function validate_allowed_string( $value, string $default_key, string $options_key, string $handler_id = 'settings' ): string {
 		return $this->get_handler( $handler_id )->validate_allowed_string( $value, $default_key, $options_key );
 	}
 
 	/**
-	 * Validates a given value as an array using the given handler.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $key            The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
-	 *
-	 * @return  array
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_array( $value, string $key, string $handler_id = 'default' ): array {
+	public function validate_array( $value, string $key, string $handler_id = 'settings' ): array {
 		return $this->get_handler( $handler_id )->validate_array( $value, $key );
 	}
 
 	/**
-	 * Validates an array of values against a list of supported options. Returns a new array containing only valid entries.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $default_key    The composite key to retrieve the default value.
-	 * @param   string  $options_key    The composite key to retrieve the supported options.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value or the supported options were not found.
-	 *
-	 * @return  array
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_allowed_array( $value, string $default_key, string $options_key, string $handler_id = 'default' ): array {
+	public function validate_allowed_array( $value, string $default_key, string $options_key, string $handler_id = 'settings' ): array {
 		return $this->get_handler( $handler_id )->validate_allowed_array( $value, $default_key, $options_key );
 	}
 
 	/**
-	 * Validates a given value as a boolean using the given handler.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $key            The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
-	 *
-	 * @return  bool
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_boolean( $value, string $key, string $handler_id = 'default' ): bool {
+	public function validate_boolean( $value, string $key, string $handler_id = 'settings' ): bool {
 		return $this->get_handler( $handler_id )->validate_boolean( $value, $key );
 	}
 
 	/**
-	 * Validates a given value as an int using the given handler.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $key            The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
-	 *
-	 * @return  int
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_integer( $value, string $key, string $handler_id = 'default' ): int {
+	public function validate_integer( $value, string $key, string $handler_id = 'settings' ): int {
 		return $this->get_handler( $handler_id )->validate_integer( $value, $key );
 	}
 
 	/**
-	 * Validates a given value as a float using the given handler.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $key            The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
-	 *
-	 * @return  float
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_float( $value, string $key, string $handler_id = 'default' ): float {
+	public function validate_float( $value, string $key, string $handler_id = 'settings' ): float {
 		return $this->get_handler( $handler_id )->validate_float( $value, $key );
 	}
 
 	/**
-	 * Validates a given value as a callable using the given handler.
+	 * {@inheritDoc}
 	 *
-	 * @param   mixed   $value          The value to validate.
-	 * @param   string  $key            The composite key to retrieve the default value.
-	 * @param   string  $handler_id     The ID of the handler to use for validation.
-	 *
-	 * @throws  InexistentPropertyException     Thrown when the default value was not found inside the handler.
-	 *
-	 * @return  callable
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
-	public function validate_callable( $value, string $key, string $handler_id = 'default' ): callable {
+	public function validate_callable( $value, string $key, string $handler_id = 'settings' ): callable {
 		return $this->get_handler( $handler_id )->validate_callable( $value, $key );
 	}
 
@@ -249,12 +181,10 @@ class ValidationService extends AbstractMultiHandlerService {
 	// region HELPERS
 
 	/**
-	 * Returns the class name of the used handler for better type-checking.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  string
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
 	protected function get_handler_class(): string {
 		return ValidationHandlerInterface::class;

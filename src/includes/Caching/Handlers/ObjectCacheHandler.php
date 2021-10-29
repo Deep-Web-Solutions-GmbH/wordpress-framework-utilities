@@ -2,6 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Caching\Handlers;
 
+use DeepWebSolutions\Framework\Foundations\Exceptions\NotFoundException;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Integers;
 use DeepWebSolutions\Framework\Utilities\Caching\AbstractCachingHandler;
 
@@ -59,108 +60,7 @@ class ObjectCacheHandler extends AbstractCachingHandler {
 	 * @return  string
 	 */
 	public function get_cache_group(): string {
-		return $this->group ?: $this->get_plugin()->get_plugin_safe_slug(); // phpcs:ignore
-	}
-
-	// endregion
-
-	// region METHODS
-
-	/**
-	 * Returns a cache value.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-	 *
-	 * @param   string      $key        The key under which the cache contents are stored.
-	 * @param   bool|null   $found      Whether the key was found in the cache (passed by reference). Disambiguates a return of false, a storable value.
-	 * @param   bool        $force      Whether to force an update of the local cache from the persistent cache.
-	 *
-	 * @return  mixed
-	 */
-	public function get_value( string $key, ?bool &$found, bool $force = false ) {
-		$key .= "__{$this->get_keys_suffix()}";
-		return \wp_cache_get( $key, $this->get_cache_group(), $force, $found );
-	}
-
-	/**
-	 * Adds data to the cache. If the key already exists, it overrides the existing data.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $key        The cache key to use for retrieval later.
-	 * @param   mixed   $value      The contents to store in the cache.
-	 * @param   int     $expire     When to expire the cache contents, in seconds. Default 0 (no expiration).
-	 *
-	 * @return  bool    True on success, false on failure.
-	 */
-	public function set_value( string $key, $value, int $expire = 0 ): bool {
-		$key .= "__{$this->get_keys_suffix()}";
-		return \wp_cache_set( $key, $value, $this->get_cache_group(), $expire );
-	}
-
-	/**
-	 * Replaces the contents of the cache with new data.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string $key    The key for the cache data that should be replaced.
-	 * @param   mixed  $value  The new data to store in the cache.
-	 * @param   int    $expire When to expire the cache contents, in seconds. Default 0 (no expiration).
-	 *
-	 * @return  bool    False if original value does not exist, true if contents were replaced.
-	 */
-	public function replace_value( string $key, $value, int $expire = 0 ): bool {
-		$key .= "__{$this->get_keys_suffix()}";
-		return \wp_cache_replace( $key, $value, $this->get_cache_group(), $expire );
-	}
-
-	/**
-	 * Adds data to the cache, if the cache key doesn't already exist.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string $key    The key for the cache data that should be replaced.
-	 * @param   mixed  $value  The new data to store in the cache.
-	 * @param   int    $expire When to expire the cache contents, in seconds. Default 0 (no expiration).
-	 *
-	 * @return bool     True on success, false if cache key already exists.
-	 */
-	public function add_value( string $key, $value, int $expire = 0 ): bool {
-		$key .= "__{$this->get_keys_suffix()}";
-		return \wp_cache_add( $key, $value, $this->get_cache_group(), $expire );
-	}
-
-	/**
-	 * Removes the cache contents matching key.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @param   string  $key    What the contents in the cache are called.
-	 *
-	 * @return  bool    True on successful removal, false on failure.
-	 */
-	public function delete_value( string $key ): bool {
-		$key .= "__{$this->get_keys_suffix()}";
-		return \wp_cache_delete( $key );
-	}
-
-	/**
-	 * Invalidates all the cached entries belonging to the current group.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  bool
-	 */
-	public function delete_all_values(): bool {
-		return ! ( ( false === \wp_cache_incr( $this->get_keys_suffix_key() ) ) );
+		return $this->group ?: $this->get_plugin()->get_plugin_safe_slug();
 	}
 
 	/**
@@ -192,6 +92,105 @@ class ObjectCacheHandler extends AbstractCachingHandler {
 		}
 
 		return Integers::maybe_cast( $suffix, 1 );
+	}
+
+	// endregion
+
+	// region METHODS
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
+	public function get_value( string $key, bool $force = false ) {
+		$key = $this->generate_full_key( $key );
+
+		$found = null;
+		$value = \wp_cache_get( $key, $this->get_cache_group(), $force, $found );
+
+		return ( false === $found ) ? new NotFoundException( $key ) : $value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
+	public function set_value( string $key, $value, int $expire = 0 ): bool {
+		return \wp_cache_set( $this->generate_full_key( $key ), $value, $this->get_cache_group(), $expire );
+	}
+
+	/**
+	 * Replaces the contents of the cache with new data.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string $key    The key for the cache data that should be replaced.
+	 * @param   mixed  $value  The new data to store in the cache.
+	 * @param   int    $expire When to expire the cache contents, in seconds. Default 0 (no expiration).
+	 *
+	 * @return  bool    False if original value does not exist, true if contents were replaced.
+	 */
+	public function replace_value( string $key, $value, int $expire = 0 ): bool {
+		return \wp_cache_replace( $this->generate_full_key( $key ), $value, $this->get_cache_group(), $expire );
+	}
+
+	/**
+	 * Adds data to the cache, if the cache key doesn't already exist.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string $key    The key for the cache data that should be replaced.
+	 * @param   mixed  $value  The new data to store in the cache.
+	 * @param   int    $expire When to expire the cache contents, in seconds. Default 0 (no expiration).
+	 *
+	 * @return bool     True on success, false if cache key already exists.
+	 */
+	public function add_value( string $key, $value, int $expire = 0 ): bool {
+		return \wp_cache_add( $this->generate_full_key( $key ), $value, $this->get_cache_group(), $expire );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
+	public function delete_value( string $key ): bool {
+		return \wp_cache_delete( $this->generate_full_key( $key ) );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
+	public function delete_all_values(): bool {
+		return ! ( ( false === \wp_cache_incr( $this->get_keys_suffix_key() ) ) );
+	}
+
+	// endregion
+
+	// region HELPERS
+
+	/**
+	 * Generates the final object cache key from the given user-land key.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $user_key   User-land key.
+	 *
+	 * @return  string
+	 */
+	protected function generate_full_key( string $user_key ): string {
+		return "{$user_key}__{$this->get_keys_suffix()}";
 	}
 
 	// endregion

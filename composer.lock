@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "103bd6f214bf47cebc0d419787538052",
+    "content-hash": "c7b340e1867b9b235092a89806d3f764",
     "packages": [
         {
             "name": "deep-web-solutions/wp-framework-bootstrapper",
@@ -76,16 +76,16 @@
         },
         {
             "name": "deep-web-solutions/wp-framework-foundations",
-            "version": "v1.5.0",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/deep-web-solutions/wordpress-framework-foundations.git",
-                "reference": "02bc4a215f46b07f936507f5ad06c9b30241ebb7"
+                "reference": "0adc691c04e4b9824706c004521e365df63dacae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/02bc4a215f46b07f936507f5ad06c9b30241ebb7",
-                "reference": "02bc4a215f46b07f936507f5ad06c9b30241ebb7",
+                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/0adc691c04e4b9824706c004521e365df63dacae",
+                "reference": "0adc691c04e4b9824706c004521e365df63dacae",
                 "shasum": ""
             },
             "require": {
@@ -152,9 +152,9 @@
             ],
             "support": {
                 "issues": "https://github.com/deep-web-solutions/wordpress-framework-foundations/issues",
-                "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/v1.5.0"
+                "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/v1.5.1"
             },
-            "time": "2021-10-28T15:13:09+00:00"
+            "time": "2021-10-29T10:05:28+00:00"
         },
         {
             "name": "deep-web-solutions/wp-framework-helpers",
@@ -5129,16 +5129,16 @@
         },
         {
             "name": "symfony/config",
-            "version": "v5.3.4",
+            "version": "v5.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "4268f3059c904c61636275182707f81645517a37"
+                "reference": "ac23c2f24d5634966d665d836c3933d54347e5d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/4268f3059c904c61636275182707f81645517a37",
-                "reference": "4268f3059c904c61636275182707f81645517a37",
+                "url": "https://api.github.com/repos/symfony/config/zipball/ac23c2f24d5634966d665d836c3933d54347e5d4",
+                "reference": "ac23c2f24d5634966d665d836c3933d54347e5d4",
                 "shasum": ""
             },
             "require": {
@@ -5188,7 +5188,7 @@
             "description": "Helps you find, load, combine, autofill and validate configuration values of any kind",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/config/tree/v5.3.4"
+                "source": "https://github.com/symfony/config/tree/v5.3.10"
             },
             "funding": [
                 {
@@ -5204,7 +5204,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-07-21T12:40:44+00:00"
+            "time": "2021-10-22T09:06:52+00:00"
         },
         {
             "name": "symfony/console",
@@ -6344,22 +6344,23 @@
         },
         {
             "name": "woocommerce/action-scheduler",
-            "version": "3.3.0",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/action-scheduler.git",
-                "reference": "5588a831cd2453ecf7d4803f3a81063e13cde93d"
+                "reference": "3218a33ff14b968f8cb05de9656c2efa1eeb1330"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/action-scheduler/zipball/5588a831cd2453ecf7d4803f3a81063e13cde93d",
-                "reference": "5588a831cd2453ecf7d4803f3a81063e13cde93d",
+                "url": "https://api.github.com/repos/woocommerce/action-scheduler/zipball/3218a33ff14b968f8cb05de9656c2efa1eeb1330",
+                "reference": "3218a33ff14b968f8cb05de9656c2efa1eeb1330",
                 "shasum": ""
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.5",
                 "woocommerce/woocommerce-sniffs": "0.1.0",
-                "wp-cli/wp-cli": "~2.5.0"
+                "wp-cli/wp-cli": "~2.5.0",
+                "yoast/phpunit-polyfills": "^1.0"
             },
             "type": "wordpress-plugin",
             "extra": {
@@ -6377,9 +6378,9 @@
             "homepage": "https://actionscheduler.org/",
             "support": {
                 "issues": "https://github.com/woocommerce/action-scheduler/issues",
-                "source": "https://github.com/woocommerce/action-scheduler/tree/3.3.0"
+                "source": "https://github.com/woocommerce/action-scheduler/tree/3.4.0"
             },
-            "time": "2021-09-15T21:08:48+00:00"
+            "time": "2021-10-28T17:09:12+00:00"
         },
         {
             "name": "wp-cli/mustangostang-spyc",

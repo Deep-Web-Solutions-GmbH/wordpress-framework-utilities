@@ -26,7 +26,7 @@ class DirectHooksHandler extends AbstractHooksHandler {
 	 *
 	 * @param   string      $handler_id     The ID of the handler instance.
 	 */
-	public function __construct( string $handler_id = 'internal' ) { // phpcs:ignore
+	public function __construct( string $handler_id = 'direct' ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		parent::__construct( $handler_id );
 	}
 
@@ -35,16 +35,10 @@ class DirectHooksHandler extends AbstractHooksHandler {
 	// region INHERITED METHODS
 
 	/**
-	 * Registers a new action with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @since    1.0.0
 	 * @version  1.0.0
-	 *
-	 * @param    string         $hook           The name of the WordPress action that is being registered.
-	 * @param    object|null    $component      A reference to the instance of the object on which the action is defined.
-	 * @param    string         $callback       The name of the function definition on the $component.
-	 * @param    int            $priority       Optional. he priority at which the function should be fired. Default is 10.
-	 * @param    int            $accepted_args  Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
 	public function add_action( string $hook, ?object $component, string $callback, int $priority = 10, int $accepted_args = 1 ): void {
 		parent::add_action( $hook, $component, $callback, $priority, $accepted_args );
@@ -57,15 +51,10 @@ class DirectHooksHandler extends AbstractHooksHandler {
 	}
 
 	/**
-	 * Removes an action registered with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @since    1.0.0
 	 * @version  1.0.0
-	 *
-	 * @param    string         $hook           The name of the WordPress filter that is being deregistered.
-	 * @param    object|null    $component      A reference to the instance of the object on which the filter is defined.
-	 * @param    string         $callback       The name of the function definition on the $component.
-	 * @param    int            $priority       Optional. he priority at which the function should be fired. Default is 10.
 	 */
 	public function remove_action( string $hook, ?object $component, string $callback, int $priority = 10 ): void {
 		parent::remove_action( $hook, $component, $callback, $priority );
@@ -78,30 +67,22 @@ class DirectHooksHandler extends AbstractHooksHandler {
 	}
 
 	/**
-	 * Removes all registered actions from WordPress.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
 	public function remove_all_actions(): void {
 		foreach ( $this->actions as $action ) {
 			$this->remove_action( $action['hook'], $action['component'], $action['callback'], $action['priority'] );
 		}
-
-		parent::remove_all_actions();
 	}
 
 	/**
-	 * Registers a new filter with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @since    1.0.0
 	 * @version  1.0.0
-	 *
-	 * @param    string         $hook           The name of the WordPress action that is being registered.
-	 * @param    object|null    $component      A reference to the instance of the object on which the action is defined.
-	 * @param    string         $callback       The name of the function definition on the $component.
-	 * @param    int            $priority       Optional. he priority at which the function should be fired. Default is 10.
-	 * @param    int            $accepted_args  Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
 	public function add_filter( string $hook, ?object $component, string $callback, int $priority = 10, int $accepted_args = 1 ): void {
 		parent::add_filter( $hook, $component, $callback, $priority, $accepted_args );
@@ -114,15 +95,10 @@ class DirectHooksHandler extends AbstractHooksHandler {
 	}
 
 	/**
-	 * Removes a filter registered with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @since    1.0.0
 	 * @version  1.0.0
-	 *
-	 * @param    string         $hook           The name of the WordPress filter that is being deregistered.
-	 * @param    object|null    $component      A reference to the instance of the object on which the filter is defined.
-	 * @param    string         $callback       The name of the function definition on the $component.
-	 * @param    int            $priority       Optional. he priority at which the function should be fired. Default is 10.
 	 */
 	public function remove_filter( string $hook, ?object $component, string $callback, int $priority = 10 ): void {
 		parent::remove_filter( $hook, $component, $callback, $priority );
@@ -135,17 +111,15 @@ class DirectHooksHandler extends AbstractHooksHandler {
 	}
 
 	/**
-	 * Removes all registered filters from WordPress.
+	 * {@inheritDoc}
 	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
+	 * @since    1.0.0
+	 * @version  1.0.0
 	 */
 	public function remove_all_filters(): void {
 		foreach ( $this->filters as $filter ) {
 			$this->remove_filter( $filter['hook'], $filter['component'], $filter['callback'], $filter['priority'] );
 		}
-
-		parent::remove_all_filters();
 	}
 
 	// endregion

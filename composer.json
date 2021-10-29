@@ -23,10 +23,10 @@
     "php": ">=7.4",
     "deep-web-solutions/wp-framework-bootstrapper": "^1.2.0",
     "deep-web-solutions/wp-framework-helpers": "^1.5.0",
-    "deep-web-solutions/wp-framework-foundations": "^1.5.0"
+    "deep-web-solutions/wp-framework-foundations": "^1.5.1"
   },
   "require-dev": {
-    "woocommerce/action-scheduler": "^3.1",
+    "woocommerce/action-scheduler": "^3.4",
 
     "deep-web-solutions/wordpress-configs": "master@dev",
     "php-stubs/wordpress-stubs": "5.5.*",

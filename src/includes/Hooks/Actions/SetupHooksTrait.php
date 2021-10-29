@@ -1,10 +1,11 @@
 <?php
 
-namespace DeepWebSolutions\Framework\Utilities\Actions\Setupable;
+namespace DeepWebSolutions\Framework\Utilities\Hooks\Actions;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
-use DeepWebSolutions\Framework\Foundations\Utilities\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\DependencyInjection\ContainerAwareInterface;
+use DeepWebSolutions\Framework\Foundations\PluginAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksService;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceAwareInterface;
 use DeepWebSolutions\Framework\Utilities\Hooks\HooksServiceRegisterTrait;
@@ -19,7 +20,7 @@ use Psr\Container\NotFoundExceptionInterface;
  * @since   1.0.0
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
- * @package DeepWebSolutions\WP-Framework\Utilities\Actions\Setupable
+ * @package DeepWebSolutions\WP-Framework\Utilities\Hooks\Actions
  */
 trait SetupHooksTrait {
 	// region TRAITS
@@ -47,6 +48,9 @@ trait SetupHooksTrait {
 			$service = $this->get_hooks_service();
 		} elseif ( $this instanceof ContainerAwareInterface ) {
 			$service = $this->get_container()->get( HooksService::class );
+		} elseif ( $this instanceof PluginAwareInterface && $this->get_plugin() instanceof ContainerAwareInterface ) {
+			/* @noinspection PhpUndefinedMethodInspection */
+			$service = $this->get_plugin()->get_container()->get( HooksService::class );
 		} else {
 			return new SetupFailureException( 'Hooks registration setup scenario not supported' );
 		}

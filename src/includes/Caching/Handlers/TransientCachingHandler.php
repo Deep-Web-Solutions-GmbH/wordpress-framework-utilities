@@ -2,6 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Caching\Handlers;
 
+use DeepWebSolutions\Framework\Foundations\Exceptions\NotFoundException;
 use DeepWebSolutions\Framework\Helpers\DataTypes\Integers;
 use DeepWebSolutions\Framework\Utilities\Caching\AbstractCachingHandler;
 
@@ -59,7 +60,7 @@ class TransientCachingHandler extends AbstractCachingHandler {
 	 * @return  string
 	 */
 	public function get_keys_prefix(): string {
-		return $this->prefix ?: $this->get_plugin()->get_plugin_safe_slug(); // phpcs:ignore
+		return $this->prefix ?: $this->get_plugin()->get_plugin_safe_slug();
 	}
 
 	/**
@@ -98,64 +99,43 @@ class TransientCachingHandler extends AbstractCachingHandler {
 	// region METHODS
 
 	/**
-	 * Returns a value from the transient cache.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string      $key    Transient name. Expected to not be SQL-escaped.
-	 * @param   bool|null   $found  Whether the value was found or not. Disambiguates between a stored value of false and simply failure.
-	 *
-	 * @return  mixed
 	 */
-	public function get_value( string $key, ?bool &$found = null ) {
-		$key = "{$this->get_keys_prefix()}/{$key}__{$this->get_keys_suffix()}";
-
+	public function get_value( string $key ) {
+		$key   = $this->generate_full_key( $key );
 		$value = \get_transient( $key );
-		$found = ( false !== $value );
 
-		return $value;
+		return ( false === $value ) ? new NotFoundException( $key ) : $value;
 	}
 
 	/**
-	 * Sets a transient value.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string  $key        Transient name. Expected to not be SQL-escaped. Must be 172 characters or fewer in length.
-	 * @param   mixed   $value      Transient value. Must be serializable if non-scalar. Expected to not be SQL-escaped.
-	 * @param   int     $expire     Time until expiration in seconds. Default 0 (no expiration).
-	 *
-	 * @return  bool
 	 */
 	public function set_value( string $key, $value, int $expire = 0 ): bool {
-		$key = "{$this->get_keys_prefix()}/{$key}__{$this->get_keys_suffix()}";
-		return \set_transient( $key, $value, $expire );
+		return \set_transient( $this->generate_full_key( $key ), $value, $expire );
 	}
 
 	/**
-	 * Deletes a transient value.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string  $key    Transient name. Expected to not be SQL-escaped.
-	 *
-	 * @return  bool
 	 */
 	public function delete_value( string $key ): bool {
-		$key = "{$this->get_keys_prefix()}/{$key}__{$this->get_keys_suffix()}";
-		return \delete_transient( $key );
+		return \delete_transient( $this->generate_full_key( $key ) );
 	}
 
 	/**
-	 * Deletes all the transients set by this handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  bool
 	 */
 	public function delete_all_values(): bool {
 		foreach ( $this->get_all_keys() as $full_key ) {
@@ -170,6 +150,20 @@ class TransientCachingHandler extends AbstractCachingHandler {
 	// endregion
 
 	// region HELPERS
+
+	/**
+	 * Generates the final object cache key from the given user-land key.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   string  $user_key   User-land key.
+	 *
+	 * @return  string
+	 */
+	protected function generate_full_key( string $user_key ): string {
+		return "{$this->get_keys_prefix()}/{$user_key}__{$this->get_keys_suffix()}";
+	}
 
 	/**
 	 * Returns all the transient names from the database of transients that have been inserted by this handler.
@@ -191,7 +185,7 @@ class TransientCachingHandler extends AbstractCachingHandler {
 		$keys = \is_wp_error( $keys ) ? array() : $keys;
 
 		// Remove '_transient_' from the option name.
-		return \array_map( fn( array $key ) => ltrim( $key['option_name'], '_transient_' ), $keys );
+		return \array_map( fn( array $key ) => \ltrim( $key['option_name'], '_transient_' ), $keys );
 	}
 
 	// endregion

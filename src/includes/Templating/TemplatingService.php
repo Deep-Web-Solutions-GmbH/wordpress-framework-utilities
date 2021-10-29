@@ -3,10 +3,10 @@
 namespace DeepWebSolutions\Framework\Utilities\Templating;
 
 use DeepWebSolutions\Framework\Foundations\Helpers\HooksHelpersTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Services\AbstractService;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractService;
 use DeepWebSolutions\Framework\Helpers\FileSystem\FilesystemAwareTrait;
-use DeepWebSolutions\Framework\Helpers\WordPress\Hooks\HooksHelpersAwareInterface;
-use DeepWebSolutions\Framework\Helpers\WordPress\Request;
+use DeepWebSolutions\Framework\Helpers\HooksHelpersAwareInterface;
+use DeepWebSolutions\Framework\Helpers\Request;
 use Psr\Log\LogLevel;
 
 \defined( 'ABSPATH' ) || exit;
@@ -46,8 +46,8 @@ class TemplatingService extends AbstractService implements HooksHelpersAwareInte
 	 */
 	public function load_template_part( string $slug, string $name, string $template_path, string $default_path, array $args = array(), string $constant_name = 'TEMPLATE_DEBUG' ): void {
 		$template = ( ! empty( $name ) )
-			? $this->locate_template( "{$slug}-{$name}.php", $template_path, $default_path, $constant_name )
-			: $this->locate_template( "{$slug}.php", $template_path, $default_path, $constant_name );
+			? $this->locate_template( "$slug-$name.php", $template_path, $default_path, $constant_name )
+			: $this->locate_template( "$slug.php", $template_path, $default_path, $constant_name );
 
 		// Allow 3rd-party plugins to filter the template file from their plugin.
 		$filtered_template = \apply_filters( $this->get_hook_tag( 'get_template_part' ), $template, $slug, $name, $template_path, $default_path, $args, $constant_name ); // phpcs:ignore
@@ -188,7 +188,7 @@ class TemplatingService extends AbstractService implements HooksHelpersAwareInte
 			if ( ! $this->get_wp_filesystem()->exists( $filtered_template ) ) {
 				return $this->log_event(
 					/* translators: %s: Path to template file */
-					\sprintf( 'The file %s does not exist.', $filtered_template ),
+					\sprintf( 'The file %s does not exist.', "<code>$filtered_template</code>" ),
 					array(),
 					'framework'
 				)

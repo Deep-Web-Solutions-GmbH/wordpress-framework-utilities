@@ -2,11 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
-use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetLocalTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
-use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
-use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -18,14 +14,7 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-abstract class AbstractShortcodesHandler extends AbstractHandler implements ShortcodesHandlerInterface, RunnableInterface, ResettableInterface {
-	// region TRAITS
-
-	use RunLocalTrait;
-	use ResetLocalTrait;
-
-	// endregion
-
+abstract class AbstractShortcodesHandler extends AbstractHandler implements ShortcodesHandlerInterface {
 	// region FIELDS AND CONSTANTS
 
 	/**
@@ -60,12 +49,10 @@ abstract class AbstractShortcodesHandler extends AbstractHandler implements Shor
 	// region INHERITED METHODS
 
 	/**
-	 * Returns the type of the handler.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @return  string
 	 */
 	public function get_type(): string {
 		return 'shortcodes';
@@ -76,14 +63,10 @@ abstract class AbstractShortcodesHandler extends AbstractHandler implements Shor
 	// region METHODS
 
 	/**
-	 * Adds a new shortcode to the collection to be registered with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
-	 *
-	 * @param   string          $tag            The name of the WordPress shortcode that is being registered.
-	 * @param   object|null     $component      A reference to the instance of the object on which the shortcode is defined.
-	 * @param   string          $callback       The name of the function definition on the $component.
 	 */
 	public function add_shortcode( string $tag, ?object $component, string $callback ): void {
 		$this->shortcodes[] = array(
@@ -94,11 +77,10 @@ abstract class AbstractShortcodesHandler extends AbstractHandler implements Shor
 	}
 
 	/**
-	 * Removes a shortcode from the collection to be registered with WordPress.
+	 * {@inheritDoc}
 	 *
-	 * @param   string          $tag            The name of the WordPress shortcode that is being deregistered.
-	 * @param   object|null     $component      A reference to the instance of the object on which the shortcode is defined.
-	 * @param   string          $callback       The name of the function definition on the $component.
+	 * @since   1.0.0
+	 * @version 1.0.0
 	 */
 	public function remove_shortcode( string $tag, ?object $component, string $callback ): void {
 		foreach ( $this->shortcodes as $index => $hook_info ) {
@@ -110,7 +92,7 @@ abstract class AbstractShortcodesHandler extends AbstractHandler implements Shor
 	}
 
 	/**
-	 * Removes all shortcodes from the collection to be registered with WordPress.
+	 * {@inheritDoc}
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0

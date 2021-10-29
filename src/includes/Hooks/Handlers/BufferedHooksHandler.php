@@ -25,7 +25,7 @@ use DeepWebSolutions\Framework\Utilities\Hooks\AbstractHooksHandler;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks\Handlers
  */
-class DefaultHooksHandler extends AbstractHooksHandler implements RunnableInterface, ResettableInterface {
+class BufferedHooksHandler extends AbstractHooksHandler implements RunnableInterface, ResettableInterface {
 	// region TRAITS
 
 	use RunLocalTrait;
@@ -36,14 +36,14 @@ class DefaultHooksHandler extends AbstractHooksHandler implements RunnableInterf
 	// region MAGIC METHODS
 
 	/**
-	 * DefaultHooksHandler constructor.
+	 * BufferedHooksHandler constructor.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @param   string      $handler_id     The ID of the handler instance.
 	 */
-	public function __construct( string $handler_id = 'default' ) { // phpcs:ignore
+	public function __construct( string $handler_id = 'buffered' ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		parent::__construct( $handler_id );
 	}
 

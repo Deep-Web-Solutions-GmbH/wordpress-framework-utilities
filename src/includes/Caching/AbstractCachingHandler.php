@@ -2,9 +2,9 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Caching;
 
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareInterface;
-use DeepWebSolutions\Framework\Foundations\Plugin\PluginAwareTrait;
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\AbstractHandler;
+use DeepWebSolutions\Framework\Foundations\PluginAwareInterface;
+use DeepWebSolutions\Framework\Foundations\PluginAwareTrait;
+use DeepWebSolutions\Framework\Foundations\Services\AbstractHandler;
 
 \defined( 'ABSPATH' ) || exit;
 

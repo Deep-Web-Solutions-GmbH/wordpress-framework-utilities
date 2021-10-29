@@ -23,7 +23,7 @@ use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Hooks\Handlers
  */
-class ScopedHooksHandler extends DefaultHooksHandler implements InitializableInterface {
+class ScopedHooksHandler extends BufferedHooksHandler implements InitializableInterface {
 	// region TRAITS
 
 	use InitializeLocalTrait;

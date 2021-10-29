@@ -2,7 +2,7 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Services\HandlerInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -15,22 +15,6 @@ use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
 interface ShortcodesHandlerInterface extends HandlerInterface {
-	// region GETTERS
-
-	/**
-	 * Returns the list of shortcodes that have been registered with the handler.
-	 *
-	 * @since   1.0.0
-	 * @version 1.0.0
-	 *
-	 * @return  array
-	 */
-	public function get_shortcodes(): array;
-
-	// endregion
-
-	// region METHODS
-
 	/**
 	 * Registers a new shortcode with the handler.
 	 *
@@ -59,6 +43,4 @@ interface ShortcodesHandlerInterface extends HandlerInterface {
 	 * @version 1.0.0
 	 */
 	public function remove_all_shortcodes();
-
-	// endregion
 }

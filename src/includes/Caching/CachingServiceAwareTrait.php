@@ -2,6 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Caching;
 
+use DeepWebSolutions\Framework\Foundations\Exceptions\NotFoundException;
+
 \defined( 'ABSPATH' ) || exit;
 
 /**
@@ -68,16 +70,13 @@ trait CachingServiceAwareTrait {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
-	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-	 *
 	 * @param   string      $key            The key under which the cache contents are stored.
-	 * @param   bool|null   $found          Whether the key was found in the cache (passed by reference). Disambiguates a return of false, a storable value.
 	 * @param   string      $handler_id     ID of the handler to return the value from.
 	 *
-	 * @return  false|mixed
+	 * @return  mixed|NotFoundException
 	 */
-	public function get_cache_value( string $key, ?bool &$found = null, string $handler_id = 'object' ) {
-		return $this->get_caching_service()->get_value( $key, $found, $handler_id );
+	protected function get_cache_value( string $key, string $handler_id = 'object' ) {
+		return $this->get_caching_service()->get_value( $key, $handler_id );
 	}
 
 	/**
@@ -93,7 +92,7 @@ trait CachingServiceAwareTrait {
 	 *
 	 * @return  bool    True on success, false on failure.
 	 */
-	public function set_cache_value( string $key, $data, int $expire = 0, string $handler_id = 'object' ): bool {
+	protected function set_cache_value( string $key, $data, int $expire = 0, string $handler_id = 'object' ): bool {
 		return $this->get_caching_service()->set_value( $key, $data, $expire, $handler_id );
 	}
 
@@ -108,7 +107,7 @@ trait CachingServiceAwareTrait {
 	 *
 	 * @return  bool
 	 */
-	public function delete_cache_value( string $key, string $handler_id = 'object' ): bool {
+	protected function delete_cache_value( string $key, string $handler_id = 'object' ): bool {
 		return $this->get_caching_service()->delete_value( $key, $handler_id );
 	}
 

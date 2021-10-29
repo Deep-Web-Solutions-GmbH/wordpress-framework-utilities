@@ -2,7 +2,8 @@
 
 namespace DeepWebSolutions\Framework\Utilities\Caching;
 
-use DeepWebSolutions\Framework\Foundations\Utilities\Handlers\HandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Exceptions\NotFoundException;
+use DeepWebSolutions\Framework\Foundations\Services\HandlerInterface;
 
 \defined( 'ABSPATH' ) || exit;
 
@@ -22,11 +23,10 @@ interface CachingHandlerInterface extends HandlerInterface {
 	 * @version 1.0.0
 	 *
 	 * @param   string      $key    The name of the cached value.
-	 * @param   bool|null   $found  Whether the value was found or not. Disambiguates between a stored value of false and simply failure.
 	 *
-	 * @return  mixed
+	 * @return  mixed|NotFoundException
 	 */
-	public function get_value( string $key, ?bool &$found );
+	public function get_value( string $key );
 
 	/**
 	 * Sets a cached value under a given name.

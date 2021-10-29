@@ -3,7 +3,11 @@
 namespace DeepWebSolutions\Framework\Utilities\Shortcodes\Handlers;
 
 use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Resettable\ResetLocalTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\ResettableInterface;
 use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunFailureException;
+use DeepWebSolutions\Framework\Foundations\Actions\Runnable\RunLocalTrait;
+use DeepWebSolutions\Framework\Foundations\Actions\RunnableInterface;
 use DeepWebSolutions\Framework\Utilities\Shortcodes\AbstractShortcodesHandler;
 
 \defined( 'ABSPATH' ) || exit;
@@ -21,18 +25,25 @@ use DeepWebSolutions\Framework\Utilities\Shortcodes\AbstractShortcodesHandler;
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  * @package DeepWebSolutions\WP-Framework\Utilities\Shortcodes
  */
-class DefaultShortcodesHandler extends AbstractShortcodesHandler {
+class BufferedShortcodesHandler extends AbstractShortcodesHandler implements RunnableInterface, ResettableInterface {
+	// region TRAITS
+
+	use RunLocalTrait;
+	use ResetLocalTrait;
+
+	// endregion
+
 	// region MAGIC METHODS
 
 	/**
-	 * DefaultShortcodesHandler constructor.
+	 * BufferedShortcodesHandler constructor.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 *
 	 * @param   string      $handler_id     The ID of the handler instance.
 	 */
-	public function __construct( string $handler_id = 'default' ) { // phpcs:ignore
+	public function __construct( string $handler_id = 'buffered' ) { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		parent::__construct( $handler_id );
 	}
 

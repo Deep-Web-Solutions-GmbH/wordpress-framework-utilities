@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: DWS WordPress Framework - Utilities 1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/deep-web-solutions/wordpress-framework-utilities/issues\n"
-"POT-Creation-Date: 2021-10-29 20:10:47+00:00\n"
+"POT-Creation-Date: 2021-10-30 12:33:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,7 +24,7 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:88
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:88
 #. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP extensions.
 msgid ""
@@ -38,7 +38,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:100
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:100
 #. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP extensions.
 msgid ""
@@ -50,43 +50,43 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:135
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:135
 #. translators: %s: Installed version of the dependant plugin
 msgid "You're running version %s"
 msgstr ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:163
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:163
 #. translators: Plugin name or identifiable name.
 msgid ""
 "<strong>%s</strong> may behave unexpectedly because the following PHP "
 "configuration settings are expected:"
 msgstr ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:167
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:167
 msgid ""
 "Please contact your hosting provider or server administrator to configure "
 "these settings. The plugin will attempt to run despite this warning."
 msgstr ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:171
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:171
 #. translators: Plugin name or identifiable name.
 msgid ""
 "<strong>%s</strong> cannot run because the following PHP configuration "
 "settings are expected:"
 msgstr ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:175
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:175
 msgid ""
 "Please contact your hosting provider or server administrator to configure "
 "these settings."
 msgstr ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:201
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:201
 #. translators: PHP settings value.
 msgid "%s or higher"
 msgstr ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:230
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:230
 #. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP functions.
 msgid ""
@@ -100,7 +100,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:242
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:242
 #. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP functions.
 msgid ""
@@ -113,7 +113,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:270
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:270
 #. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP extensions.
 msgid ""
@@ -127,7 +127,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Dependencies/Helpers/DependenciesHelpers.php:282
+#: includes/Dependencies/Helpers/DependenciesServiceHelpers.php:282
 #. translators: 1. Plugin or identifiable name, 2. Comma-separated list of
 #. missing PHP extensions.
 msgid ""

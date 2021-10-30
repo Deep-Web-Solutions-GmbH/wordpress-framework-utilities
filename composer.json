@@ -26,8 +26,6 @@
     "deep-web-solutions/wp-framework-foundations": "^1.5.3"
   },
   "require-dev": {
-    "woocommerce/action-scheduler": "^3.4",
-
     "deep-web-solutions/wordpress-configs": "master@dev",
     "php-stubs/wordpress-stubs": "5.5.*",
     "johnpbloch/wordpress-core": "5.5.*",

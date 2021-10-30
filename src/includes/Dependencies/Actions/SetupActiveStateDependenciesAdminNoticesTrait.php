@@ -54,7 +54,7 @@ trait SetupActiveStateDependenciesAdminNoticesTrait {
 	 *
 	 * @return  SetupFailureException|null
 	 */
-	public function setup_dependencies_admin_notices(): ?SetupFailureException {
+	public function setup_active_state_dependencies_admin_notices(): ?SetupFailureException {
 		$deps_handler = $this->get_dependencies_handler( DependencyContextsEnum::ACTIVE_STATE );
 		if ( \is_null( $deps_handler ) ) {
 			throw new NotImplementedException( 'Dependencies admin notices scenario not supported' );

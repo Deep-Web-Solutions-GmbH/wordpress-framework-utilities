@@ -19,7 +19,7 @@ use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticesServiceAwareIn
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  */
-final class AdminNoticesHelpers {
+final class AdminNoticesServiceHelpers {
 	/**
 	 * Tries to automagically retrieve the admin notice service.
 	 *
@@ -32,7 +32,7 @@ final class AdminNoticesHelpers {
 	 *
 	 * @return  AdminNoticesService
 	 */
-	public static function get_service( object $registrant ): AdminNoticesService {
+	public static function get_service_from_object( object $registrant ): AdminNoticesService {
 		if ( $registrant instanceof AdminNoticesServiceAwareInterface ) {
 			$notices_service = $registrant->get_admin_notices_service();
 		} elseif ( $registrant instanceof ContainerAwareInterface ) {

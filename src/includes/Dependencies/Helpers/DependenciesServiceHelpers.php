@@ -14,7 +14,7 @@ use DeepWebSolutions\Framework\Helpers\DataTypes\Arrays;
  * @version 1.0.0
  * @author  Antonius Hegyes <a.hegyes@deep-web-solutions.com>
  */
-final class DependenciesHelpers {
+final class DependenciesServiceHelpers {
 	/**
 	 * Converts the result of a call to @see DependenciesHandlerInterface::are_dependencies_fulfilled to a simple boolean.
 	 *

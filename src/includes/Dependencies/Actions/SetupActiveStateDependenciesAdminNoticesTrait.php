@@ -7,14 +7,14 @@ use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupableExtensionT
 use DeepWebSolutions\Framework\Foundations\Actions\Setupable\SetupFailureException;
 use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\AdminNoticeTypesEnum;
-use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesHelpers;
+use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesServiceHelpers;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Helpers\AdminNoticesHelpersTrait;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\DismissibleAdminNotice;
 use DeepWebSolutions\Framework\Utilities\AdminNotices\Notices\SimpleAdminNotice;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependencyContextsEnum;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\MultiCheckerHandler;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Handlers\SingleCheckerHandler;
-use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpers;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesServiceHelpers;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 use DeepWebSolutions\Framework\Utilities\Dependencies\States\ActiveDependenciesTrait;
 use Psr\Container\ContainerExceptionInterface;
@@ -97,18 +97,18 @@ trait SetupActiveStateDependenciesAdminNoticesTrait {
 	 * @param   string  $type                   The type of the unfulfilled dependencies.
 	 */
 	public function register_missing_dependencies_admin_notices( array $missing_dependencies, string $type ) {
-		$notices_service = AdminNoticesHelpers::get_service( $this );
+		$notices_service = AdminNoticesServiceHelpers::get_service_from_object( $this );
 
 		foreach ( $missing_dependencies as $checker_id => $dependencies ) {
 			if ( empty( $dependencies ) ) {
 				continue;
 			}
 
-			$is_optional_checker = DependenciesHelpers::is_optional_checker( $checker_id );
+			$is_optional_checker = DependenciesServiceHelpers::is_optional_checker( $checker_id );
 			$store_id            = $is_optional_checker ? 'options' : 'dynamic';
 
 			$notice_handle  = $this->get_admin_notice_handle( "missing-$type", \md5( \wp_json_encode( $dependencies ) ) );
-			$notice_message = DependenciesHelpers::get_missing_dependencies_notice_message( $type, AdminNoticesHelpers::get_registrant_name( $this ), $dependencies, $is_optional_checker );
+			$notice_message = DependenciesServiceHelpers::get_missing_dependencies_notice_message( $type, AdminNoticesServiceHelpers::get_registrant_name( $this ), $dependencies, $is_optional_checker );
 			$notice_params  = array( 'capability' => 'activate_plugins' );
 
 			$notice = $is_optional_checker

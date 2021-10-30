@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7614e332e09118f1f8808a1dbacd3a8d",
+    "content-hash": "cad95a554d746706116118d5ef57f429",
     "packages": [
         {
             "name": "deep-web-solutions/wp-framework-bootstrapper",
@@ -76,16 +76,16 @@
         },
         {
             "name": "deep-web-solutions/wp-framework-foundations",
-            "version": "v1.5.2",
+            "version": "v1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/deep-web-solutions/wordpress-framework-foundations.git",
-                "reference": "cf5cc85f32f9150a929803199045177cde87bd45"
+                "reference": "9ed9a924f43798c8adb544f99fb92c40edfc9541"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/cf5cc85f32f9150a929803199045177cde87bd45",
-                "reference": "cf5cc85f32f9150a929803199045177cde87bd45",
+                "url": "https://api.github.com/repos/deep-web-solutions/wordpress-framework-foundations/zipball/9ed9a924f43798c8adb544f99fb92c40edfc9541",
+                "reference": "9ed9a924f43798c8adb544f99fb92c40edfc9541",
                 "shasum": ""
             },
             "require": {
@@ -152,9 +152,9 @@
             ],
             "support": {
                 "issues": "https://github.com/deep-web-solutions/wordpress-framework-foundations/issues",
-                "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/v1.5.2"
+                "source": "https://github.com/deep-web-solutions/wordpress-framework-foundations/tree/v1.5.3"
             },
-            "time": "2021-10-29T21:07:59+00:00"
+            "time": "2021-10-30T10:59:41+00:00"
         },
         {
             "name": "deep-web-solutions/wp-framework-helpers",

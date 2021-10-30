@@ -8,6 +8,7 @@ use DeepWebSolutions\Framework\Foundations\PluginInterface;
 use DeepWebSolutions\Framework\Foundations\Services\AbstractMultiHandlerService;
 use DeepWebSolutions\Framework\Foundations\Services\Actions\OutputHandlersTrait;
 use DeepWebSolutions\Framework\Foundations\Services\HandlerInterface;
+use DeepWebSolutions\Framework\Foundations\Storage\StoreAwareInterface;
 use DeepWebSolutions\Framework\Foundations\Storage\StoreInterface;
 use DeepWebSolutions\Framework\Foundations\Storage\Stores\MemoryStore;
 use DeepWebSolutions\Framework\Foundations\Storage\Stores\OptionsStore;
@@ -61,8 +62,8 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 		$this->register_hooks( $hooks_service );
 		$this->set_hooks_service( $hooks_service );
 
-		parent::__construct( $plugin, $logging_service, $handlers );
 		$this->set_default_stores( $stores );
+		parent::__construct( $plugin, $logging_service, $handlers );
 	}
 
 	// endregion
@@ -80,6 +81,9 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 
 		if ( $handler instanceof HooksServiceRegisterInterface ) {
 			$handler->register_hooks( $this->get_hooks_service() );
+		}
+		if ( $handler instanceof StoreAwareInterface ) {
+			$handler->set_store( $this->get_store( 'admin-notices-stores' ) );
 		}
 
 		return $this;
@@ -221,13 +225,7 @@ class AdminNoticesService extends AbstractMultiHandlerService implements HooksSe
 			}
 		}
 
-		$this->update_stores_store_entry( $notices_stores_store );
-
-		// All handlers need access to the notice stores.
-		foreach ( $this->get_handlers() as $handler ) {
-			/* @noinspection PhpUndefinedMethodInspection */
-			$handler->set_store( $notices_stores_store );
-		}
+		$this->register_store( $notices_stores_store );
 	}
 
 	/**

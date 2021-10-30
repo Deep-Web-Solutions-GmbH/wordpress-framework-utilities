@@ -6,7 +6,7 @@ use DeepWebSolutions\Framework\Foundations\Exceptions\NotImplementedException;
 use DeepWebSolutions\Framework\Foundations\States\Activeable\ActiveableExtensionTrait;
 use DeepWebSolutions\Framework\Foundations\States\ActiveableInterface;
 use DeepWebSolutions\Framework\Utilities\Dependencies\DependencyContextsEnum;
-use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpers;
+use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesServiceHelpers;
 use DeepWebSolutions\Framework\Utilities\Dependencies\Helpers\DependenciesHelpersTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -54,7 +54,7 @@ trait ActiveDependenciesTrait {
 			}
 
 			$are_deps_fulfilled = $handler->are_dependencies_fulfilled();
-			$is_active          = DependenciesHelpers::status_to_boolean( $are_deps_fulfilled, false );
+			$is_active          = DependenciesServiceHelpers::status_to_boolean( $are_deps_fulfilled, false );
 		}
 
 		return $is_active;

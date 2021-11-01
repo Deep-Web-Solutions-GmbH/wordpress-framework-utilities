@@ -40,6 +40,8 @@ class ValidationService extends AbstractMultiHandlerService implements Validatio
 	 * @version 1.0.0
 	 *
 	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 *
+	 * @throws  NotSupportedException   Thrown when the validation type is unsupported.
 	 */
 	public function validate_value( $value, string $default_key, string $validation_type, string $handler_id = 'settings' ) {
 		switch ( $validation_type ) {
@@ -65,6 +67,8 @@ class ValidationService extends AbstractMultiHandlerService implements Validatio
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
+	 *
+	 * @throws  NotSupportedException   Thrown when the validation type is unsupported.
 	 */
 	public function validate_allowed_value( $value, string $default_key, string $options_key, string $validation_type, string $handler_id = 'settings' ) {
 		switch ( $validation_type ) {

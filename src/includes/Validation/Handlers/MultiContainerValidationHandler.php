@@ -110,12 +110,14 @@ class MultiContainerValidationHandler extends AbstractValidationHandler implemen
 	 * @return  InexistentPropertyException|mixed
 	 */
 	protected function get_container_value( string $key, string $container_id ) {
+		$boom = \explode( '/', $key );
+		$key  = \array_shift( $boom );
+
 		$value = $this->get_container_entry( $key, $container_id );
 		if ( \is_null( $value ) ) {
 			return new InexistentPropertyException( \sprintf( 'Inexistent container entry: %s', $key ) );
 		}
 
-		$boom = \explode( '/', $key );
 		foreach ( $boom as $key ) {
 			if ( isset( $value[ $key ] ) || \array_key_exists( $key, $value ) ) { // This will support entries containing literal NULL.
 				$value = $value[ $key ];

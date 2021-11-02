@@ -165,8 +165,8 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 	 */
 	protected function get_plugin_name( string $plugin, array $plugin_config ): string {
 		if ( $this->is_plugin_active( $plugin, $plugin_config ) ) {
-			if ( isset( $plugin_config['name_getter'] ) && \is_callable( $plugin_config['name_getter'] ) ) {
-				$plugin_name = Strings::maybe_cast( \call_user_func( $plugin_config['name_getter'] ), '' );
+			if ( isset( $plugin_config['name_checker'] ) && \is_callable( $plugin_config['name_checker'] ) ) {
+				$plugin_name = Strings::maybe_cast( \call_user_func( $plugin_config['name_checker'] ), '' );
 			} else {
 				$plugin_data = $this->get_plugin_data(
 					$plugin,
@@ -178,7 +178,7 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 				if ( ! \is_null( $plugin_data ) ) {
 					$plugin_name = $plugin_data['name'] ?: ( $plugin_config['fallback_name'] ?? '' );
 					if ( ! empty( $plugin_data['text_domain'] ) ) {
-						$plugin_name = \translate( $plugin_name, $plugin_data['text_domain'] ); // phpcs:ignore WordPress.WP.I18n
+						$plugin_name = \__( $plugin_name, $plugin_data['text_domain'] ); // phpcs:ignore WordPress.WP.I18n
 					}
 				} else {
 					$plugin_name = $plugin_config['fallback_name'] ?? '';

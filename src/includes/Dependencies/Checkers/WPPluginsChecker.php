@@ -142,8 +142,8 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 	 * @return  string
 	 */
 	protected function get_active_plugin_version( string $plugin, array $plugin_config ): string {
-		if ( isset( $plugin_config['version_checker'] ) && \is_callable( $plugin_config['version_checker'] ) ) {
-			$version = \call_user_func( $plugin_config['version_checker'] );
+		if ( isset( $plugin_config['version_getter'] ) && \is_callable( $plugin_config['version_getter'] ) ) {
+			$version = \call_user_func( $plugin_config['version_getter'] );
 		} else {
 			$plugin_data = $this->get_plugin_data( $plugin, array( 'version' => 'Version' ) );
 			$version     = \is_null( $plugin_data ) ? '0.0.0' : ( $plugin_data['version'] ?: '0.0.0' );
@@ -165,8 +165,8 @@ class WPPluginsChecker extends AbstractDependenciesChecker {
 	 */
 	protected function get_plugin_name( string $plugin, array $plugin_config ): string {
 		if ( $this->is_plugin_active( $plugin, $plugin_config ) ) {
-			if ( isset( $plugin_config['name_checker'] ) && \is_callable( $plugin_config['name_checker'] ) ) {
-				$plugin_name = Strings::maybe_cast( \call_user_func( $plugin_config['name_checker'] ), '' );
+			if ( isset( $plugin_config['name_getter'] ) && \is_callable( $plugin_config['name_getter'] ) ) {
+				$plugin_name = Strings::maybe_cast( \call_user_func( $plugin_config['name_getter'] ), '' );
 			} else {
 				$plugin_data = $this->get_plugin_data(
 					$plugin,

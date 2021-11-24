@@ -111,7 +111,7 @@ abstract class AbstractValidationHandler extends AbstractHandler implements Vali
 
 		$options = $this->get_supported_options_or_throw( $options_key );
 		$result  = \array_filter( Arrays::validate_allowed( $value, $options, false ) );
-		if ( empty( $result ) && Arrays::has_string_keys( $options ) ) {
+		if ( empty( $result ) && ! Arrays::is_list( $options ) ) {
 			$result = \array_filter( Arrays::validate_allowed( $value, \array_keys( $options ), false ) );
 		}
 

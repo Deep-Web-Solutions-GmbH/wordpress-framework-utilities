@@ -56,7 +56,7 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 	 * @version 1.0.0
 	 */
 	public function register_hooks( HooksService $hooks_service ): void {
-		$hooks_service->add_action( 'admin_footer', $this, 'output_dismiss_js' );
+		$hooks_service->add_action( 'admin_enqueue_scripts', $this, 'enqueue_dismiss_script' );
 		$hooks_service->add_action( 'wp_ajax_' . $this->get_hook_tag( 'dismiss_notice' ), $this, 'handle_ajax_dismiss' );
 	}
 
@@ -65,12 +65,12 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 	// region HOOKS
 
 	/**
-	 * Outputs the JS that handles the notice dismiss action.
+	 * Enqueues the JS that handles the notice dismiss action.
 	 *
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 */
-	public function output_dismiss_js(): void {
+	public function enqueue_dismiss_script(): void {
 		if ( false === $this->has_output ) {
 			return;
 		}
@@ -97,16 +97,15 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 
 		<?php
 
-		echo Assets::wrap_string_in_script_tags( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			Strings::replace_placeholders(
-				array(
-					'%plugin_slug%' => \esc_js( $this->get_plugin()->get_plugin_slug() ),
-					'%action%'      => \esc_js( $this->get_hook_tag( 'dismiss_notice' ) ),
-					'%nonce%'       => \esc_js( \wp_create_nonce( $this->get_plugin()->get_plugin_safe_slug() . '_dismiss_notice' ) ),
-				),
-				\ob_get_clean()
-			)
+		$js_script = Strings::replace_placeholders(
+			array(
+				'%plugin_slug%' => \esc_js( $this->get_plugin()->get_plugin_slug() ),
+				'%action%'      => \esc_js( $this->get_hook_tag( 'dismiss_notice' ) ),
+				'%nonce%'       => \esc_js( \wp_create_nonce( $this->get_plugin()->get_plugin_safe_slug() . '_dismiss_notice' ) ),
+			),
+			\ob_get_clean()
 		);
+		\wp_add_inline_script( 'jquery', $js_script );
 	}
 
 	/**

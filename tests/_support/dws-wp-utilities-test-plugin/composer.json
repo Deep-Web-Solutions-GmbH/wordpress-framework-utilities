@@ -1,0 +1,25 @@
+{
+  "name": "deep-web-solutions/wp-framework-utilities-test-plugin",
+  "type": "wordpress-plugin",
+
+  "description": "A WP plugin used to run automated tests against the DWS WP Framework Utilities package.",
+  "keywords": ["wordpress", "plugin", "Deep Web Solutions", "utilities", "test"],
+  "homepage": "https://www.deep-web-solutions.com",
+  "license": "GPL-3.0-or-later",
+
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/deep-web-solutions/wordpress-framework-utilities"
+    }
+  ],
+  "require": {
+    "deep-web-solutions/wp-framework-utilities": "master@dev"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "DeepWebSolutions\\Framework\\Tests\\Utilities\\": "src/includes"
+    }
+  }
+}

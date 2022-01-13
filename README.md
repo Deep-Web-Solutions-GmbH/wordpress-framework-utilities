@@ -14,6 +14,7 @@
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 [![PHP Syntax Errors](https://github.com/deep-web-solutions/wordpress-framework-utilities/actions/workflows/php-syntax-errors.yml/badge.svg)](https://github.com/deep-web-solutions/wordpress-framework-utilities/actions/workflows/php-syntax-errors.yml)
 [![WordPress Coding Standards](https://github.com/deep-web-solutions/wordpress-framework-utilities/actions/workflows/wordpress-coding-standards.yml/badge.svg)](https://github.com/deep-web-solutions/wordpress-framework-utilities/actions/workflows/wordpress-coding-standards.yml)
+[![Codeception Tests](https://github.com/deep-web-solutions/wordpress-framework-utilities/actions/workflows/codeception-tests.yml/badge.svg?branch=master)](https://github.com/deep-web-solutions/wordpress-framework-utilities/actions/workflows/codeception-tests.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ccac5a84720a1b6230f6/maintainability)](https://codeclimate.com/github/deep-web-solutions/wordpress-framework-utilities/maintainability)
 
 A set of related utility classes to kick-start WordPress development. This package contains a series of services and handlers

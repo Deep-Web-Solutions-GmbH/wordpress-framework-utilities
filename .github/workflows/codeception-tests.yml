@@ -98,14 +98,14 @@ jobs:
 
       - name: Copy the plugin to the plugins directory
         run: |
-          cp -r $GITHUB_WORKSPACE/tests/_support/dws-wp-foundations-test-plugin $WP_ROOT_FOLDER/wp-content/plugins/dws-wp-foundations-test-plugin/
-          composer update --no-dev --no-interaction --ignore-platform-reqs --working-dir=$WP_ROOT_FOLDER/wp-content/plugins/dws-wp-foundations-test-plugin/
+          cp -r $GITHUB_WORKSPACE/tests/_support/dws-wp-utilities-test-plugin $WP_ROOT_FOLDER/wp-content/plugins/dws-wp-utilities-test-plugin/
+          composer update --no-dev --no-interaction --ignore-platform-reqs --working-dir=$WP_ROOT_FOLDER/wp-content/plugins/dws-wp-utilities-test-plugin/
           chmod -R 777 $WP_ROOT_FOLDER
 
       - name: Activate the test plugin
         run: |
           cd $WP_ROOT_FOLDER
-          wp plugin activate dws-wp-foundations-test-plugin
+          wp plugin activate dws-wp-utilities-test-plugin
           wp plugin list --status=active
 
       - name: Generate DB export

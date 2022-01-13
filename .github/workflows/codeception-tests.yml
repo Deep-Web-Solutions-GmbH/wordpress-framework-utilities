@@ -1,0 +1,138 @@
+name: Codeception Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    env:
+      # Must match the env variables in .dist.env
+      WP_ROOT_FOLDER: /tmp/wordpress
+
+      # For acceptance and functional tests
+      TEST_SITE_DB_NAME: tests
+      TEST_SITE_DB_USER: root
+      TEST_SITE_DB_PASSWORD: root
+      TEST_SITE_TABLE_PREFIX: wp_
+      TEST_SITE_ADMIN_USERNAME: admin
+      TEST_SITE_ADMIN_PASSWORD: password
+      TEST_SITE_WP_ADMIN_PATH: /wp-admin
+      TEST_SITE_WP_URL: http://localhost:8888
+      TEST_SITE_WP_DOMAIN: localhost:8888
+      TEST_SITE_ADMIN_EMAIL: admin@localhost.test
+
+      # For integration tests
+      TEST_DB_NAME: tests
+      TEST_DB_USER: root
+      TEST_DB_PASSWORD: root
+      TEST_TABLE_PREFIX: wp_
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ 7.4, 8.0, 8.1 ]
+        WP_VERSION: [ latest, nightly ]
+        include:
+          - php: 7.4
+            WP_VERSION: 5.5
+
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_DATABASE: tests
+          MYSQL_ROOT_PASSWORD: root
+          options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup proper PHP version
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, pdo_mysql
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set database connection env globals
+        env:
+          DB_PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          echo "TEST_DB_HOST=127.0.0.1:$DB_PORT" >> $GITHUB_ENV
+          echo "TEST_SITE_DB_HOST=127.0.0.1:$DB_PORT" >> $GITHUB_ENV
+          echo "TEST_SITE_DB_DSN=mysql:host=127.0.0.1:$DB_PORT;dbname=$TEST_SITE_DB_NAME" >> $GITHUB_ENV
+
+      - name: Verify MariaDB connection and database list
+        env:
+          DB_PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"$DB_PORT" --silent; do
+            sleep 1
+          done
+          mysql -u $TEST_SITE_DB_USER -p"$TEST_SITE_DB_PASSWORD" -h"127.0.0.1" -P"$DB_PORT" -e "SHOW DATABASES;"
+
+      - name: Setup WP CLI tools
+        run: |
+          mkdir -p $WP_ROOT_FOLDER
+          mkdir $GITHUB_WORKSPACE/tools
+          wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P $GITHUB_WORKSPACE/tools/
+          chmod +x $GITHUB_WORKSPACE/tools/wp-cli.phar && mv $GITHUB_WORKSPACE/tools/wp-cli.phar $GITHUB_WORKSPACE/tools/wp
+          echo "$GITHUB_WORKSPACE/tools/" >> $GITHUB_PATH
+
+      - name: Install WordPress
+        run: |
+          cd $WP_ROOT_FOLDER
+          wp core download --version=${{ matrix.WP_VERSION }}
+          wp config create --dbname="$TEST_SITE_DB_NAME" --dbuser="$TEST_SITE_DB_USER" --dbpass="$TEST_SITE_DB_PASSWORD" --dbhost="$TEST_SITE_DB_HOST" --dbprefix="$TEST_SITE_TABLE_PREFIX"
+          wp core install --url="$TEST_SITE_WP_URL" --title="Test" --admin_user="$TEST_SITE_ADMIN_USERNAME" --admin_password="$TEST_SITE_ADMIN_PASSWORD" --admin_email="$TEST_SITE_ADMIN_EMAIL" --skip-email
+          wp rewrite structure '/%postname%/' --hard
+          wp core update-db
+
+      - name: Copy the plugin to the plugins directory
+        run: |
+          cp -r $GITHUB_WORKSPACE/tests/_support/dws-wp-foundations-test-plugin $WP_ROOT_FOLDER/wp-content/plugins/dws-wp-foundations-test-plugin/
+          composer update --no-dev --no-interaction --ignore-platform-reqs --working-dir=$WP_ROOT_FOLDER/wp-content/plugins/dws-wp-foundations-test-plugin/
+          chmod -R 777 $WP_ROOT_FOLDER
+
+      - name: Activate the test plugin
+        run: |
+          cd $WP_ROOT_FOLDER
+          wp plugin activate dws-wp-foundations-test-plugin
+          wp plugin list --status=active
+
+      - name: Generate DB export
+        run: wp db export $GITHUB_WORKSPACE/tests/_data/dump.sql --path=$WP_ROOT_FOLDER
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install module dev dependencies
+        run: composer install --no-interaction --ignore-platform-reqs --prefer-dist --no-progress
+
+      - name: Start a web server
+        run: |
+          php -S "$TEST_SITE_WP_DOMAIN" -t "$WP_ROOT_FOLDER" >/dev/null 2>&1 &
+          phantomjs --webdriver=4444 >/dev/null 2>&1 &
+
+      - name: Run Codeception integration tests
+        run: composer run-script test:integration
+
+      - name: Run Codeception functional tests
+        run: composer run-script test:functional

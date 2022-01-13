@@ -78,6 +78,18 @@
     ],
     "coding-standards:fix": [
       "@php ./vendor/bin/phpcbf --standard=phpcs.xml.dist -v"
+    ],
+
+    "test:clean": [
+      "@php ./vendor/bin/codecept clean"
+    ],
+    "test:integration": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php ./vendor/bin/codecept run wpunit --debug"
+    ],
+    "test:functional": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php ./vendor/bin/codecept run functional --debug"
     ]
   },
   "config": {

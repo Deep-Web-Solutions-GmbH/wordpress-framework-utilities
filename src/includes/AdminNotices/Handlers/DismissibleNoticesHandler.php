@@ -98,12 +98,12 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 		<?php
 
 		$js_script = Strings::replace_placeholders(
+			\ob_get_clean(),
 			array(
 				'%plugin_slug%' => \esc_js( $this->get_plugin()->get_plugin_slug() ),
 				'%action%'      => \esc_js( $this->get_hook_tag( 'dismiss_notice' ) ),
 				'%nonce%'       => \esc_js( \wp_create_nonce( $this->get_plugin()->get_plugin_safe_slug() . '_dismiss_notice' ) ),
-			),
-			\ob_get_clean()
+			)
 		);
 
 		if ( \function_exists( 'wp_print_inline_script_tag' ) ) {
@@ -224,11 +224,11 @@ class DismissibleNoticesHandler extends SimpleNoticesHandler implements PluginAw
 
 		$notice_html = \ob_get_clean();
 		$notice_html = Strings::replace_placeholders(
+			$notice_html,
 			array(
 				'dws-framework-notice' => 'dws-framework-notice dws-framework-notice-' . \esc_attr( $this->get_plugin()->get_plugin_slug() ),
 				'class='               => 'data-store="' . \esc_attr( $store->get_id() ) . '" class=',
-			),
-			$notice_html
+			)
 		);
 		echo $notice_html; // phpcs:ignore
 

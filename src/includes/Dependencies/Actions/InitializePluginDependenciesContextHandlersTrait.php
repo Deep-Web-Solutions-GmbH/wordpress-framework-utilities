@@ -37,20 +37,16 @@ trait InitializePluginDependenciesContextHandlersTrait {
 	 * @version 1.0.0
 	 */
 	protected function get_dependencies_handlers(): array {
-		static $handlers = null;
+		$handlers = array();
 
-		if ( \is_null( $handlers ) ) {
-			$handlers = array();
+		foreach ( DependencyContextsEnum::get_all() as $context ) {
+			$plugin_dependencies = $this->get_plugin_dependencies( $context );
+			$plugin_dependencies = Arrays::has_string_keys( $plugin_dependencies )
+				? array( $plugin_dependencies ) : $plugin_dependencies;
 
-			foreach ( DependencyContextsEnum::get_all() as $context ) {
-				$plugin_dependencies = $this->get_plugin_dependencies( $context );
-				$plugin_dependencies = Arrays::has_string_keys( $plugin_dependencies )
-					? array( $plugin_dependencies ) : $plugin_dependencies;
-
-				$handler_id = $this->get_dependencies_handler_id( $context );
-				$checker    = new WPPluginsChecker( $handler_id, $plugin_dependencies );
-				$handlers[] = new SingleCheckerHandler( $handler_id, $checker );
-			}
+			$handler_id = $this->get_dependencies_handler_id( $context );
+			$checker    = new WPPluginsChecker( $handler_id, $plugin_dependencies );
+			$handlers[] = new SingleCheckerHandler( $handler_id, $checker );
 		}
 
 		return $handlers;

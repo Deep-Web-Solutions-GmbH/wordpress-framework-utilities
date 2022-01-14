@@ -131,8 +131,8 @@ jobs:
           php -S "$TEST_SITE_WP_DOMAIN" -t "$WP_ROOT_FOLDER" >/dev/null 2>&1 &
           phantomjs --webdriver=4444 >/dev/null 2>&1 &
 
-      - name: Run Codeception integration tests
-        run: composer run-script test:integration
-
       - name: Run Codeception functional tests
         run: composer run-script test:functional
+
+      - name: Run Codeception acceptance tests
+        run: composer run-script test:acceptance

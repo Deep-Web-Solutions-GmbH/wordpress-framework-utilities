@@ -57,6 +57,13 @@
       "bootstrap.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "DeepWebSolutions\\Framework\\Tests\\Utilities\\Support\\": "tests/_support",
+      "DeepWebSolutions\\Framework\\Tests\\Utilities\\Acceptance\\": "tests/acceptance",
+      "DeepWebSolutions\\Framework\\Tests\\Utilities\\Functional\\": "tests/functional"
+    }
+  },
 
   "scripts": {
     "post-autoload-dump": [
@@ -83,13 +90,13 @@
     "test:clean": [
       "@php ./vendor/bin/codecept clean"
     ],
-    "test:integration": [
-      "Composer\\Config::disableProcessTimeout",
-      "@php ./vendor/bin/codecept run wpunit --debug"
-    ],
     "test:functional": [
       "Composer\\Config::disableProcessTimeout",
       "@php ./vendor/bin/codecept run functional --debug"
+    ],
+    "test:acceptance": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php ./vendor/bin/codecept run acceptance --debug"
     ]
   },
   "config": {

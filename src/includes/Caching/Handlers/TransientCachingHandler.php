@@ -117,6 +117,22 @@ class TransientCachingHandler extends AbstractCachingHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 */
+	public function get_value_multiple( array $keys ): array {
+		$values = array();
+
+		foreach ( $keys as $key ) {
+			$values[ $key ] = $this->get_value( $key );
+		}
+
+		return $values;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
 	public function set_value( string $key, $value, int $expire = 0 ): bool {
 		return \set_transient( $this->generate_full_key( $key ), $value, $expire );
 	}

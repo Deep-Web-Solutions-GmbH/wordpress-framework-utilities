@@ -119,6 +119,17 @@ class ObjectCacheHandler extends AbstractCachingHandler {
 	 * @since   1.0.0
 	 * @version 1.0.0
 	 */
+	public function get_value_multiple( array $keys, bool $force = false ): array {
+		$keys = \array_map( array( $this, 'generate_full_key' ), $keys );
+		return \wp_cache_get_multiple( $keys, $this->get_cache_group(), $force );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 */
 	public function set_value( string $key, $value, int $expire = 0 ): bool {
 		return \wp_cache_set( $this->generate_full_key( $key ), $value, $this->get_cache_group(), $expire );
 	}

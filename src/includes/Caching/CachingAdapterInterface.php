@@ -28,6 +28,18 @@ interface CachingAdapterInterface {
 	public function get_value( string $key );
 
 	/**
+	 * Returns multiple cached values.
+	 *
+	 * @since   1.0.0
+	 * @version 1.0.0
+	 *
+	 * @param   array   $keys   The names of the cached values.
+	 *
+	 * @return  array
+	 */
+	public function get_value_multiple( array $keys ): array;
+
+	/**
 	 * Sets a cached value under a given name.
 	 *
 	 * @since   1.0.0

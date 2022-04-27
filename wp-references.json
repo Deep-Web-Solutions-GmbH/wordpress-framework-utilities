@@ -16,6 +16,7 @@
         "wp_die",
         "wp_cache_get",
         "wp_cache_set",
+        "wp_cache_get_multiple",
         "wp_cache_replace",
         "wp_cache_add",
         "wp_cache_delete",

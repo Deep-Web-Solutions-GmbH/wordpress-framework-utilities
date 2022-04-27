@@ -52,6 +52,16 @@ class CachingService extends AbstractMultiHandlerService implements CachingServi
 	 * @since    1.0.0
 	 * @version  1.0.0
 	 */
+	public function get_value_multiple( array $keys, string $handler_id = 'object' ): array {
+		return $this->get_handler( $handler_id )->get_value_multiple( $keys );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since    1.0.0
+	 * @version  1.0.0
+	 */
 	public function set_value( string $key, $value, int $expire = 0, string $handler_id = 'object' ): bool {
 		return $this->get_handler( $handler_id )->set_value( $key, $value, $expire );
 	}

@@ -120,8 +120,19 @@ class ObjectCacheHandler extends AbstractCachingHandler {
 	 * @version 1.0.0
 	 */
 	public function get_value_multiple( array $keys, bool $force = false ): array {
-		$keys = \array_map( array( $this, 'generate_full_key' ), $keys );
-		return \wp_cache_get_multiple( $keys, $this->get_cache_group(), $force );
+		foreach ( $keys as $key => $value ) {
+			$keys[ $this->generate_full_key( $value ) ] = $value;
+			unset( $keys[ $key ] );
+		}
+
+		$values = \wp_cache_get_multiple( \array_keys( $keys ), $this->get_cache_group(), $force );
+		foreach ( $values as $key => $value ) {
+			$original_key            = $keys[ $key ];
+			$values[ $original_key ] = $value;
+			unset( $values[ $key ] );
+		}
+
+		return $values;
 	}
 
 	/**

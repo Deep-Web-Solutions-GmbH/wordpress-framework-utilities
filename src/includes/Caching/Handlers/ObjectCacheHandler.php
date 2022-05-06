@@ -184,7 +184,7 @@ class ObjectCacheHandler extends AbstractCachingHandler {
 	 * @version 1.0.0
 	 */
 	public function delete_value( string $key ): bool {
-		return \wp_cache_delete( $this->generate_full_key( $key ) );
+		return \wp_cache_delete( $this->generate_full_key( $key ), $this->get_cache_group() );
 	}
 
 	/**
